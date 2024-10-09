@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  database:
+    image: mysql:9
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: hurribrain
+      MYSQL_USER: neuron
+      MYSQL_PASSWORD: synapse
+    ports:
+      - "3306:3306"
+    container_name: hurribrain-mysql
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:

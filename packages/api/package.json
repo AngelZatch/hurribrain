@@ -27,6 +27,7 @@
     "typescript-eslint": "^8.8.1"
   },
   "dependencies": {
+    "@fastify/cors": "^10.0.1",
     "@mikro-orm/core": "^6.3.13",
     "@mikro-orm/migrations": "^6.3.13",
     "@mikro-orm/mysql": "^6.3.13",

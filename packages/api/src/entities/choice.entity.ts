@@ -5,7 +5,7 @@ import { Question } from "./question.entity.js";
 @Entity()
 export class Choice {
   @PrimaryKey()
-  id: string = v4();
+  uuid: string = v4();
 
   @Property()
   value: string;
