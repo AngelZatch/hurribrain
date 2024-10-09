@@ -4,10 +4,9 @@ import {
   Collection,
   OneToMany,
   ManyToMany,
-  OptionalProps,
   PrimaryKey,
 } from "@mikro-orm/core";
-import { Choice } from "./choice.entity.js"; // Entité future
+import { Choice } from "./choice.entity.js";
 import { Tag } from "./tag.entity.js";
 import { v4 } from "uuid";
 
@@ -42,13 +41,6 @@ export class Question {
 
   @Property({ nullable: true })
   deletedAt?: Date;
-
-  [OptionalProps]?: "successRate";
-
-  get successRate(): number {
-    const totalAnswers = this.correctAnswers + this.incorrectAnswers;
-    return totalAnswers === 0 ? 0 : (this.correctAnswers / totalAnswers) * 100;
-  }
 
   constructor(body: Pick<Question, "title" | "asset">) {
     this.title = body.title;
