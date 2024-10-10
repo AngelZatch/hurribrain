@@ -1,14 +1,26 @@
-import { Question } from "@src/entities/question.entity.js";
-import { FastifyInstance } from "fastify";
+import { Question } from "./../entities/question.entity.js"
+import {
+  GetQuestionsSchema,
+  QuestionResponseSchema,
+} from "./../schemas/question.schema.js"
+import { FastifyInstance } from "fastify"
 
 const QuestionController = async (fastify: FastifyInstance) => {
-  fastify.get("/", {}, async (request) => {
-    const em = request.em;
+  fastify.addSchema(QuestionResponseSchema)
 
-    const questions = await em.find(Question, {});
+  fastify.get(
+    "/",
+    {
+      schema: GetQuestionsSchema,
+    },
+    async (request) => {
+      const em = request.em
 
-    return questions;
-  });
-};
+      const questions = await em.find(Question, {})
 
-export default QuestionController;
+      return questions
+    }
+  )
+}
+
+export default QuestionController

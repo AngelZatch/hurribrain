@@ -1,13 +1,50 @@
-import Fastify from "fastify";
-import fastifyCors from "@fastify/cors";
+import Fastify from "fastify"
+import fastifyCors from "@fastify/cors"
+import fastifySwagger from "@fastify/swagger"
+import fastifySwaggerUi from "@fastify/swagger-ui"
+import QuestionController from "./controllers/question.controller.js"
+import { ErrorResponseTemplateSchema } from "./schemas/errors.schema.js"
 
-export const server = Fastify();
+export const server = Fastify()
 
 export const initializeServer = async () => {
+  await server.register(fastifySwagger, {
+    mode: "dynamic",
+    openapi: {
+      openapi: "3.1.0",
+      info: {
+        title: "Hurribrain API",
+        version: "1.0.0",
+        description: "Hurribrain API",
+      },
+      tags: [
+        {
+          name: "Questions",
+          description: "Questions API",
+        },
+      ],
+    },
+  })
+
+  await server.register(fastifySwaggerUi, {
+    routePrefix: "/docs",
+    uiConfig: {
+      docExpansion: "full",
+      deepLinking: false,
+    },
+    staticCSP: true,
+    transformStaticCSP: (header) => header,
+  })
+
   await server.register(fastifyCors, {
     credentials: true,
     origin: true,
-  });
+  })
 
-  await server.ready();
-};
+  await server.register(async (instance) => {
+    instance.addSchema(ErrorResponseTemplateSchema)
+    await instance.register(QuestionController, { prefix: "/questions" })
+  })
+
+  await server.ready()
+}

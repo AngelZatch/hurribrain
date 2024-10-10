@@ -1,8 +1,8 @@
-import { EntityManager } from "@mikro-orm/mysql";
+import { EntityManager } from "@mikro-orm/mysql"
 
 declare module "fastify" {
   interface FastifyRequest {
-    em: EntityManager;
-    getBaseUrl: () => URL;
+    em: EntityManager
+    getBaseUrl: () => URL
   }
 }

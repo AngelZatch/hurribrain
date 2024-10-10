@@ -1,5 +1,5 @@
-import { MySqlDriver, Options } from "@mikro-orm/mysql";
-import { TsMorphMetadataProvider } from "@mikro-orm/reflection";
+import { MySqlDriver, Options } from "@mikro-orm/mysql"
+import { TsMorphMetadataProvider } from "@mikro-orm/reflection"
 
 const config: Options = {
   user: "neuron",
@@ -11,6 +11,6 @@ const config: Options = {
   metadataProvider: TsMorphMetadataProvider,
   debug: true,
   driver: MySqlDriver,
-};
+}
 
-export default config;
+export default config

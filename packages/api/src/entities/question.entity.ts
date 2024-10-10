@@ -2,48 +2,43 @@ import {
   Entity,
   Property,
   Collection,
-  OneToMany,
   ManyToMany,
   PrimaryKey,
-} from "@mikro-orm/core";
-import { Choice } from "./choice.entity.js";
-import { Tag } from "./tag.entity.js";
-import { v4 } from "uuid";
+} from "@mikro-orm/core"
+import { Tag } from "./tag.entity.js"
+import { v4 } from "uuid"
 
 @Entity()
 export class Question {
   @PrimaryKey()
-  uuid: string = v4();
+  uuid: string = v4()
 
   @Property()
-  title: string;
+  title: string
 
   @ManyToMany(() => Tag)
-  tags = new Collection<Tag>(this);
-
-  @OneToMany(() => Choice, (choice) => choice.question, { lazy: true })
-  choices = new Collection<Choice>(this);
+  tags = new Collection<Tag>(this)
 
   @Property({ nullable: true })
-  asset?: string | null;
+  asset?: string | null
 
   @Property()
-  correctAnswers: number = 0;
+  correctAnswers: number = 0
 
   @Property()
-  incorrectAnswers: number = 0;
+  incorrectAnswers: number = 0
 
   @Property()
-  createdAt: Date = new Date();
+  createdAt: Date = new Date()
 
   @Property({ onUpdate: () => new Date() })
-  updatedAt: Date = new Date();
+  updatedAt: Date = new Date()
 
   @Property({ nullable: true })
-  deletedAt?: Date;
+  deletedAt?: Date
 
   constructor(body: Pick<Question, "title" | "asset">) {
-    this.title = body.title;
-    this.asset = body.asset ?? null;
+    this.title = body.title
+    this.asset = body.asset ?? null
   }
 }
