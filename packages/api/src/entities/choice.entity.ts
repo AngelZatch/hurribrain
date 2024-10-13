@@ -1,5 +1,12 @@
-import { Entity, Property, PrimaryKey } from "@mikro-orm/core"
+import {
+  Entity,
+  Property,
+  PrimaryKey,
+  ManyToOne,
+  type Rel,
+} from "@mikro-orm/core"
 import { v4 } from "uuid"
+import { Question } from "./question.entity.js"
 
 @Entity()
 export class Choice {
@@ -11,6 +18,9 @@ export class Choice {
 
   @Property()
   isCorrect: boolean
+
+  @ManyToOne({ entity: () => Question })
+  question?: Rel<Question>
 
   @Property()
   createdAt: Date = new Date()

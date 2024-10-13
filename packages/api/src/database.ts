@@ -1,9 +1,9 @@
-import { MikroORM, Options } from "@mikro-orm/mysql";
+import { MikroORM, Options } from "@mikro-orm/mysql"
 
 export const database = {} as {
-  orm: MikroORM;
-};
+  orm: MikroORM
+}
 
 export const initializeDatabase = async (ormConfig: Options) => {
-  database.orm = await MikroORM.init(ormConfig);
-};
+  database.orm = await MikroORM.init(ormConfig)
+}

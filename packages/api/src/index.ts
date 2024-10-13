@@ -1,5 +1,5 @@
 import { initializeDatabase } from "./database.js"
-import config from "./orm.config.js"
+import config from "./mikro-orm.config.js"
 import { server, initializeServer } from "./server.js"
 
 server.get("/", async () => {

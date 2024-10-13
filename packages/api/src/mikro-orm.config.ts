@@ -6,11 +6,16 @@ const config: Options = {
   password: "synapse",
   host: "localhost",
   dbName: "hurribrain",
-  entities: ["dist/entities/*.entity.js"],
-  entitiesTs: ["src/entities/*.entities.ts"],
+  entities: ["./dist/entities"],
+  entitiesTs: ["./src/entities"],
+  baseDir: process.cwd(),
   metadataProvider: TsMorphMetadataProvider,
   debug: true,
   driver: MySqlDriver,
+  migrations: {
+    path: "./dist/migrations",
+    pathTs: "./src/migrations",
+  },
 }
 
 export default config
