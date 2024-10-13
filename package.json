@@ -9,7 +9,8 @@
     "packages/*"
   ],
   "scripts": {
-    "api:start": "yarn workspace api start"
+    "api:start": "yarn workspace api start",
+    "admin:start": "yarn workspace admin dev"
   },
   "devDependencies": {
     "@types/eslint": "^9.6.1",
