@@ -1,5 +1,4 @@
 import { Static, Type } from "@sinclair/typebox/type"
-import { ErrorResponsesSchema } from "./errors.schema.js"
 
 // Asset Schema
 export const AssetResponseSchema = Type.Object(
@@ -15,17 +14,4 @@ export const AssetResponseSchema = Type.Object(
 )
 
 // GET Assets
-export const GetAssetsSchema = {
-  tags: ["Assets"],
-  summary: "Returns the list of all available assets",
-  params: {},
-  response: {
-    200: {
-      type: "array",
-      items: AssetResponseSchema,
-    },
-    ...ErrorResponsesSchema,
-  },
-}
-
 export type GetAssetsReply = Static<typeof AssetResponseSchema>

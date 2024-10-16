@@ -1,9 +1,6 @@
+import { ErrorResponsesSchema } from "@src/schemas/errors.schema.js"
 import { Tag } from "./../entities/tag.entity.js"
-import {
-  GetTagsReply,
-  getTagsSchema,
-  TagResponseSchema,
-} from "./../schemas/tag.schema.js"
+import { GetTagsReply, TagResponseSchema } from "./../schemas/tag.schema.js"
 import fastify from "fastify"
 
 const TagController = async (fastify: fastify.FastifyInstance) => {
@@ -14,7 +11,18 @@ const TagController = async (fastify: fastify.FastifyInstance) => {
   }>(
     "/",
     {
-      schema: getTagsSchema,
+      schema: {
+        tags: ["Tags"],
+        summary: "Returns the list of all available tags",
+        params: {},
+        response: {
+          200: {
+            type: "array",
+            items: TagResponseSchema,
+          },
+          ...ErrorResponsesSchema,
+        },
+      },
     },
     async (request, reply) => {
       const em = request.em

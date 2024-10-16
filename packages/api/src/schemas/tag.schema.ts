@@ -1,5 +1,4 @@
 import { Static, Type } from "@sinclair/typebox"
-import { ErrorResponsesSchema } from "./errors.schema.js"
 
 // Tag Schema
 export const TagResponseSchema = Type.Object(
@@ -15,19 +14,6 @@ export const TagResponseSchema = Type.Object(
 )
 
 // GET Tags
-export const getTagsSchema = {
-  tags: ["Tags"],
-  summary: "Returns the list of all available tags",
-  params: {},
-  response: {
-    200: {
-      type: "array",
-      items: TagResponseSchema,
-    },
-    ...ErrorResponsesSchema,
-  },
-}
-
 export type GetTagsReply = Static<typeof TagResponseSchema>
 
 // POST Tags

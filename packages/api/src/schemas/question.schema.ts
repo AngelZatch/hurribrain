@@ -8,7 +8,10 @@ import { AssetResponseSchema } from "./asset.schema.js"
 export const QuestionResponseSchema = Type.Object(
   {
     uuid: Type.String({ format: "uuid" }),
-    title: Type.String(),
+    title: Type.String({
+      description: "The title of the question",
+      examples: ["What is the capital of France?"],
+    }),
     tags: Type.Array(Type.Ref(TagResponseSchema)),
     choices: Type.Array(Type.Ref(ChoiceSchema)),
     asset: Nullable(Type.Ref(AssetResponseSchema)),
@@ -34,10 +37,11 @@ export const GetQuestionsReplySchema = Type.Object({
   data: Type.Array(Type.Ref(QuestionResponseSchema)),
   nextCursor: Type.Optional(Type.Integer()),
 })
-
 export type GetQuestionsReply = Static<typeof GetQuestionsReplySchema>
 
 // Get one question by id
+export const GetQuestionReplySchema = QuestionResponseSchema
+export type GetQuestionReply = Static<typeof GetQuestionReplySchema>
 
 // POST
 export const PostQuestionBodySchema = Type.Object({

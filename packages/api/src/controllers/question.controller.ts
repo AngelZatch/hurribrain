@@ -1,6 +1,7 @@
 import { Asset } from "./../entities/asset.entity.js"
 import { Question } from "./../entities/question.entity.js"
 import {
+  GetQuestionReply,
   GetQuestionsReply,
   GetQuestionsReplySchema,
   PostQuestionBody,
@@ -37,7 +38,11 @@ const QuestionController = async (fastify: FastifyInstance) => {
       const questions = await em.find(
         Question,
         {},
-        { populate: ["tags", "choices"], filters: { notDeleted: true } }
+        {
+          populate: ["tags", "choices"],
+          populateWhere: { tags: { deletedAt: null } },
+          filters: { notDeleted: true },
+        }
       )
 
       return reply.code(200).send({
@@ -49,7 +54,7 @@ const QuestionController = async (fastify: FastifyInstance) => {
 
   fastify.get<{
     Params: QuestionParams
-    Reply: GetQuestionsReply
+    Reply: GetQuestionReply
   }>(
     "/:questionId",
     {
@@ -71,7 +76,10 @@ const QuestionController = async (fastify: FastifyInstance) => {
         {
           uuid: request.params.questionId,
         },
-        { populate: ["tags", "choices"] }
+        {
+          populate: ["tags", "choices"],
+          populateWhere: { tags: { deletedAt: null } },
+        }
       )
 
       return reply.code(200).send(question)
@@ -122,7 +130,10 @@ const QuestionController = async (fastify: FastifyInstance) => {
         {
           uuid: question.uuid,
         },
-        { populate: ["tags", "choices"] }
+        {
+          populate: ["tags", "choices"],
+          populateWhere: { tags: { deletedAt: null } },
+        }
       )
 
       return reply.code(201).send(createdQuestion)

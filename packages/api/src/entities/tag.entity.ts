@@ -1,7 +1,8 @@
-import { Entity, PrimaryKey, Property } from "@mikro-orm/core"
+import { Entity, Filter, PrimaryKey, Property } from "@mikro-orm/core"
 import { v4 } from "uuid"
 
 @Entity()
+@Filter({ name: "notDeleted", cond: { deletedAt: null } })
 export class Tag {
   @PrimaryKey()
   uuid: string = v4()
