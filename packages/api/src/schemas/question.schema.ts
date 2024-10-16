@@ -1,17 +1,17 @@
 import { Static, Type } from "@sinclair/typebox"
-import { ErrorResponsesSchema } from "./errors.schema.js"
 import { TagResponseSchema } from "./tag.schema.js"
 import { ChoiceSchema } from "./choice.schema.js"
 import { Nullable } from "./common.schema.js"
+import { AssetResponseSchema } from "./asset.schema.js"
 
-// GET
+// Question Schema
 export const QuestionResponseSchema = Type.Object(
   {
     uuid: Type.String({ format: "uuid" }),
     title: Type.String(),
     tags: Type.Array(Type.Ref(TagResponseSchema)),
     choices: Type.Array(Type.Ref(ChoiceSchema)),
-    asset: Nullable(Type.Optional(Type.String())),
+    asset: Nullable(Type.Ref(AssetResponseSchema)),
     correctAnswers: Type.Number(),
     incorrectAnswers: Type.Number(),
   },
@@ -21,23 +21,26 @@ export const QuestionResponseSchema = Type.Object(
   }
 )
 
-export const GetQuestionsSchema = {
-  tags: ["Questions"],
-  summary: "Returns the list of all available questions",
-  params: {},
-  response: {
-    200: {
-      type: "array",
-      items: QuestionResponseSchema,
-    },
-    ...ErrorResponsesSchema,
-  },
-}
+// Params
+export const QuestionParamsSchema = Type.Object({
+  questionId: QuestionResponseSchema.properties.uuid,
+})
 
-export type GetProgramsReply = Static<typeof QuestionResponseSchema>
+export type QuestionParams = Static<typeof QuestionParamsSchema>
+
+// GET
+// Get all questions
+export const GetQuestionsReplySchema = Type.Object({
+  data: Type.Array(Type.Ref(QuestionResponseSchema)),
+  nextCursor: Type.Optional(Type.Integer()),
+})
+
+export type GetQuestionsReply = Static<typeof GetQuestionsReplySchema>
+
+// Get one question by id
 
 // POST
-const PostQuestionBodySchema = Type.Object({
+export const PostQuestionBodySchema = Type.Object({
   title: Type.String({
     description: "The title of the question",
     examples: ["What is the capital of France?"],
@@ -46,22 +49,11 @@ const PostQuestionBodySchema = Type.Object({
   }),
   asset: Type.Optional(
     Type.String({
+      format: "uuid",
       description: "An optional asset",
-      examples: ["uuidv4"],
     })
   ),
 })
 
-export type PostProgramBody = Static<typeof PostQuestionBodySchema>
-export type PostProgramReply = Static<typeof QuestionResponseSchema>
-
-export const PostQuestionSchema = {
-  tags: ["Questions"],
-  summary: "Creates a new question",
-  params: {},
-  body: PostQuestionBodySchema,
-  response: {
-    201: QuestionResponseSchema,
-    ...ErrorResponsesSchema,
-  },
-}
+export type PostQuestionBody = Static<typeof PostQuestionBodySchema>
+export type PostQuestionReply = Static<typeof QuestionResponseSchema>

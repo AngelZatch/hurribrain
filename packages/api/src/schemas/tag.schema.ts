@@ -1,7 +1,7 @@
 import { Static, Type } from "@sinclair/typebox"
 import { ErrorResponsesSchema } from "./errors.schema.js"
 
-// GET
+// Tag Schema
 export const TagResponseSchema = Type.Object(
   {
     uuid: Type.String({ format: "uuid" }),
@@ -14,6 +14,7 @@ export const TagResponseSchema = Type.Object(
   }
 )
 
+// GET Tags
 export const getTagsSchema = {
   tags: ["Tags"],
   summary: "Returns the list of all available tags",
@@ -29,4 +30,4 @@ export const getTagsSchema = {
 
 export type GetTagsReply = Static<typeof TagResponseSchema>
 
-// POST
+// POST Tags

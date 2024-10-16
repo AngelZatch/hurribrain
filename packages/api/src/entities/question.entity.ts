@@ -5,12 +5,16 @@ import {
   ManyToMany,
   PrimaryKey,
   OneToMany,
+  ManyToOne,
+  Filter,
 } from "@mikro-orm/core"
 import { Tag } from "./tag.entity.js"
 import { v4 } from "uuid"
 import { Choice } from "./choice.entity.js"
+import { Asset } from "./asset.entity.js"
 
 @Entity()
+@Filter({ name: "notDeleted", cond: { deletedAt: null } })
 export class Question {
   @PrimaryKey()
   uuid: string = v4()
@@ -18,11 +22,11 @@ export class Question {
   @Property()
   title: string
 
-  @ManyToMany(() => Tag)
+  @ManyToMany({ entity: () => Tag, lazy: true })
   tags = new Collection<Tag>(this)
 
-  @Property({ nullable: true })
-  asset?: string | null
+  @ManyToOne({ entity: () => Asset, nullable: true })
+  asset: Asset | null
 
   @OneToMany(() => Choice, (choice) => choice.question)
   choices = new Collection<Choice>(this)
