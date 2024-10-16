@@ -77,7 +77,7 @@ const QuestionController = async (fastify: FastifyInstance) => {
           uuid: request.params.questionId,
         },
         {
-          populate: ["tags", "choices"],
+          populate: ["*"],
           populateWhere: { tags: { deletedAt: null } },
         }
       )
