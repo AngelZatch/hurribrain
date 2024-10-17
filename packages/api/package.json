@@ -7,7 +7,11 @@
     "start": "tsc-watch --onSuccess \"node dist/index.js\"",
     "build": "tsc",
     "lint": "eslint src/",
-    "format": "prettier --write **.*{json,yml,yaml,js,ts} && yarn run lint --fix --quiet"
+    "format": "prettier --write **.*{json,yml,yaml,js,ts} && yarn run lint --fix --quiet",
+    "mikro-orm": "NODE_OPTIONS='--loader ts-node/esm --no-warnings' mikro-orm",
+    "database:migrate": "yarn mikro-orm migration:up",
+    "database:seed": "yarn mikro-orm seeder:run",
+    "database:rebuild": "yarn mikro-orm migration:fresh --seed"
   },
   "devDependencies": {
     "@eslint/js": "^9.12.0",
