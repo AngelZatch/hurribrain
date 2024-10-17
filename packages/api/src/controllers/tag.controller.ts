@@ -1,4 +1,4 @@
-import { ErrorResponsesSchema } from "@src/schemas/errors.schema.js"
+import { ErrorResponsesSchema } from "./../schemas/errors.schema.js"
 import { Tag } from "./../entities/tag.entity.js"
 import { GetTagsReply, TagResponseSchema } from "./../schemas/tag.schema.js"
 import fastify from "fastify"

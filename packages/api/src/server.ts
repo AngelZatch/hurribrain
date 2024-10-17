@@ -4,6 +4,7 @@ import fastifySwagger from "@fastify/swagger"
 import fastifySwaggerUi from "@fastify/swagger-ui"
 import QuestionController from "./controllers/question.controller.js"
 import { ErrorResponseTemplateSchema } from "./schemas/errors.schema.js"
+import TagController from "./controllers/tag.controller.js"
 
 export const server = Fastify()
 
@@ -44,6 +45,7 @@ export const initializeServer = async () => {
   await server.register(async (instance) => {
     instance.addSchema(ErrorResponseTemplateSchema)
     await instance.register(QuestionController, { prefix: "/questions" })
+    await instance.register(TagController, { prefix: "/tags" })
   })
 
   await server.ready()
