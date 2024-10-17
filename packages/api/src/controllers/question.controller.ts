@@ -40,7 +40,6 @@ const QuestionController = async (fastify: FastifyInstance) => {
         {},
         {
           populate: ["tags", "choices"],
-          populateWhere: { tags: { deletedAt: null } },
           filters: { notDeleted: true },
         }
       )

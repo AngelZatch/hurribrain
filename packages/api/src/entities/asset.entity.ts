@@ -19,6 +19,9 @@ export class Asset {
   @Property({ onUpdate: () => new Date() })
   updatedAt: Date = new Date()
 
+  @Property({ nullable: true })
+  deletedAt?: Date
+
   constructor(name: string, uri: string) {
     this.name = name
     this.uri = uri

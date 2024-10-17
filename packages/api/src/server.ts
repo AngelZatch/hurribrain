@@ -45,7 +45,7 @@ export const initializeServer = async () => {
 
   await server.register(async (instance) => {
     instance.addSchema(ErrorResponseTemplateSchema)
-    instance.decorateRequest("em", null)
+    instance.decorateRequest("em")
 
     instance.addHook("preHandler", async (request: FastifyRequest) => {
       request.em = getEntityManager()

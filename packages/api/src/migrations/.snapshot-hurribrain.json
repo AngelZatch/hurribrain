@@ -52,6 +52,16 @@
           "nullable": false,
           "length": null,
           "mappedType": "datetime"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": null,
+          "mappedType": "datetime"
         }
       },
       "name": "asset",
@@ -93,8 +103,8 @@
           "length": 255,
           "mappedType": "string"
         },
-        "asset": {
-          "name": "asset",
+        "asset_uuid": {
+          "name": "asset_uuid",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
@@ -157,6 +167,16 @@
       "name": "question",
       "indexes": [
         {
+          "columnNames": [
+            "asset_uuid"
+          ],
+          "composite": false,
+          "keyName": "question_asset_uuid_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
           "keyName": "PRIMARY",
           "columnNames": [
             "uuid"
@@ -168,7 +188,21 @@
         }
       ],
       "checks": [],
-      "foreignKeys": {},
+      "foreignKeys": {
+        "question_asset_uuid_foreign": {
+          "constraintName": "question_asset_uuid_foreign",
+          "columnNames": [
+            "asset_uuid"
+          ],
+          "localTableName": "question",
+          "referencedColumnNames": [
+            "uuid"
+          ],
+          "referencedTableName": "asset",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        }
+      },
       "nativeEnums": {}
     },
     {
