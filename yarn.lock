@@ -167,9 +167,9 @@
     glob "^11.0.0"
 
 "@fastify/swagger-ui@^5.0.1":
-  version "5.0.1"
-  resolved "https://registry.npmjs.org/@fastify/swagger-ui/-/swagger-ui-5.0.1.tgz"
-  integrity sha512-nCDV5l0OTziK8nIeHaLZ30ENFFftZ4Pcs7GHDcqOO6Jp3qSnyOsqBg1/EosM+d1mrCvH4vSlM09xolkjrbuJQQ==
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@fastify/swagger-ui/-/swagger-ui-5.1.0.tgz#d739777147d3ba5debad14e0170c4f4f2b198c8b"
+  integrity sha512-XWb+zWz0vlP4QIXbF2xo/n9XuOjNF5aRdQ+0AiBXY9nlIuoTYU1ZXCkXNStdnM/sOdnDy8Q1vsxZ2RsN7XivQA==
   dependencies:
     "@fastify/static" "^8.0.0"
     fastify-plugin "^5.0.0"
