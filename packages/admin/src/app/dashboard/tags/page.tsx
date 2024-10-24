@@ -1,16 +1,9 @@
-"use client";
 import Button from "./../../ui/components/button";
-import fetcher from "../../api/fetcher";
-import useSWR from "swr";
 import TagItem from "./tagItem";
 
-const Tags = () => {
-  const { data, error, isLoading } = useSWR(
-    "http://localhost:8080/tags",
-    fetcher
-  );
-
-  console.log(data, error, isLoading);
+const Tags = async () => {
+  const data = await fetch("http://localhost:8080/tags");
+  const tags = await data.json();
 
   return (
     <>
@@ -26,7 +19,7 @@ const Tags = () => {
         </div>
       </div>
       <div className="self-stretch p-2.5 flex-col justify-start items-start gap-2.5 inline-flex">
-        {data?.map((tag: { uuid: string; name: string }) => (
+        {tags?.map((tag: { uuid: string; name: string }) => (
           <TagItem key={tag.uuid} label={tag.name} />
         ))}
       </div>

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
+  --background: linear-gradient(180deg, #94CED0 0%, #BFEAEC 100%);
   --foreground: #171717;
   --main-text-color: #0F2969;
   --main-color: #94CED0;
@@ -13,7 +13,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: linear-gradient(180deg, #472E73 0%, #23257B 39.74%, #642512 82.81%, #803E05 100%);
     --foreground: #ededed;
     --main-text-color: #ffffff;
     --main-color: #94CED0;
