@@ -1,19 +1,14 @@
-"use client";
-import fetcher from "../../api/fetcher";
-import useSWR from "swr";
+import Button from "@/app/ui/components/button";
 
-const Questions = () => {
-  const { data, error, isLoading } = useSWR(
-    "http://localhost:8080/questions",
-    fetcher
-  );
-
-  console.log(data, error, isLoading);
-
+const Questions = async () => {
   return (
-    <div>
-      <h1>Questions</h1>
-    </div>
+    <>
+      <div className="self-stretch px-[35px] py-[30px] justify-between items-center inline-flex">
+        <h1 className="text-[40px] font-bold">Questions</h1>
+        <Button label="Ajouter" />
+      </div>
+      <div className="self-stretch p-2.5 flex-col justify-start items-start gap-2.5 inline-flex"></div>
+    </>
   );
 };
 
