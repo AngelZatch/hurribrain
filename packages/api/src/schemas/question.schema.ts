@@ -40,7 +40,7 @@ export const GetQuestionReplySchema = QuestionResponseSchema
 export type GetQuestionReply = Static<typeof GetQuestionReplySchema>
 
 // POST
-export const PostQuestionBodySchema = Type.Object({
+export const CreateQuestionSchema = Type.Object({
   title: Type.String({
     description: "The title of the question",
     examples: ["What is the capital of France?"],
@@ -55,5 +55,5 @@ export const PostQuestionBodySchema = Type.Object({
   ),
 })
 
-export type PostQuestionBody = Static<typeof PostQuestionBodySchema>
+export type PostQuestionBody = Static<typeof CreateQuestionSchema>
 export type PostQuestionReply = Static<typeof QuestionResponseSchema>

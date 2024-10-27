@@ -5,12 +5,12 @@ const SideNav = () => {
     <div className="flex h-full items-center bg-[#0000004D]">
       <div className="flex flex-col gap-2 items-start justify-center">
         <div className="flex flex-col justify-center align-center">
-          <Link key="Questions" href="/dashboard/questions">
+          <Link key="Questions" href="/questions">
             <p>Questions</p>
           </Link>
         </div>
         <div className="flex flex-col justify-center align-center">
-          <Link key="Tags" href="/dashboard/tags">
+          <Link key="Tags" href="/tags">
             <p>Tags</p>
           </Link>
         </div>

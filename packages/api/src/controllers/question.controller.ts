@@ -5,7 +5,7 @@ import {
   GetQuestionsReply,
   GetQuestionsReplySchema,
   PostQuestionBody,
-  PostQuestionBodySchema,
+  CreateQuestionSchema,
   PostQuestionReply,
   QuestionParams,
   QuestionParamsSchema,
@@ -95,7 +95,7 @@ const QuestionController = async (fastify: FastifyInstance) => {
         tags: ["Questions"],
         summary: "Creates a new question",
         params: {},
-        body: PostQuestionBodySchema,
+        body: CreateQuestionSchema,
         response: {
           201: QuestionResponseSchema,
           ...ErrorResponsesSchema,
