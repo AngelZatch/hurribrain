@@ -4,7 +4,7 @@ import createTag from "@/app/tags/actions";
 const NewTag = () => {
   return (
     <div className="w-[500px] h-[500px] bg-white/20 rounded-[10px] flex-col justify-center items-center gap-[15px] inline-flex">
-      <span className="text-[40px] font-bold">Dialog</span>
+      <span className="text-[40px] font-bold">Créer un Thème</span>
       <form
         action={async (formData) => {
           await createTag(formData);
