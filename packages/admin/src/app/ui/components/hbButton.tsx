@@ -1,20 +1,43 @@
 import { Button } from "@headlessui/react";
-interface ButtonProps {
+import { ButtonHTMLAttributes } from "react";
+import clsx from "clsx";
+
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   label?: string;
-  variant?: "primary" | "secondary" | "error";
+  color?: "primary" | "secondary" | "error";
+  size?: "small" | "medium" | "large";
+  variant?: "contained" | "outline" | "text";
   onClick?: () => void;
 }
 
-const HBButton = ({ label, onClick }: ButtonProps) => {
+const HBButton = ({
+  label,
+  color = "primary",
+  size = "large",
+  variant = "contained",
+  onClick,
+  ...props
+}: ButtonProps) => {
   return (
     <Button
-      type="button"
-      className="h-14 p-4 rounded-[10px] justify-center items-center gap-2.5 inline-flex bg-[--main-color]"
+      className={clsx(
+        "rounded-[10px] justify-center items-center gap-2.5 inline-flex",
+        variant === "contained" && "bg-[--main-color]",
+        size === "large" && "h-14 p-4",
+        size === "medium" && "h-9 px-3 py-1.5 min-w-[120px] min-h-[36px]",
+        size === "small" && "h-7 px-[12px] py-[4px]"
+      )}
       onClick={onClick}
+      {...props}
     >
-      <div className="grow shrink basis-0 text-center text-black text-base font-semibold tracking-wide">
+      <span
+        className={clsx(
+          "grow shrink basis-0 text-center text-black text-base font-semibold tracking-wide",
+          size === "small" && "text-[12px]"
+        )}
+      >
         {label}
-      </div>
+      </span>
     </Button>
   );
 };
