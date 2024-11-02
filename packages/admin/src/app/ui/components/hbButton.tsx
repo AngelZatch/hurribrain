@@ -22,10 +22,15 @@ const HBButton = ({
     <Button
       className={clsx(
         "rounded-[10px] justify-center items-center gap-2.5 inline-flex",
-        variant === "contained" && "bg-[--main-color]",
+        variant === "contained" && color === "primary" && "bg-[--main-color]",
+        variant === "contained" &&
+          color === "secondary" &&
+          "bg-[--secondary-color]",
+        variant === "contained" && color === "error" && "bg-red-500",
         size === "large" && "h-14 p-4",
         size === "medium" && "h-9 px-3 py-1.5 min-w-[120px] min-h-[36px]",
-        size === "small" && "h-7 px-[12px] py-[4px]"
+        size === "small" && "h-7 px-[12px] py-[4px]",
+        "text-inherit"
       )}
       onClick={onClick}
       {...props}

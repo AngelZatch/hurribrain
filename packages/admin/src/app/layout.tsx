@@ -3,6 +3,7 @@ import "./globals.css";
 
 import { Exo } from "next/font/google";
 import SideNav from "./ui/components/sidenav";
+import React from "react";
 
 export const exo = Exo({ subsets: ["latin"] });
 
@@ -13,8 +14,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  modal,
 }: Readonly<{
   children: React.ReactNode;
+  modal: React.ReactNode;
 }>) {
   return (
     <html lang="fr">
@@ -24,6 +27,7 @@ export default function RootLayout({
             <SideNav />
           </div>
           <div className="grow flex-col justify-start items-start gap-2.5 inline-flex">
+            {modal}
             {children}
           </div>
         </div>
