@@ -2,6 +2,8 @@
 import createTag from "@/app/tags/actions";
 import HBButton from "@/app/components/ui/hbButton";
 import { useRouter } from "next/navigation";
+import HBIconButton from "@/app/components/ui/hbIconButton";
+import { XMarkIcon } from "@heroicons/react/16/solid";
 
 const CreateTagForm = () => {
   const router = useRouter();
@@ -13,6 +15,7 @@ const CreateTagForm = () => {
     >
       <div className="h-[80px] px-2.5 py-5 w-full justify-between items-center inline-flex">
         <span className="text-[24px] font-bold">Créer un Thème</span>
+        <HBIconButton icon={<XMarkIcon />} onClick={() => router.back()} />
       </div>
       <div className="grow px-2.5 py-5 w-full flex-col justify-start items-start gap-5 inline-flex">
         <input type="text" name="name" placeholder="Name" />
