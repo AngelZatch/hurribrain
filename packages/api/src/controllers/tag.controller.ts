@@ -33,7 +33,13 @@ const TagController = async (fastify: fastify.FastifyInstance) => {
     async (request, reply) => {
       const em = request.em
 
-      const tags = await em.find(Tag, {})
+      const tags = await em.find(
+        Tag,
+        {},
+        {
+          orderBy: { updatedAt: "DESC" },
+        }
+      )
 
       return reply.code(200).send(tags)
     }

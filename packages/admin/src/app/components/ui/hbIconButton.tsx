@@ -11,8 +11,7 @@ const HBIconButton = ({ icon, onClick, ...props }: IconButtonProps) => {
   return (
     <Button
       className={clsx(
-        "w-[32px] h-[32px] rounded-[100px] p-[4px] justify-center items-center gap-2.5 inline-flex",
-        "bg-[--main-color]"
+        "w-[32px] h-[32px] rounded-[100px] p-[4px] inline-flex justify-center items-center bg-[--main-color]"
       )}
       onClick={onClick}
       {...props}

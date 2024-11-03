@@ -6,7 +6,7 @@ import HBIconButton from "@/app/components/ui/hbIconButton";
 import { XMarkIcon } from "@heroicons/react/16/solid";
 import HBInput from "@/app/components/ui/hbInput";
 
-const CreateTagForm = () => {
+const UpdateTagForm = () => {
   const router = useRouter();
 
   return (
@@ -33,10 +33,10 @@ const CreateTagForm = () => {
           size="medium"
           onClick={() => router.back()}
         />
-        <HBButton label="Créer" type="submit" size="medium" />
+        <HBButton label="Sauvegarder" type="submit" size="medium" />
       </div>
     </form>
   );
 };
 
-export default CreateTagForm;
+export default UpdateTagForm;

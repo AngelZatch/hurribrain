@@ -17,7 +17,7 @@ const Tags = async () => {
         </Link>
       </div>
       <div className="w-full overflow-auto self-stretch p-2.5 flex-col justify-start items-start gap-2.5 inline-flex">
-        {tags?.map((tag: Tag) => <TagItem key={tag.uuid} label={tag.name} />)}
+        {tags?.map((tag: Tag) => <TagItem key={tag.uuid} {...tag} />)}
       </div>
     </>
   );
