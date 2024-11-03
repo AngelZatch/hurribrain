@@ -1,8 +1,11 @@
 "use client";
 import createTag from "@/app/tags/actions";
 import HBButton from "@/app/components/ui/hbButton";
+import { useRouter } from "next/navigation";
 
 const CreateTagForm = () => {
+  const router = useRouter();
+
   return (
     <form
       action={createTag}
@@ -21,6 +24,7 @@ const CreateTagForm = () => {
           color="secondary"
           variant="text"
           size="medium"
+          onClick={() => router.back()}
         />
         <HBButton label="Créer" type="submit" size="medium" />
       </div>
