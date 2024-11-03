@@ -1,6 +1,6 @@
 "use client";
 import createTag from "@/app/tags/actions";
-import HBButton from "@/app/ui/components/hbButton";
+import HBButton from "@/app/components/ui/hbButton";
 
 const CreateTagForm = () => {
   return (

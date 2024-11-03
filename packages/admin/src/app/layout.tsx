@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 import { Exo } from "next/font/google";
-import SideNav from "./ui/components/sidenav";
+import SideNav from "./components/sidenav";
 import React from "react";
 
 export const exo = Exo({ subsets: ["latin"] });

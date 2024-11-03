@@ -19,7 +19,7 @@ export function Modal({ children }: { children: React.ReactNode }) {
     router.back();
   }
 
-  return createPortal(
+  return (
     <Dialog
       open
       ref={dialogRef}
@@ -35,7 +35,6 @@ export function Modal({ children }: { children: React.ReactNode }) {
         <DialogPanel transition>{children}</DialogPanel>
       </div>
       <button onClick={onDismiss} className="close-button" />
-    </Dialog>,
-    document.getElementById("modal-root")!
+    </Dialog>
   );
 }
