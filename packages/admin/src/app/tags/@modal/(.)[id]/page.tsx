@@ -12,6 +12,14 @@ const UpdateTagPage = async ({ params }: UpdateTagPageProps) => {
   const { id } = params;
   const tag = await getTag(id);
 
+  if (!tag) {
+    return (
+      <Modal>
+        <span>Tag not found</span>
+      </Modal>
+    );
+  }
+
   return (
     <Modal>
       <TagForm tag={tag} />

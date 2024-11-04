@@ -6,9 +6,12 @@
   --background: linear-gradient(180deg, #94CED0 0%, #BFEAEC 100%);
   --foreground: #171717;
   --main-text-color: #0F2969;
+  --inherit-main-text-color: #0F2969;
   --main-color: #94CED0;
+  --error-color: #D36F6F;
   --white: #ffffff;
   --black: #000000;
+  --icon-button-background: #0000000A;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -16,9 +19,12 @@
     --background: linear-gradient(180deg, #472E73 0%, #23257B 39.74%, #642512 82.81%, #803E05 100%);
     --foreground: #ededed;
     --main-text-color: #ffffff;
+    --inherit-main-text-color: #0F2969;
     --main-color: #94CED0;
+    --error-color: #D36F6F;
     --white: #ffffff;
     --black: #000000;
+    --icon-button-background: #0000000A;
   }
 }
 
@@ -31,5 +37,9 @@ body {
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  .background-gradient {
+    background: var(--background);
   }
 }

@@ -50,7 +50,7 @@ const TagForm = ({ tag }: TagFormProps) => {
         <HBButton
           type="reset"
           label="Annuler"
-          color="secondary"
+          color="primary"
           variant="text"
           size="medium"
           onClick={() => router.back()}

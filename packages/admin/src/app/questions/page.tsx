@@ -5,7 +5,7 @@ import HBButton from "../components/ui/hbButton";
 const Questions = async () => {
   return (
     <>
-      <div className="self-stretch px-[35px] py-[30px] justify-between items-center inline-flex">
+      <div className="w-full px-[35px] py-[30px] justify-between items-center inline-flex">
         <h1 className="text-[40px] font-bold">Questions</h1>
         <Link href="/questions/create" className="button">
           <HBButton label="Ajouter" size="large" startIcon={<PlusIcon />} />

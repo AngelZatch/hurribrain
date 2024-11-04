@@ -20,7 +20,7 @@ export function Modal({ children }: { children: React.ReactNode }) {
       <DialogBackdrop className="fixed inset-0 bg-black/50 flex items-center justify-center">
         <DialogPanel
           transition
-          className="w-[500px] h-[500px] bg-[--main-color] rounded-[10px] flex-col justify-center items-center gap-[15px] inline-block align-middle"
+          className="w-[500px] h-[500px] background-gradient rounded-[10px] flex-col justify-center items-center gap-[15px] inline-block align-middle"
         >
           {children}
         </DialogPanel>
