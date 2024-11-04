@@ -12,7 +12,6 @@ type TagFormProps = {
 };
 
 const TagForm = ({ tag }: TagFormProps) => {
-  console.log(tag);
   const router = useRouter();
   const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

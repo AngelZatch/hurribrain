@@ -109,7 +109,7 @@ const TagController = async (fastify: fastify.FastifyInstance) => {
     Body: PutTagBody
     Reply: PutTagReply
   }>(
-    "/:tagId",
+    "/:uuid",
     {
       schema: {
         tags: ["Tags"],
