@@ -1,4 +1,6 @@
+"use server";
 import { CreateTagDto } from "@/app/types/tag";
+import { revalidatePath } from "next/cache";
 
 const createTag = async (formData: FormData): Promise<void> => {
   const rawFormData: CreateTagDto = {
@@ -12,6 +14,8 @@ const createTag = async (formData: FormData): Promise<void> => {
     },
     body: JSON.stringify(rawFormData),
   });
+
+  revalidatePath("/tags");
 }
 
 const updateTag = async (formData: FormData, uuid: string): Promise<void> => {
