@@ -1,6 +1,6 @@
 import { Static, Type } from "@sinclair/typebox"
 
-// Tag Schema
+// Tag Response Schema
 export const TagResponseSchema = Type.Object(
   {
     uuid: Type.String({ format: "uuid" }),
@@ -14,7 +14,19 @@ export const TagResponseSchema = Type.Object(
 )
 
 // GET Tags
-export type GetTagsReply = Static<typeof TagResponseSchema>
+export const TagParamsSchema = Type.Object(
+  {
+    uuid: Type.String({ format: "uuid" }),
+  },
+  {
+    $id: "GetTag",
+    description: "Get Tag entity",
+  }
+)
+
+export type GetTagParams = Static<typeof TagParamsSchema>
+export type GetTagReply = Static<typeof TagResponseSchema>
+export type GetTagsReply = Array<GetTagReply>
 
 // POST Tags
 export const CreateTagSchema = Type.Object(
@@ -30,3 +42,18 @@ export const CreateTagSchema = Type.Object(
 
 export type PostTagBody = Static<typeof CreateTagSchema>
 export type PostTagReply = Static<typeof TagResponseSchema>
+
+// PUT Tags
+export const UpdateTagSchema = Type.Object(
+  {
+    name: Type.Optional(Type.String()),
+    description: Type.Optional(Type.String()),
+  },
+  {
+    $id: "UpdateTag",
+    description: "Update Tag entity",
+  }
+)
+
+export type PutTagBody = Static<typeof UpdateTagSchema>
+export type PutTagReply = Static<typeof TagResponseSchema>

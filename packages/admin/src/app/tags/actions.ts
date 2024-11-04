@@ -30,6 +30,8 @@ const updateTag = async (formData: FormData, uuid: string): Promise<void> => {
     },
     body: JSON.stringify(rawFormData),
   });
+
+  revalidatePath("/tags");
 }
 
 export { createTag, updateTag };

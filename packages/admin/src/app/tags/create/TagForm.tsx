@@ -12,10 +12,11 @@ type TagFormProps = {
 };
 
 const TagForm = ({ tag }: TagFormProps) => {
+  console.log(tag);
   const router = useRouter();
   const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (tag !== undefined) {
+    if (tag) {
       await updateTag(new FormData(e.target as HTMLFormElement), tag.uuid!);
     } else {
       await createTag(new FormData(e.target as HTMLFormElement));
@@ -42,7 +43,7 @@ const TagForm = ({ tag }: TagFormProps) => {
             type="text"
             name="name"
             placeholder="Name"
-            value={tag?.name}
+            defaultValue={tag?.name}
           />
         </label>
       </div>
