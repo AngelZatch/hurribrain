@@ -1,6 +1,13 @@
 "use server";
-import { CreateTagDto } from "@/app/types/tag";
+import { CreateTagDto, Tag } from "@/app/types/tag";
 import { revalidatePath } from "next/cache";
+
+const getTag = async (uuid: string): Promise<Tag> => {
+  const data = await fetch(`http://localhost:8080/tags/${uuid}`);
+  const tag = await data.json();
+
+  return tag;
+}
 
 const createTag = async (formData: FormData): Promise<void> => {
   const rawFormData: CreateTagDto = {
@@ -34,4 +41,4 @@ const updateTag = async (formData: FormData, uuid: string): Promise<void> => {
   revalidatePath("/tags");
 }
 
-export { createTag, updateTag };
+export { getTag, createTag, updateTag };

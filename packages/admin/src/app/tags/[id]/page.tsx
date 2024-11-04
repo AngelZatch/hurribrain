@@ -1,3 +1,4 @@
+import { getTag } from "../actions";
 import TagForm from "../create/TagForm";
 import { Tag } from "@/app/types/tag";
 
@@ -9,11 +10,7 @@ type UpdateTagPageProps = {
 
 const UpdateTagPage = async ({ params }: UpdateTagPageProps) => {
   const { id } = params;
-
-  const data = await fetch(`http://localhost:8080/tags/${id}`);
-  const tag: Tag = await data.json();
-
-  console.log(tag);
+  const tag: Tag = await getTag(id);
 
   return (
     <div>
