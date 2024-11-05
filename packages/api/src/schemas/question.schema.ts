@@ -53,6 +53,20 @@ export const CreateQuestionSchema = Type.Object({
       description: "An optional asset",
     })
   ),
+  choices: Type.Array(
+    Type.Object({
+      value: Type.String({
+        description: "The value of the choice",
+        examples: ["Paris"],
+        minLength: 1,
+        maxLength: 255,
+      }),
+      isCorrect: Type.Boolean({
+        description:
+          "Whether the choice is correct or not. Only one choice may be correct.",
+      }),
+    })
+  ),
 })
 
 export type PostQuestionBody = Static<typeof CreateQuestionSchema>

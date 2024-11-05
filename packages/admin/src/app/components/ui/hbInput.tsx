@@ -1,7 +1,6 @@
 import { Input } from "@headlessui/react";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+type InputProps = React.InputHTMLAttributes<HTMLInputElement>;
 
 const HBInput = ({ ...props }: InputProps) => {
   return (

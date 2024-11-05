@@ -13,6 +13,7 @@ import {
 } from "./../schemas/question.schema.js"
 import { FastifyInstance } from "fastify"
 import { ErrorResponsesSchema } from "./../schemas/errors.schema.js"
+import { Choice } from "./../entities/choice.entity.js"
 
 const QuestionController = async (fastify: FastifyInstance) => {
   fastify.addSchema(QuestionResponseSchema)
@@ -105,7 +106,7 @@ const QuestionController = async (fastify: FastifyInstance) => {
     async (request, reply) => {
       const em = request.em
 
-      const { title, asset } = request.body
+      const { title, asset, choices } = request.body
 
       let targetAsset = null
       if (asset) {
@@ -120,7 +121,20 @@ const QuestionController = async (fastify: FastifyInstance) => {
         )
       }
 
+      // Create the question
       const question = new Question({ title, asset: targetAsset })
+
+      em.persist(question)
+
+      // Add the choices
+      const questionChoices = choices.map((choice) => {
+        return new Choice({
+          value: choice.value,
+          isCorrect: choice.isCorrect,
+        })
+      })
+
+      question.choices.add(questionChoices)
 
       await em.persistAndFlush(question)
 
