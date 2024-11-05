@@ -12,6 +12,8 @@
   --white: #ffffff;
   --black: #000000;
   --icon-button-background: #0000000A;
+  --input-background: #D9D9D966;
+  --placeholder-color: #ABABAB;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -41,5 +43,9 @@ body {
 
   .background-gradient {
     background: var(--background);
+  }
+
+  .radio-group-item {
+    width: calc(50% - 0.3125rem);
   }
 }

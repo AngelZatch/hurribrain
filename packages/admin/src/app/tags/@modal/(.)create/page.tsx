@@ -1,10 +1,10 @@
-import CreateTagForm from "@/app/tags/create/page";
 import { Modal } from "@/app/components/modal";
+import TagForm from "../../create/TagForm";
 
 const CreateTagPage = () => {
   return (
     <Modal>
-      <CreateTagForm />
+      <TagForm />
     </Modal>
   );
 };

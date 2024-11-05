@@ -1,8 +1,13 @@
 import { PlusIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
 import HBButton from "../components/ui/hbButton";
+import { QuestionResponseDto } from "../types/question";
+import QuestionItem from "./questionItem";
 
 const Questions = async () => {
+  const data = await fetch("http://localhost:8080/questions");
+  const questionResponseDto: QuestionResponseDto = await data.json();
+
   return (
     <>
       <div className="w-full px-[35px] py-[30px] justify-between items-center inline-flex">
@@ -11,7 +16,11 @@ const Questions = async () => {
           <HBButton label="Ajouter" size="large" startIcon={<PlusIcon />} />
         </Link>
       </div>
-      <div className="self-stretch p-2.5 flex-col justify-start items-start gap-2.5 inline-flex"></div>
+      <div className="w-full overflow-auto self-stretch p-2.5 flex-col justify-start items-start gap-2.5 inline-flex">
+        {questionResponseDto?.data?.map((question) => (
+          <QuestionItem key={question.uuid} {...question} />
+        ))}
+      </div>
     </>
   );
 };

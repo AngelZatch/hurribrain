@@ -10,3 +10,8 @@ export class CreateQuestionDto {
   tags: Array<Tag>;
   choices: Array<Choice>;
 }
+
+export class QuestionResponseDto {
+  data: Array<Question>;
+  nextCursor: number;
+}

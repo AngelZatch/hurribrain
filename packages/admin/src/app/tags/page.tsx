@@ -6,7 +6,7 @@ import HBButton from "../components/ui/hbButton";
 
 const Tags = async () => {
   const data = await fetch("http://localhost:8080/tags");
-  const tags = await data.json();
+  const tags: Array<Tag> = await data.json();
 
   return (
     <>
@@ -17,7 +17,7 @@ const Tags = async () => {
         </Link>
       </div>
       <div className="w-full overflow-auto self-stretch p-2.5 flex-col justify-start items-start gap-2.5 inline-flex">
-        {tags?.map((tag: Tag) => <TagItem key={tag.uuid} {...tag} />)}
+        {tags?.map((tag) => <TagItem key={tag.uuid} {...tag} />)}
       </div>
     </>
   );
