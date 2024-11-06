@@ -1,5 +1,6 @@
 import { Static, Type } from "@sinclair/typebox"
 import { ChoiceSchema } from "./choice.schema.js"
+import { Nullable } from "./common.schema.js"
 
 // Question Schema
 export const QuestionResponseSchema = Type.Object(
@@ -14,7 +15,7 @@ export const QuestionResponseSchema = Type.Object(
     // asset: Nullable(Type.Ref(AssetResponseSchema)),
     // correctAnswers: Type.Optional(Type.Integer()),
     // incorrectAnswers: Type.Optional(Type.Integer()),
-    successRate: Type.Optional(Type.Number()),
+    successRate: Type.Optional(Nullable(Type.Number())),
     difficulty: Type.Optional(Type.String()),
   },
   {

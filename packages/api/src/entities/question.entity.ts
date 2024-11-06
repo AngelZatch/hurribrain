@@ -38,21 +38,20 @@ export class Question {
   incorrectAnswers: number = 0
 
   @Property({ persist: false })
-  get successRate(): number {
+  get successRate(): number | null {
     const totalAnswers = this.correctAnswers + this.incorrectAnswers
     if (totalAnswers === 0) {
-      return 0
+      return null
     }
     return (this.correctAnswers / totalAnswers) * 100
   }
 
   @Property({ persist: false })
   get difficulty(): string {
-    const totalAnswers = this.correctAnswers + this.incorrectAnswers
-    if (totalAnswers === 0) {
+    const rate = this.successRate
+    if (!rate) {
       return "unknown"
     }
-    const rate = this.successRate
     if (rate > 50) {
       return "easy"
     } else if (rate > 20) {

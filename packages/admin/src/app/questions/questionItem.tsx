@@ -1,6 +1,7 @@
 import React from "react";
 import { Question } from "../types/question";
 import clsx from "clsx";
+import DifficultyChip from "../components/ui/difficultyChip";
 
 const QuestionItem = (question: Question) => {
   console.log(question);
@@ -21,9 +22,10 @@ const QuestionItem = (question: Question) => {
           ))}
         </div>
       </div>
-      <div className="capitalize">
-        {question?.difficulty} ({question?.successRate}%)
-      </div>
+      <DifficultyChip
+        successRate={question.successRate!}
+        difficulty={question.difficulty}
+      />
     </div>
   );
 };

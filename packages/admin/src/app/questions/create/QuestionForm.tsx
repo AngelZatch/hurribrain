@@ -4,10 +4,9 @@ import HBIconButton from "@/app/components/ui/hbIconButton";
 import HBInput from "@/app/components/ui/hbInput";
 import { Choice } from "@/app/types/choice";
 import { Question } from "@/app/types/question";
-import { Field, Radio, RadioGroup } from "@headlessui/react";
+import { Field } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/16/solid";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { createQuestion } from "../actions";
 
 type QuestionFormProps = {
@@ -43,9 +42,6 @@ const QuestionForm = ({ question }: QuestionFormProps) => {
     },
   ];
 
-  // TODO: Get the correct choice if the question already exists
-  const [selected, setSelected] = useState(choices[0]);
-
   return (
     <form
       onSubmit={submitForm}
@@ -68,24 +64,13 @@ const QuestionForm = ({ question }: QuestionFormProps) => {
           />
         </label>
         <label className="w-full flex flex-col text-[16px] font-semibold">
-          Choix
-          <RadioGroup
-            name="correct-choice"
-            value={selected}
-            onChange={setSelected}
-            className="inline-flex flex-wrap gap-2.5"
-          >
+          Choix (le premier choix est le bon)
+          <div className="inline-flex flex-wrap gap-2.5">
             {choices.map((choice, index) => (
               <Field
                 key={`choice-${index}`}
                 className="inline-flex justify-start items-center gap-2 radio-group-item"
               >
-                <Radio
-                  value={`choice-${index}`}
-                  className="group flex grow shrink-0 size-5 items-center justify-center rounded-full border-[3px] border-[--main-text-color] data-[checked]:border-[--main-color]"
-                >
-                  <span className="size-[10px] rounded-full bg-[--main-color] invisible group-data-[checked]:visible" />
-                </Radio>
                 <HBInput
                   type="text"
                   name={`choice-${index}`}
@@ -97,7 +82,7 @@ const QuestionForm = ({ question }: QuestionFormProps) => {
                 />
               </Field>
             ))}
-          </RadioGroup>
+          </div>
         </label>
       </div>
       <div className="h-[76px] px-2.5 py-5 w-full justify-end items-center gap-2.5 inline-flex">

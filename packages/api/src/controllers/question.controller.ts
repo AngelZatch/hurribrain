@@ -42,7 +42,6 @@ const QuestionController = async (fastify: FastifyInstance) => {
           "choices.value",
           "choices.isCorrect",
         ],
-        populate: ["choices"],
         filters: { notDeleted: true },
         refresh: true,
       })

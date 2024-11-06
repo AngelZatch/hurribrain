@@ -13,19 +13,19 @@ const createQuestion = async (formData: FormData) => {
   const choices = [
     {
       value: formData.get("choice-0") as string,
-      isCorrect: formData.get("correct-choice") === "choice-0",
+      isCorrect: true,
     },
     {
       value: formData.get("choice-1") as string,
-      isCorrect: formData.get("correct-choice") === "choice-1",
+      isCorrect: false,
     },
     {
       value: formData.get("choice-2") as string,
-      isCorrect: formData.get("correct-choice") === "choice-2",
+      isCorrect: false,
     },
     {
       value: formData.get("choice-3") as string,
-      isCorrect: formData.get("correct-choice") === "choice-3",
+      isCorrect: false,
     },
   ]
 
