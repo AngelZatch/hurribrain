@@ -1,4 +1,5 @@
 import { Static, Type } from "@sinclair/typebox"
+import { ChoiceSchema } from "./choice.schema.js"
 
 // Question Schema
 export const QuestionResponseSchema = Type.Object(
@@ -9,10 +10,12 @@ export const QuestionResponseSchema = Type.Object(
       examples: ["What is the capital of France?"],
     }),
     // tags: Type.Array(Type.Ref(TagResponseSchema)),
-    // choices: Type.Array(Type.Ref(ChoiceSchema)),
+    choices: Type.Array(ChoiceSchema),
     // asset: Nullable(Type.Ref(AssetResponseSchema)),
-    correctAnswers: Type.Number(),
-    incorrectAnswers: Type.Number(),
+    // correctAnswers: Type.Optional(Type.Integer()),
+    // incorrectAnswers: Type.Optional(Type.Integer()),
+    successRate: Type.Optional(Type.Number()),
+    difficulty: Type.Optional(Type.String()),
   },
   {
     $id: "Question",
@@ -30,9 +33,10 @@ export type QuestionParams = Static<typeof QuestionParamsSchema>
 // GET
 // Get all questions
 export const GetQuestionsReplySchema = Type.Object({
-  data: Type.Array(Type.Ref(QuestionResponseSchema)),
+  data: Type.Array(QuestionResponseSchema),
   nextCursor: Type.Optional(Type.Integer()),
 })
+// TODO: Validation does not work with those
 export type GetQuestionsReply = Static<typeof GetQuestionsReplySchema>
 
 // Get one question by id

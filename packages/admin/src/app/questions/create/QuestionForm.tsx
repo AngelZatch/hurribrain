@@ -8,6 +8,7 @@ import { Field, Radio, RadioGroup } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/16/solid";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { createQuestion } from "../actions";
 
 type QuestionFormProps = {
   question?: Question;
@@ -18,31 +19,27 @@ const QuestionForm = ({ question }: QuestionFormProps) => {
   const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log(new FormData(e.target as HTMLFormElement));
+    await createQuestion(new FormData(e.target as HTMLFormElement));
 
     // router.back();
   };
 
-  const choices: Array<Choice> = question?.choices || [
+  const choices: Array<Choice> = [
     {
-      uuid: "1",
-      value: "",
-      isCorrect: false,
+      value: question?.choices[0].value || "",
+      isCorrect: question?.choices[0].isCorrect || false,
     },
     {
-      uuid: "2",
-      value: "",
-      isCorrect: false,
+      value: question?.choices[1].value || "",
+      isCorrect: question?.choices[1].isCorrect || false,
     },
     {
-      uuid: "3",
-      value: "",
-      isCorrect: false,
+      value: question?.choices[2].value || "",
+      isCorrect: question?.choices[2].value || "",
     },
     {
-      uuid: "4",
-      value: "",
-      isCorrect: false,
+      value: question?.choices[3].value || "",
+      isCorrect: question?.choices[3].value || "",
     },
   ];
 
@@ -78,20 +75,20 @@ const QuestionForm = ({ question }: QuestionFormProps) => {
             onChange={setSelected}
             className="inline-flex flex-wrap gap-2.5"
           >
-            {choices.map((choice) => (
+            {choices.map((choice, index) => (
               <Field
-                key={choice.uuid}
+                key={`choice-${index}`}
                 className="inline-flex justify-start items-center gap-2 radio-group-item"
               >
                 <Radio
-                  value={choice.uuid}
-                  className="group flex grow shrink-0 size-5 items-center justify-center rounded-full border-[3px] data-[checked]:border-[--main-color]"
+                  value={`choice-${index}`}
+                  className="group flex grow shrink-0 size-5 items-center justify-center rounded-full border-[3px] border-[--main-text-color] data-[checked]:border-[--main-color]"
                 >
                   <span className="size-[10px] rounded-full bg-[--main-color] invisible group-data-[checked]:visible" />
                 </Radio>
                 <HBInput
                   type="text"
-                  name={choice.uuid}
+                  name={`choice-${index}`}
                   placeholder="Type here"
                   defaultValue={choice.value}
                   onKeyDown={(e) =>

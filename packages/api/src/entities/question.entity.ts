@@ -37,6 +37,33 @@ export class Question {
   @Property()
   incorrectAnswers: number = 0
 
+  @Property({ persist: false })
+  get successRate(): number {
+    const totalAnswers = this.correctAnswers + this.incorrectAnswers
+    if (totalAnswers === 0) {
+      return 0
+    }
+    return (this.correctAnswers / totalAnswers) * 100
+  }
+
+  @Property({ persist: false })
+  get difficulty(): string {
+    const totalAnswers = this.correctAnswers + this.incorrectAnswers
+    if (totalAnswers === 0) {
+      return "unknown"
+    }
+    const rate = this.successRate
+    if (rate > 50) {
+      return "easy"
+    } else if (rate > 20) {
+      return "medium"
+    } else if (rate > 1) {
+      return "hard"
+    } else {
+      return "expert"
+    }
+  }
+
   @Property()
   createdAt: Date = new Date()
 

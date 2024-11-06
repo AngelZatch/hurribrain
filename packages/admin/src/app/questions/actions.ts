@@ -9,11 +9,33 @@ const getQuestion = async (uuid: string): Promise<Question> => {
 }
 
 const createQuestion = async (formData: FormData) => { 
+  const title = formData.get("title") as string;
+  const choices = [
+    {
+      value: formData.get("choice-0") as string,
+      isCorrect: formData.get("correct-choice") === "choice-0",
+    },
+    {
+      value: formData.get("choice-1") as string,
+      isCorrect: formData.get("correct-choice") === "choice-1",
+    },
+    {
+      value: formData.get("choice-2") as string,
+      isCorrect: formData.get("correct-choice") === "choice-2",
+    },
+    {
+      value: formData.get("choice-3") as string,
+      isCorrect: formData.get("correct-choice") === "choice-3",
+    },
+  ]
+
   const rawFormData: CreateQuestionDto = {
-    title: formData.get("title") as string,
-    tags: JSON.parse(formData.get("tags") as string),
-    choices: JSON.parse(formData.get("choices") as string),
+    title,
+    // tags: [],
+    choices,
   };
+
+  console.log(rawFormData)
 
   await fetch("http://localhost:8080/questions", {
     method: "POST",

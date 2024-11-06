@@ -8,6 +8,8 @@ const Questions = async () => {
   const data = await fetch("http://localhost:8080/questions");
   const questionResponseDto: QuestionResponseDto = await data.json();
 
+  console.log(questionResponseDto);
+
   return (
     <>
       <div className="w-full px-[35px] py-[30px] justify-between items-center inline-flex">

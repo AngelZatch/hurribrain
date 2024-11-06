@@ -1,15 +1,12 @@
 import { Asset } from "./../entities/asset.entity.js"
 import { Question } from "./../entities/question.entity.js"
 import {
-  GetQuestionReply,
-  GetQuestionsReply,
-  GetQuestionsReplySchema,
   PostQuestionBody,
   CreateQuestionSchema,
-  PostQuestionReply,
   QuestionParams,
   QuestionParamsSchema,
   QuestionResponseSchema,
+  GetQuestionsReplySchema,
 } from "./../schemas/question.schema.js"
 import { FastifyInstance } from "fastify"
 import { ErrorResponsesSchema } from "./../schemas/errors.schema.js"
@@ -18,15 +15,12 @@ import { Choice } from "./../entities/choice.entity.js"
 const QuestionController = async (fastify: FastifyInstance) => {
   fastify.addSchema(QuestionResponseSchema)
 
-  fastify.get<{
-    Reply: GetQuestionsReply
-  }>(
+  fastify.get(
     "/",
     {
       schema: {
         tags: ["Questions"],
         summary: "Returns the list of all available questions",
-        params: {},
         response: {
           200: GetQuestionsReplySchema,
           ...ErrorResponsesSchema,
@@ -36,14 +30,24 @@ const QuestionController = async (fastify: FastifyInstance) => {
     async (request, reply) => {
       const em = request.em
 
-      const questions = await em.find(
-        Question,
-        {},
-        {
-          populate: ["tags", "choices"],
-          filters: { notDeleted: true },
-        }
-      )
+      const questions = await em.findAll(Question, {
+        fields: [
+          "uuid",
+          "title",
+          "correctAnswers",
+          "incorrectAnswers",
+          "successRate",
+          "difficulty",
+          "choices.uuid",
+          "choices.value",
+          "choices.isCorrect",
+        ],
+        populate: ["choices"],
+        filters: { notDeleted: true },
+        refresh: true,
+      })
+
+      console.log(questions)
 
       return reply.code(200).send({
         data: questions,
@@ -54,7 +58,6 @@ const QuestionController = async (fastify: FastifyInstance) => {
 
   fastify.get<{
     Params: QuestionParams
-    Reply: GetQuestionReply
   }>(
     "/:questionId",
     {
@@ -77,8 +80,8 @@ const QuestionController = async (fastify: FastifyInstance) => {
           uuid: request.params.questionId,
         },
         {
-          populate: ["*"],
-          populateWhere: { tags: { deletedAt: null } },
+          populate: ["choices"],
+          filters: { notDeleted: true },
         }
       )
 
@@ -88,14 +91,12 @@ const QuestionController = async (fastify: FastifyInstance) => {
 
   fastify.post<{
     Body: PostQuestionBody
-    Reply: PostQuestionReply
   }>(
     "/",
     {
       schema: {
         tags: ["Questions"],
         summary: "Creates a new question",
-        params: {},
         body: CreateQuestionSchema,
         response: {
           201: QuestionResponseSchema,
@@ -148,6 +149,8 @@ const QuestionController = async (fastify: FastifyInstance) => {
           populateWhere: { tags: { deletedAt: null } },
         }
       )
+
+      console.log(createdQuestion)
 
       return reply.code(201).send(createdQuestion)
     }
