@@ -149,9 +149,56 @@ const QuestionController = async (fastify: FastifyInstance) => {
         }
       )
 
-      console.log(createdQuestion)
-
       return reply.code(201).send(createdQuestion)
+    }
+  )
+
+  // TODO: If the question is being used in an ongoing game, it should not be editable
+  fastify.put<{
+    Params: QuestionParams
+    Body: PostQuestionBody
+  }>(
+    "/:questionId",
+    {
+      schema: {
+        tags: ["Questions"],
+        summary: "Creates a new question",
+        params: QuestionParamsSchema,
+        body: CreateQuestionSchema,
+        response: {
+          200: QuestionResponseSchema,
+          ...ErrorResponsesSchema,
+        },
+      },
+    },
+    async (request, reply) => {
+      const em = request.em
+
+      const { title, choices } = request.body
+
+      const question = await em.findOneOrFail(Question, {
+        uuid: request.params.questionId,
+      })
+
+      question.title = title
+      // Updating a question resets its success rate and removes the choices
+      question.correctAnswers = 0
+      question.incorrectAnswers = 0
+      question.choices.removeAll()
+
+      // Add the new choices
+      const questionChoices = choices.map((choice) => {
+        return new Choice({
+          value: choice.value,
+          isCorrect: choice.isCorrect,
+        })
+      })
+
+      question.choices.add(questionChoices)
+
+      await em.persistAndFlush(question)
+
+      return reply.code(200).send(question)
     }
   )
 }

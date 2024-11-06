@@ -1,3 +1,4 @@
+"use server"
 import { revalidatePath } from "next/cache";
 import { CreateQuestionDto, Question } from "../types/question"
 
@@ -35,8 +36,6 @@ const createQuestion = async (formData: FormData) => {
     choices,
   };
 
-  console.log(rawFormData)
-
   await fetch("http://localhost:8080/questions", {
     method: "POST",
     headers: {
@@ -48,4 +47,42 @@ const createQuestion = async (formData: FormData) => {
   revalidatePath("/questions");
 }
 
-export { getQuestion, createQuestion };
+const updateQuestion = async (formData: FormData, uuid: string): Promise<void> => {
+  const title = formData.get("title") as string;
+  const choices = [
+    {
+      value: formData.get("choice-0") as string,
+      isCorrect: true,
+    },
+    {
+      value: formData.get("choice-1") as string,
+      isCorrect: false,
+    },
+    {
+      value: formData.get("choice-2") as string,
+      isCorrect: false,
+    },
+    {
+      value: formData.get("choice-3") as string,
+      isCorrect: false,
+    },
+  ]
+
+  const rawFormData: CreateQuestionDto = {
+    title,
+    // tags: [],
+    choices,
+  };
+
+  await fetch(`http://localhost:8080/questions/${uuid}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(rawFormData),
+  });
+
+  revalidatePath("/questions");
+}
+
+export { getQuestion, createQuestion, updateQuestion };

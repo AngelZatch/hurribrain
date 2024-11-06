@@ -7,7 +7,7 @@ import { Question } from "@/app/types/question";
 import { Field } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/16/solid";
 import { useRouter } from "next/navigation";
-import { createQuestion } from "../actions";
+import { createQuestion, updateQuestion } from "../actions";
 
 type QuestionFormProps = {
   question?: Question;
@@ -18,9 +18,16 @@ const QuestionForm = ({ question }: QuestionFormProps) => {
   const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    await createQuestion(new FormData(e.target as HTMLFormElement));
+    if (question) {
+      await updateQuestion(
+        new FormData(e.target as HTMLFormElement),
+        question.uuid!
+      );
+    } else {
+      await createQuestion(new FormData(e.target as HTMLFormElement));
+    }
 
-    // router.back();
+    router.back();
   };
 
   const choices: Array<Choice> = [

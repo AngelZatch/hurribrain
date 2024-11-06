@@ -2,6 +2,9 @@ import React from "react";
 import { Question } from "../types/question";
 import clsx from "clsx";
 import DifficultyChip from "../components/ui/difficultyChip";
+import Link from "next/link";
+import HBIconButton from "../components/ui/hbIconButton";
+import { PencilIcon } from "@heroicons/react/16/solid";
 
 const QuestionItem = (question: Question) => {
   console.log(question);
@@ -26,6 +29,9 @@ const QuestionItem = (question: Question) => {
         successRate={question.successRate!}
         difficulty={question.difficulty}
       />
+      <Link href={"/questions/" + question.uuid}>
+        <HBIconButton icon={<PencilIcon />} />
+      </Link>
     </div>
   );
 };

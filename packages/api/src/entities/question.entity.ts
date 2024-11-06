@@ -28,7 +28,9 @@ export class Question {
   @ManyToOne({ entity: () => Asset, nullable: true })
   asset: Asset | null
 
-  @OneToMany(() => Choice, (choice) => choice.question)
+  @OneToMany(() => Choice, (choice) => choice.question, {
+    orphanRemoval: true,
+  })
   choices = new Collection<Choice>(this)
 
   @Property()
