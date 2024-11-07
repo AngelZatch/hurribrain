@@ -1,12 +1,11 @@
-import { Tag } from "@/app/types/tag";
 import TagItem from "./tagItem";
 import Link from "next/link";
 import { PlusIcon } from "@heroicons/react/16/solid";
 import HBButton from "../components/ui/hbButton";
+import { getTags } from "./actions";
 
 const Tags = async () => {
-  const data = await fetch("http://localhost:8080/tags");
-  const tags: Array<Tag> = await data.json();
+  const tags = await getTags();
 
   return (
     <>
