@@ -1,7 +1,6 @@
-import { Question } from "@/app/types/question";
-import { getQuestion } from "../../actions";
-import QuestionForm from "../../create/QuestionForm";
 import { Modal } from "@/app/components/modal";
+import QuestionForm from "../../create/QuestionForm";
+import { getQuestion } from "../../actions";
 
 type UpdateQuestionPageProps = {
   params: {
@@ -11,7 +10,7 @@ type UpdateQuestionPageProps = {
 
 const UpdateQuestionPage = async ({ params }: UpdateQuestionPageProps) => {
   const { id } = params;
-  const question: Question = await getQuestion(id);
+  const question = await getQuestion(id);
 
   if (!question) {
     return (

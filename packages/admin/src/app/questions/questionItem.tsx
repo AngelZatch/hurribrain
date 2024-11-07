@@ -7,7 +7,6 @@ import HBIconButton from "../components/ui/hbIconButton";
 import { PencilIcon } from "@heroicons/react/16/solid";
 
 const QuestionItem = (question: Question) => {
-  console.log(question);
   return (
     <div className="min-h-[100px] h-[100px] self-stretch p-2.5 bg-white/20 rounded-[10px] justify-start items-center gap-[15px] inline-flex">
       <div className="self-stretch w-full flex-col justify-center items-start gap-2.5 inline-flex">
