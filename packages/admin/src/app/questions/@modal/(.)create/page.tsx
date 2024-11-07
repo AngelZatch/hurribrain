@@ -1,5 +1,5 @@
 import { Modal } from "@/app/components/modal";
-import QuestionForm from "../../create/QuestionForm";
+import QuestionForm from "../../QuestionForm";
 
 const CreateQuestionPage = () => {
   return (

@@ -7,7 +7,7 @@ import { Question } from "@/app/types/question";
 import { Field } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/16/solid";
 import { useRouter } from "next/navigation";
-import { createQuestion, updateQuestion } from "../actions";
+import { createQuestion, updateQuestion } from "./actions";
 
 type QuestionFormProps = {
   question?: Question;

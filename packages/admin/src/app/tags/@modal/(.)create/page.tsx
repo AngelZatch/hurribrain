@@ -1,5 +1,5 @@
 import { Modal } from "@/app/components/modal";
-import TagForm from "../../create/TagForm";
+import TagForm from "../../TagForm";
 
 const CreateTagPage = () => {
   return (

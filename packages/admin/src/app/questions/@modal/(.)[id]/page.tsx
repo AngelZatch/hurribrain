@@ -1,6 +1,6 @@
 import { Modal } from "@/app/components/modal";
-import QuestionForm from "../../create/QuestionForm";
 import { getQuestion } from "../../actions";
+import QuestionForm from "../../QuestionForm";
 
 type UpdateQuestionPageProps = {
   params: {

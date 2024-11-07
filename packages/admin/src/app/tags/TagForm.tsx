@@ -4,7 +4,7 @@ import HBIconButton from "@/app/components/ui/hbIconButton";
 import HBInput from "@/app/components/ui/hbInput";
 import { XMarkIcon } from "@heroicons/react/16/solid";
 import { useRouter } from "next/navigation";
-import { createTag, updateTag } from "../actions";
+import { createTag, updateTag } from "./actions";
 import { Tag } from "@/app/types/tag";
 
 type TagFormProps = {
