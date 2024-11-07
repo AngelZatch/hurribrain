@@ -30,6 +30,7 @@ export class Question {
 
   @OneToMany(() => Choice, (choice) => choice.question, {
     orphanRemoval: true,
+    orderBy: { isCorrect: "DESC" },
   })
   choices = new Collection<Choice>(this)
 

@@ -46,8 +46,6 @@ const QuestionController = async (fastify: FastifyInstance) => {
         refresh: true,
       })
 
-      console.log(questions)
-
       return reply.code(200).send({
         data: questions,
         nextCursor: 50,
