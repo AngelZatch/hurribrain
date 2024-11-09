@@ -13,18 +13,48 @@ import {
 } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/16/solid";
 import { useRouter } from "next/navigation";
-import { createQuestion, updateQuestion } from "./actions";
+// import { createQuestion, updateQuestion } from "./actions";
 import { useEffect, useState } from "react";
 import { getTags } from "../tags/actions";
 import { Tag } from "../types/tag";
 import TagChip from "../components/ui/tagChip";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 type QuestionFormProps = {
   question?: Question;
 };
 
+type QuestionFormInputs = {
+  title: string;
+  "choices-0": string;
+  "choices-1": string;
+  "choices-2": string;
+  "choices-3": string;
+};
+
 const QuestionForm = ({ question }: QuestionFormProps) => {
   const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    // formState: { errors, isSubmitting, isValid },
+  } = useForm<QuestionFormInputs>();
+
+  const onSubmit: SubmitHandler<QuestionFormInputs> = (data) => {
+    console.log(data);
+
+    // if (question) {
+    //   await updateQuestion(
+    //     new FormData(e.target as HTMLFormElement),
+    //     question.uuid!
+    //   );
+    // } else {
+    //   await createQuestion(new FormData(e.target as HTMLFormElement));
+    // }
+
+    // router.back();
+  };
+
   const [tags, setTags] = useState<Array<Tag>>([]);
   const [selectedTags, setSelectedTags] = useState<Array<Tag>>([]);
   const [query, setQuery] = useState<string>("");
@@ -43,23 +73,6 @@ const QuestionForm = ({ question }: QuestionFormProps) => {
       : tags.filter((tag) =>
           tag.name.toLowerCase().includes(query.toLowerCase())
         );
-
-  const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    console.log(new FormData(e.target as HTMLFormElement));
-
-    // if (question) {
-    //   await updateQuestion(
-    //     new FormData(e.target as HTMLFormElement),
-    //     question.uuid!
-    //   );
-    // } else {
-    //   await createQuestion(new FormData(e.target as HTMLFormElement));
-    // }
-
-    // router.back();
-  };
 
   const choices: Array<Choice> = [
     {
@@ -82,7 +95,7 @@ const QuestionForm = ({ question }: QuestionFormProps) => {
 
   return (
     <form
-      onSubmit={submitForm}
+      onSubmit={handleSubmit(onSubmit)}
       className="w-full h-full bg-white/20 rounded-[10px] flex-col justify-center items-center gap-[15px] inline-flex"
     >
       <div className="h-[80px] px-2.5 py-5 w-full justify-between items-center inline-flex">
@@ -95,10 +108,11 @@ const QuestionForm = ({ question }: QuestionFormProps) => {
         <label className="w-full flex flex-col text-[16px] font-semibold">
           Intitulé
           <HBInput
+            {...register("title", { required: true })}
             type="text"
-            name="title"
             placeholder="Title"
             defaultValue={question?.title}
+            name="title"
           />
         </label>
         <label className="w-full flex flex-col text-[16px] font-semibold">
@@ -144,22 +158,58 @@ const QuestionForm = ({ question }: QuestionFormProps) => {
         <label className="w-full flex flex-col text-[16px] font-semibold">
           Choix (le premier choix est le bon)
           <div className="inline-flex flex-wrap gap-2.5">
-            {choices.map((choice, index) => (
-              <Field
-                key={`choice-${index}`}
-                className="inline-flex justify-start items-center gap-2 radio-group-item"
-              >
-                <HBInput
-                  type="text"
-                  name={`choice-${index}`}
-                  placeholder="Type here"
-                  defaultValue={choice.value}
-                  onKeyDown={(e) =>
-                    (e.key == " " || e.code == "Space") && e.stopPropagation()
-                  }
-                />
-              </Field>
-            ))}
+            <Field
+              key={`choices-0`}
+              className="inline-flex justify-start items-center gap-2 radio-group-item"
+            >
+              <HBInput
+                {...register(`choices-0`, {
+                  required: true,
+                })}
+                type="text"
+                placeholder="Type here"
+                defaultValue={choices[0].value}
+              />
+            </Field>
+            <Field
+              key={`choices-1`}
+              className="inline-flex justify-start items-center gap-2 radio-group-item"
+            >
+              <HBInput
+                {...register(`choices-1`, {
+                  required: true,
+                })}
+                type="text"
+                placeholder="Type here"
+                defaultValue={choices[1].value}
+              />
+            </Field>
+            <Field
+              key={`choices-2`}
+              className="inline-flex justify-start items-center gap-2 radio-group-item"
+            >
+              <HBInput
+                {...register(`choices-2`, {
+                  required: true,
+                })}
+                type="text"
+                placeholder="Type here"
+                defaultValue={choices[2].value}
+              />
+            </Field>
+            <Field
+              key={`choices-3`}
+              className="inline-flex justify-start items-center gap-2 radio-group-item"
+            >
+              <HBInput
+                {...register(`choices-3`, {
+                  required: true,
+                })}
+                type="text"
+                placeholder="Type here"
+                defaultValue={choices[3].value}
+              />
+            </Field>
           </div>
         </label>
       </div>
