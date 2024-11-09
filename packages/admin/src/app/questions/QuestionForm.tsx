@@ -2,7 +2,6 @@
 import HBButton from "@/app/components/ui/hbButton";
 import HBIconButton from "@/app/components/ui/hbIconButton";
 import HBInput from "@/app/components/ui/hbInput";
-import { Choice } from "@/app/types/choice";
 import { Question } from "@/app/types/question";
 import {
   Combobox,
@@ -18,27 +17,39 @@ import { useEffect, useState } from "react";
 import { getTags } from "../tags/actions";
 import { Tag } from "../types/tag";
 import TagChip from "../components/ui/tagChip";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Choice } from "../types/choice";
 
 type QuestionFormProps = {
   question?: Question;
 };
 
 type QuestionFormInputs = {
-  title: string;
-  "choices-0": string;
-  "choices-1": string;
-  "choices-2": string;
-  "choices-3": string;
+  title: Question["title"];
+  "choices-0": Choice["value"];
+  "choices-1": Choice["value"];
+  "choices-2": Choice["value"];
+  "choices-3": Choice["value"];
+  tags: Array<Tag>;
 };
 
 const QuestionForm = ({ question }: QuestionFormProps) => {
   const router = useRouter();
   const {
+    control,
     register,
     handleSubmit,
     // formState: { errors, isSubmitting, isValid },
-  } = useForm<QuestionFormInputs>();
+  } = useForm<QuestionFormInputs>({
+    defaultValues: {
+      title: question?.title || "",
+      "choices-0": question?.choices[0].value || "",
+      "choices-1": question?.choices[1].value || "",
+      "choices-2": question?.choices[2].value || "",
+      "choices-3": question?.choices[3].value || "",
+      tags: question?.tags || [],
+    },
+  });
 
   const onSubmit: SubmitHandler<QuestionFormInputs> = (data) => {
     console.log(data);
@@ -56,7 +67,6 @@ const QuestionForm = ({ question }: QuestionFormProps) => {
   };
 
   const [tags, setTags] = useState<Array<Tag>>([]);
-  const [selectedTags, setSelectedTags] = useState<Array<Tag>>([]);
   const [query, setQuery] = useState<string>("");
 
   useEffect(() => {
@@ -73,25 +83,6 @@ const QuestionForm = ({ question }: QuestionFormProps) => {
       : tags.filter((tag) =>
           tag.name.toLowerCase().includes(query.toLowerCase())
         );
-
-  const choices: Array<Choice> = [
-    {
-      value: question?.choices[0].value || "",
-      isCorrect: question?.choices[0].isCorrect || false,
-    },
-    {
-      value: question?.choices[1].value || "",
-      isCorrect: question?.choices[1].isCorrect || false,
-    },
-    {
-      value: question?.choices[2].value || "",
-      isCorrect: question?.choices[2].value || "",
-    },
-    {
-      value: question?.choices[3].value || "",
-      isCorrect: question?.choices[3].value || "",
-    },
-  ];
 
   return (
     <form
@@ -117,43 +108,51 @@ const QuestionForm = ({ question }: QuestionFormProps) => {
         </label>
         <label className="w-full flex flex-col text-[16px] font-semibold">
           Thèmes
-          <Combobox
-            immediate
-            multiple
-            value={selectedTags}
-            onChange={setSelectedTags}
-            onClose={() => setQuery("")}
+          <Controller
+            control={control}
             name="tags"
-          >
-            <div className="w-full min-h-[42px] flex flex-wrap px-[10px] gap-x-2 gap-y-1 rounded-[20px] border border-[--main-color] bg-[--input-background] text-[--text-color] placeholder-[--placeholder-color]">
-              {selectedTags.length > 0 && (
-                <div className="flex flex-wrap gap-2 py-2">
-                  {selectedTags.map((tag) => (
-                    <TagChip key={tag.uuid} label={tag.name} />
-                  ))}
+            render={({ field: { onChange, value, name, ref } }) => (
+              <Combobox
+                immediate
+                multiple
+                value={value}
+                onChange={onChange}
+                onClose={() => setQuery("")}
+                name={name}
+                ref={ref}
+                as="div"
+              >
+                <div className="w-full min-h-[42px] flex flex-wrap px-[10px] gap-x-2 gap-y-1 rounded-[20px] border border-[--main-color] bg-[--input-background] text-[--text-color] placeholder-[--placeholder-color]">
+                  {value.length > 0 && (
+                    <div className="flex flex-wrap gap-2 py-2">
+                      {value.map((tag) => (
+                        <TagChip key={tag.uuid} label={tag.name} />
+                      ))}
+                    </div>
+                  )}
+                  <ComboboxInput
+                    placeholder="Type here..."
+                    className="w-1/2 grow h-[42px] py-[10px] bg-transparent text-[--text-color] placeholder-[--placeholder-color] outline-none focus:outline-none active:outline-none"
+                    onChange={(event) => setQuery(event.target.value)}
+                  ></ComboboxInput>
                 </div>
-              )}
-              <ComboboxInput
-                placeholder="Type here..."
-                className="w-1/2 grow h-[42px] py-[10px] bg-transparent text-[--text-color] placeholder-[--placeholder-color] outline-none focus:outline-none active:outline-none"
-                onChange={(event) => setQuery(event.target.value)}
-              ></ComboboxInput>
-            </div>
-            <ComboboxOptions
-              className="border border-[--main-color] border-2 bg-[--white] empty:invisible flex flex-col gap-2 p-3 rounded-[20px] w-[var(--input-width)] h-[250px] overflow-auto"
-              anchor={{ to: "bottom start", gap: "10px" }}
-            >
-              {filteredTags.map((tag) => (
-                <ComboboxOption
-                  key={tag.uuid}
-                  value={tag}
-                  className="text-[--inherit-main-text-color] font-semibold capitalize data-[focus]:bg-[--main-color] p-2.5 rounded-[10px]"
+                <ComboboxOptions
+                  className="border border-[--main-color] border-2 bg-[--white] empty:invisible flex flex-col gap-2 p-3 rounded-[20px] w-[var(--input-width)] h-[250px] overflow-auto"
+                  anchor={{ to: "bottom start", gap: "10px" }}
                 >
-                  {tag.name}
-                </ComboboxOption>
-              ))}
-            </ComboboxOptions>
-          </Combobox>
+                  {filteredTags.map((tag) => (
+                    <ComboboxOption
+                      key={tag.uuid}
+                      value={tag}
+                      className="text-[--inherit-main-text-color] font-semibold capitalize data-[focus]:bg-[--main-color] p-2.5 rounded-[10px]"
+                    >
+                      {tag.name}
+                    </ComboboxOption>
+                  ))}
+                </ComboboxOptions>
+              </Combobox>
+            )}
+          />
         </label>
         <label className="w-full flex flex-col text-[16px] font-semibold">
           Choix (le premier choix est le bon)
@@ -168,7 +167,6 @@ const QuestionForm = ({ question }: QuestionFormProps) => {
                 })}
                 type="text"
                 placeholder="Type here"
-                defaultValue={choices[0].value}
               />
             </Field>
             <Field
@@ -181,7 +179,6 @@ const QuestionForm = ({ question }: QuestionFormProps) => {
                 })}
                 type="text"
                 placeholder="Type here"
-                defaultValue={choices[1].value}
               />
             </Field>
             <Field
@@ -194,7 +191,6 @@ const QuestionForm = ({ question }: QuestionFormProps) => {
                 })}
                 type="text"
                 placeholder="Type here"
-                defaultValue={choices[2].value}
               />
             </Field>
             <Field
@@ -207,7 +203,6 @@ const QuestionForm = ({ question }: QuestionFormProps) => {
                 })}
                 type="text"
                 placeholder="Type here"
-                defaultValue={choices[3].value}
               />
             </Field>
           </div>
