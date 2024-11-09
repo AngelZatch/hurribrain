@@ -5,11 +5,12 @@ import DifficultyChip from "../components/ui/difficultyChip";
 import Link from "next/link";
 import HBIconButton from "../components/ui/hbIconButton";
 import { PencilIcon } from "@heroicons/react/16/solid";
+import TagChip from "../components/ui/tagChip";
 
 const QuestionItem = (question: Question) => {
   return (
     <div className="min-h-[100px] h-[100px] self-stretch p-2.5 bg-white/20 rounded-[10px] justify-start items-center gap-[15px] inline-flex">
-      <div className="self-stretch w-full flex-col justify-center items-start gap-2.5 inline-flex">
+      <div className="self-stretch grow flex-col justify-center items-start gap-2.5 inline-flex">
         <span className="font-semibold">{question.title}</span>
         <div>
           {question.choices.map((choice, index) => (
@@ -23,6 +24,11 @@ const QuestionItem = (question: Question) => {
             </React.Fragment>
           ))}
         </div>
+      </div>
+      <div className="flex w-1/3 justify-start items-center gap-2 inline-flex flex-wrap">
+        {question.tags.map((tag) => (
+          <TagChip key={tag.uuid} label={tag.name} />
+        ))}
       </div>
       <DifficultyChip
         successRate={question.successRate!}
