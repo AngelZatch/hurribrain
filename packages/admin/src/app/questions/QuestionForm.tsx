@@ -2,7 +2,7 @@
 import HBButton from "@/app/components/ui/hbButton";
 import HBIconButton from "@/app/components/ui/hbIconButton";
 import HBInput from "@/app/components/ui/hbInput";
-import { Question } from "@/app/types/question";
+import { Question, QuestionFormInputs } from "@/app/types/question";
 import {
   Combobox,
   ComboboxInput,
@@ -12,25 +12,15 @@ import {
 } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/16/solid";
 import { useRouter } from "next/navigation";
-// import { createQuestion, updateQuestion } from "./actions";
+import { createQuestion, updateQuestion } from "./actions";
 import { useEffect, useState } from "react";
 import { getTags } from "../tags/actions";
 import { Tag } from "../types/tag";
 import TagChip from "../components/ui/tagChip";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { Choice } from "../types/choice";
 
 type QuestionFormProps = {
   question?: Question;
-};
-
-type QuestionFormInputs = {
-  title: Question["title"];
-  "choices-0": Choice["value"];
-  "choices-1": Choice["value"];
-  "choices-2": Choice["value"];
-  "choices-3": Choice["value"];
-  tags: Array<Tag>;
 };
 
 const QuestionForm = ({ question }: QuestionFormProps) => {
@@ -51,19 +41,16 @@ const QuestionForm = ({ question }: QuestionFormProps) => {
     },
   });
 
-  const onSubmit: SubmitHandler<QuestionFormInputs> = (data) => {
+  const onSubmit: SubmitHandler<QuestionFormInputs> = async (data) => {
     console.log(data);
 
-    // if (question) {
-    //   await updateQuestion(
-    //     new FormData(e.target as HTMLFormElement),
-    //     question.uuid!
-    //   );
-    // } else {
-    //   await createQuestion(new FormData(e.target as HTMLFormElement));
-    // }
+    if (question) {
+      await updateQuestion(data, question.uuid!);
+    } else {
+      await createQuestion(data);
+    }
 
-    // router.back();
+    router.back();
   };
 
   const [tags, setTags] = useState<Array<Tag>>([]);

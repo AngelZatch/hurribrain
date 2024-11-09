@@ -1,6 +1,6 @@
 "use server"
 import { revalidatePath } from "next/cache";
-import { CreateQuestionDto, Question } from "../types/question"
+import { CreateQuestionDto, Question, QuestionFormInputs } from "../types/question"
 
 const getQuestion = async (uuid: string): Promise<Question> => {
   const data = await fetch(`http://localhost:8080/questions/${uuid}`);
@@ -9,31 +9,28 @@ const getQuestion = async (uuid: string): Promise<Question> => {
   return question;
 }
 
-const createQuestion = async (formData: FormData) => { 
-  const title = formData.get("title") as string;
-  const choices = [
-    {
-      value: formData.get("choice-0") as string,
-      isCorrect: true,
-    },
-    {
-      value: formData.get("choice-1") as string,
-      isCorrect: false,
-    },
-    {
-      value: formData.get("choice-2") as string,
-      isCorrect: false,
-    },
-    {
-      value: formData.get("choice-3") as string,
-      isCorrect: false,
-    },
-  ]
-
+const createQuestion = async (data: QuestionFormInputs) => { 
   const rawFormData: CreateQuestionDto = {
-    title,
-    // tags: [],
-    choices,
+    title: data.title,
+    choices: [
+      {
+        value: data["choices-0"],
+        isCorrect: true,
+      },
+      {
+        value: data["choices-1"],
+        isCorrect: false,
+      },
+      {
+        value: data["choices-2"],
+        isCorrect: false,
+      },
+      {
+        value: data["choices-3"],
+        isCorrect: false,
+      },
+    ],
+    tags: data.tags,
   };
 
   await fetch("http://localhost:8080/questions", {
@@ -47,31 +44,28 @@ const createQuestion = async (formData: FormData) => {
   revalidatePath("/questions");
 }
 
-const updateQuestion = async (formData: FormData, uuid: string): Promise<void> => {
-  const title = formData.get("title") as string;
-  const choices = [
-    {
-      value: formData.get("choice-0") as string,
-      isCorrect: true,
-    },
-    {
-      value: formData.get("choice-1") as string,
-      isCorrect: false,
-    },
-    {
-      value: formData.get("choice-2") as string,
-      isCorrect: false,
-    },
-    {
-      value: formData.get("choice-3") as string,
-      isCorrect: false,
-    },
-  ]
-
+const updateQuestion = async (data: QuestionFormInputs, uuid: string): Promise<void> => {
   const rawFormData: CreateQuestionDto = {
-    title,
-    // tags: [],
-    choices,
+    title: data.title,
+    choices: [
+      {
+        value: data["choices-0"],
+        isCorrect: true,
+      },
+      {
+        value: data["choices-1"],
+        isCorrect: false,
+      },
+      {
+        value: data["choices-2"],
+        isCorrect: false,
+      },
+      {
+        value: data["choices-3"],
+        isCorrect: false,
+      },
+    ],
+    tags: data.tags,
   };
 
   await fetch(`http://localhost:8080/questions/${uuid}`, {

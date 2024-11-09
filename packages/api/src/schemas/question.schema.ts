@@ -1,6 +1,7 @@
 import { Static, Type } from "@sinclair/typebox"
 import { ChoiceSchema } from "./choice.schema.js"
 import { Nullable } from "./common.schema.js"
+import { TagResponseSchema } from "./tag.schema.js"
 
 // Question Schema
 export const QuestionResponseSchema = Type.Object(
@@ -10,7 +11,7 @@ export const QuestionResponseSchema = Type.Object(
       description: "The title of the question",
       examples: ["What is the capital of France?"],
     }),
-    // tags: Type.Array(Type.Ref(TagResponseSchema)),
+    tags: Type.Array(TagResponseSchema),
     choices: Type.Array(ChoiceSchema),
     // asset: Nullable(Type.Ref(AssetResponseSchema)),
     // correctAnswers: Type.Optional(Type.Integer()),
@@ -72,6 +73,7 @@ export const CreateQuestionSchema = Type.Object({
       }),
     })
   ),
+  tags: Type.Array(TagResponseSchema),
 })
 
 export type PostQuestionBody = Static<typeof CreateQuestionSchema>

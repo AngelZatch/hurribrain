@@ -11,6 +11,8 @@ import {
 import { FastifyInstance } from "fastify"
 import { ErrorResponsesSchema } from "./../schemas/errors.schema.js"
 import { Choice } from "./../entities/choice.entity.js"
+import { wrap } from "@mikro-orm/core"
+import { Tag } from "./../entities/tag.entity.js"
 
 const QuestionController = async (fastify: FastifyInstance) => {
   fastify.addSchema(QuestionResponseSchema)
@@ -41,6 +43,8 @@ const QuestionController = async (fastify: FastifyInstance) => {
           "choices.uuid",
           "choices.value",
           "choices.isCorrect",
+          "tags.uuid",
+          "tags.name",
         ],
         filters: { notDeleted: true },
         refresh: true,
@@ -77,7 +81,7 @@ const QuestionController = async (fastify: FastifyInstance) => {
           uuid: request.params.questionId,
         },
         {
-          populate: ["choices"],
+          populate: ["choices", "tags"],
           filters: { notDeleted: true },
         }
       )
@@ -104,7 +108,7 @@ const QuestionController = async (fastify: FastifyInstance) => {
     async (request, reply) => {
       const em = request.em
 
-      const { title, asset, choices } = request.body
+      const { title, asset, choices, tags } = request.body
 
       let targetAsset = null
       if (asset) {
@@ -133,6 +137,14 @@ const QuestionController = async (fastify: FastifyInstance) => {
       })
 
       question.choices.add(questionChoices)
+
+      // Add the tags
+      const matchingTags = await em.find(
+        Tag,
+        { uuid: { $in: tags.map((tag) => tag.uuid) } },
+        { fields: ["uuid"] }
+      )
+      wrap(question).assign({ tags: matchingTags })
 
       await em.persistAndFlush(question)
 
@@ -172,17 +184,19 @@ const QuestionController = async (fastify: FastifyInstance) => {
     async (request, reply) => {
       const em = request.em
 
-      const { title, choices } = request.body
+      const { title, choices, tags } = request.body
 
       const question = await em.findOneOrFail(Question, {
         uuid: request.params.questionId,
       })
 
       question.title = title
+
       // Updating a question resets its success rate and removes the choices
       question.correctAnswers = 0
       question.incorrectAnswers = 0
       question.choices.removeAll()
+      question.tags.removeAll()
 
       // Add the new choices
       const questionChoices = choices.map((choice) => {
@@ -193,6 +207,14 @@ const QuestionController = async (fastify: FastifyInstance) => {
       })
 
       question.choices.add(questionChoices)
+
+      // Add the tags
+      const matchingTags = await em.find(
+        Tag,
+        { uuid: { $in: tags.map((tag) => tag.uuid) } },
+        { fields: ["uuid"] }
+      )
+      wrap(question).assign({ tags: matchingTags })
 
       await em.persistAndFlush(question)
 
