@@ -3,7 +3,9 @@ import { revalidatePath } from "next/cache";
 import { CreateQuestionDto, Question, QuestionFormInputs } from "../types/question"
 
 const getQuestion = async (uuid: string): Promise<Question> => {
-  const data = await fetch(`http://localhost:8080/questions/${uuid}`);
+  const data = await fetch(`http://localhost:8080/questions/${uuid}`, {
+    cache: "no-cache",
+  });
   const question = await data.json();
 
   return question;

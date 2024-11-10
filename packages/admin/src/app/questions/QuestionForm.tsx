@@ -42,8 +42,6 @@ const QuestionForm = ({ question }: QuestionFormProps) => {
   });
 
   const onSubmit: SubmitHandler<QuestionFormInputs> = async (data) => {
-    console.log(data);
-
     if (question) {
       await updateQuestion(data, question.uuid!);
     } else {
@@ -109,19 +107,26 @@ const QuestionForm = ({ question }: QuestionFormProps) => {
                 ref={ref}
                 as="div"
               >
-                <div className="w-full min-h-[42px] flex flex-wrap px-[10px] gap-x-2 gap-y-1 rounded-[20px] border border-[--main-color] bg-[--input-background] text-[--text-color] placeholder-[--placeholder-color]">
-                  {value.length > 0 && (
-                    <div className="flex flex-wrap gap-2 py-2">
-                      {value.map((tag) => (
-                        <TagChip key={tag.uuid} label={tag.name} />
-                      ))}
-                    </div>
-                  )}
-                  <ComboboxInput
-                    placeholder="Type here..."
-                    className="w-1/2 grow h-[42px] py-[10px] bg-transparent text-[--text-color] placeholder-[--placeholder-color] outline-none focus:outline-none active:outline-none"
-                    onChange={(event) => setQuery(event.target.value)}
-                  ></ComboboxInput>
+                <div className="w-full flex flex-row items-center min-h-[42px] px-[10px] rounded-[20px] border border-[--main-color] bg-[--input-background] text-[--text-color] placeholder-[--placeholder-color]">
+                  <div className="w-full flex flex-wrap gap-x-2 gap-y-1">
+                    {value.length > 0 && (
+                      <div className="flex flex-wrap gap-2 py-2">
+                        {value.map((tag) => (
+                          <TagChip key={tag.uuid} label={tag.name} />
+                        ))}
+                      </div>
+                    )}
+                    <ComboboxInput
+                      placeholder="Type here..."
+                      className="w-1/2 grow h-[42px] py-[10px] bg-transparent text-[--text-color] placeholder-[--placeholder-color] outline-none focus:outline-none active:outline-none"
+                      onChange={(event) => setQuery(event.target.value)}
+                    ></ComboboxInput>
+                  </div>
+                  <HBIconButton
+                    icon={<XMarkIcon />}
+                    noBackground
+                    onClick={() => onChange([])}
+                  />
                 </div>
                 <ComboboxOptions
                   className="border border-[--main-color] border-2 bg-[--white] empty:invisible flex flex-col gap-2 p-3 rounded-[20px] w-[var(--input-width)] h-[250px] overflow-auto"

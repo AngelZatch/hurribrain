@@ -1,4 +1,4 @@
-export class Question {
+export type Question = {
   uuid?: string;
   title: string;
   asset?: string;
@@ -10,13 +10,13 @@ export class Question {
   difficulty?: string;
 }
 
-export class CreateQuestionDto {
+export type CreateQuestionDto = {
   title: string;
   tags: Array<Tag>;
   choices: Array<Choice>;
 }
 
-export class QuestionResponseDto {
+export type  QuestionResponseDto = {
   data: Array<Question>;
   nextCursor: number;
 }
