@@ -10,7 +10,8 @@
   ],
   "scripts": {
     "api:start": "yarn workspace api start",
-    "admin:start": "yarn workspace admin dev"
+    "admin:start": "yarn workspace admin dev",
+    "app:start:web": "yarn workspace app web"
   },
   "devDependencies": {
     "@types/eslint": "^9.6.1",
