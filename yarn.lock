@@ -916,6 +916,11 @@
   dependencies:
     levn "^0.4.1"
 
+"@expo-google-fonts/exo@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@expo-google-fonts/exo/-/exo-0.2.3.tgz#141ec3d4c8d961fe314c7bed31f69f4bf9627913"
+  integrity sha512-Z9VY9xoOh3Pf2hfcyOMDx93w18sMmaQmM/JhEZ5na14h/frN8zC+CDNC09+deTSB7lpRrmoXt9aT8bHqqczZyA==
+
 "@expo/bunyan@^4.0.0":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@expo/bunyan/-/bunyan-4.0.1.tgz#ab9e17e36c71c704a0ce72168378a487368da736"
