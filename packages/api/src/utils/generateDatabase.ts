@@ -1,37 +1,37 @@
-import { Connection, IDatabaseDriver, MikroORM } from "@mikro-orm/core";
+import { Connection, IDatabaseDriver, MikroORM } from "@mikro-orm/core"
 
 export const createDatabase = async (
-  orm: MikroORM<IDatabaseDriver<Connection>>,
+  orm: MikroORM<IDatabaseDriver<Connection>>
 ): Promise<void> => {
-  const generator = orm.getSchemaGenerator();
+  const generator = orm.getSchemaGenerator()
 
-  await generator.createSchema();
-};
+  await generator.createSchema()
+}
 
 export const dropDatabase = async (
-  orm: MikroORM<IDatabaseDriver<Connection>>,
+  orm: MikroORM<IDatabaseDriver<Connection>>
 ): Promise<void> => {
-  const generator = orm.getSchemaGenerator();
+  const generator = orm.getSchemaGenerator()
 
-  await generator.dropSchema();
-};
+  await generator.dropSchema()
+}
 
 export const migrateDatabase = async (
-  orm: MikroORM<IDatabaseDriver<Connection>>,
+  orm: MikroORM<IDatabaseDriver<Connection>>
 ): Promise<void> => {
-  const migrator = orm.getMigrator();
+  const migrator = orm.getMigrator()
 
-  await migrator.up();
-};
+  await migrator.up()
+}
 
 export const devInit = async (
-  orm: MikroORM<IDatabaseDriver<Connection>>,
+  orm: MikroORM<IDatabaseDriver<Connection>>
 ): Promise<void> => {
-  const generator = orm.getSchemaGenerator();
+  const generator = orm.getSchemaGenerator()
 
   try {
-    await generator.createSchema();
+    await generator.createSchema()
   } catch {
-    await generator.updateSchema();
+    await generator.updateSchema()
   }
-};
+}
