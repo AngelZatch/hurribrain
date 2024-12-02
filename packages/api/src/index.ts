@@ -1,5 +1,5 @@
 import { initializeDatabase } from "./database.js"
-import config from "./mikro-orm.config.js"
+import { getOrmConfig } from "./mikro-orm.config.js"
 import { server, initializeServer } from "./server.js"
 
 server.get("/", async () => {
@@ -7,7 +7,8 @@ server.get("/", async () => {
 })
 ;(async () => {
   try {
-    await initializeDatabase(config)
+    const ormConfig = getOrmConfig()
+    await initializeDatabase(ormConfig)
     // If dev, migrate and seed database
 
     await initializeServer()

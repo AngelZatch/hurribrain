@@ -21,4 +21,8 @@ const config: Options = {
   extensions: [Migrator, SeedManager],
 }
 
-export default config
+export function getOrmConfig(): Options {
+  return config
+}
+
+export default { config, getOrmConfig }
