@@ -1,16 +1,20 @@
-import { View, type ViewProps } from "react-native";
+import { ImageBackground, View, type ViewProps } from "react-native";
 
 import { useThemeColor } from "@/hooks/useThemeColor";
-import backgroundPicture from "@/assets/images/background_waves.png";
+import backgroundPicture from "../assets/images/background_waves.png";
 
 export function BackgroundView({ style, ...otherProps }: ViewProps) {
   const backgroundGradient = useThemeColor({}, "backgroundGradient");
 
   return (
-    <View
+    <ImageBackground
+      source={backgroundPicture}
+      resizeMode="cover"
       style={[
         {
-          backgroundImage: `${{ backgroundGradient }}, url(${{ backgroundPicture }})`,
+          backgroundImage: backgroundGradient,
+          width: "100%",
+          height: "100%",
         },
         style,
       ]}

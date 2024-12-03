@@ -4,7 +4,7 @@ import { Image, View, Text, Pressable } from "react-native";
 
 export default function HomeScreen() {
   return (
-    <BackgroundView
+    <View
       style={{
         flex: 1,
         justifyContent: "center",
@@ -44,6 +44,6 @@ export default function HomeScreen() {
           Play
         </Text>
       </Pressable>
-    </BackgroundView>
+    </View>
   );
 }

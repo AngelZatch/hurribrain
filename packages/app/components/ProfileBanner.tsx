@@ -3,7 +3,6 @@ import ExperienceBar from "./ExperienceBar";
 import Avatar from "./Avatar";
 
 import { useColorScheme } from "../hooks/useColorScheme";
-import { ThemedView } from "./ThemedView";
 import { ThemedText } from "./ThemedText";
 
 export default function ProfileBanner() {
