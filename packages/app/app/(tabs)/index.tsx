@@ -30,7 +30,7 @@ export default function HomeScreen() {
         <Text
           style={{
             color: "white",
-            fontSize: 24,
+            fontSize: 32,
             fontFamily: "Exo_700Bold",
           }}
         >

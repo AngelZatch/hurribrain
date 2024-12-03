@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   statTitle: {
     fontSize: 16,
     fontFamily: "Exo_400Regular",
-    color: "#0F2969",
+    // color: "#0F2969",
   },
   statValue: {
     fontSize: 20,
