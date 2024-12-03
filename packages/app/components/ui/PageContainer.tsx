@@ -6,7 +6,7 @@ export function PageContainer({ style, ...otherProps }: ViewProps) {
       style={[
         {
           flex: 1,
-          justifyContent: "center",
+          justifyContent: "flex-start",
           alignItems: "center",
           gap: 16,
           padding: 20,

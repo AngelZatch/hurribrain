@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { ThemedText } from "./ThemedText";
 
 interface ExperienceBarProps {
   current: number;
@@ -23,23 +24,46 @@ export default function ExperienceBar({ current, level }: ExperienceBarProps) {
   return (
     <View
       style={{
-        height: 13,
-        borderRadius: 5,
-        width: "100%",
-        flexGrow: 0,
-        flexShrink: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "row",
+        flexGrow: 1,
+        flexShrink: 0,
         flexBasis: "auto",
-        backgroundColor: "#FFFFFF66",
+        gap: 10,
+        width: "100%",
       }}
     >
+      <ThemedText
+        style={{
+          fontFamily: "Exo_400Regular_Italic",
+          flexGrow: 1,
+          flexShrink: 0,
+          flexBasis: "auto",
+        }}
+      >
+        Lv. {level}
+      </ThemedText>
       <View
         style={{
-          width: `${progressionWidth}%`,
-          height: "100%",
+          height: 13,
           borderRadius: 5,
-          backgroundColor: "#F6C744",
+          width: "100%",
+          flexGrow: 0,
+          flexShrink: 1,
+          flexBasis: "auto",
+          backgroundColor: "#FFFFFF66",
         }}
-      />
+      >
+        <View
+          style={{
+            width: `${progressionWidth}%`,
+            height: "100%",
+            borderRadius: 5,
+            backgroundColor: "#F6C744",
+          }}
+        />
+      </View>
     </View>
   );
 }

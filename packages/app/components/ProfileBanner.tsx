@@ -36,24 +36,7 @@ export default function ProfileBanner() {
         >
           Na'el
         </ThemedText>
-        <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "row",
-            flex: 1,
-            gap: 10,
-          }}
-        >
-          <ThemedText
-            style={{
-              fontFamily: "Exo_400Regular_Italic",
-            }}
-          >
-            Lv. 1
-          </ThemedText>
-          <ExperienceBar current={50} level={2} />
-        </View>
+        <ExperienceBar current={50} level={2} />
       </View>
     </View>
   );
