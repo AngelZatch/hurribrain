@@ -1,15 +1,14 @@
+import ProfileBanner from "@/components/ProfileBanner";
+import { PageContainer } from "@/components/ui/PageContainer";
 import { View, Text } from "react-native";
 
 export default function GamesScreen() {
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Games</Text>
-    </View>
+    <PageContainer>
+      <ProfileBanner />
+      <View style={{ flex: 1 }}>
+        <Text>Games</Text>
+      </View>
+    </PageContainer>
   );
 }

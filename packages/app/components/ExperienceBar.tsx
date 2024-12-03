@@ -26,7 +26,9 @@ export default function ExperienceBar({ current, level }: ExperienceBarProps) {
         height: 13,
         borderRadius: 5,
         width: "100%",
-        flex: 1,
+        flexGrow: 0,
+        flexShrink: 1,
+        flexBasis: "auto",
         backgroundColor: "#FFFFFF66",
       }}
     >

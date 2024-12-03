@@ -1,18 +1,11 @@
 import { BackgroundView } from "@/components/BackgroundView";
 import ProfileBanner from "@/components/ProfileBanner";
+import { PageContainer } from "@/components/ui/PageContainer";
 import { Image, View, Text, Pressable } from "react-native";
 
 export default function HomeScreen() {
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        gap: 16,
-        padding: 20,
-      }}
-    >
+    <PageContainer>
       <ProfileBanner />
       <Image
         source={{
@@ -44,6 +37,6 @@ export default function HomeScreen() {
           Play
         </Text>
       </Pressable>
-    </View>
+    </PageContainer>
   );
 }
