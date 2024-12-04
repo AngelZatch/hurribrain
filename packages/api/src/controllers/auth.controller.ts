@@ -51,6 +51,52 @@ const AuthController = async (fastify: FastifyInstance) => {
       refreshToken: "",
     }
   })
+
+  fastify.post<{
+    Body: {
+      email: string
+      password: string
+      name: string
+    }
+  }>("/register", async (request, reply) => {
+    const em = request.em
+    const { email, password, name } = request.body
+
+    // Check for unicity of email and name
+    const existingUser = await em.findOne(User, {
+      $or: [{ email }, { name }],
+    })
+
+    if (existingUser) {
+      reply.statusCode = 409
+      return new Error("User already exists")
+    }
+
+    const user = new User({ email, name })
+    user.password = await bcrypt.hash(password, 10)
+
+    await em.persistAndFlush(user)
+
+    reply.statusCode = 201
+
+    const accessToken = jwt.sign(
+      {
+        uuid: user.uuid,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+      },
+      "changeSecretIntoEnvVariable",
+      {
+        expiresIn: "7d",
+      }
+    )
+
+    return {
+      accessToken,
+      refreshToken: "",
+    }
+  })
 }
 
 export default AuthController
