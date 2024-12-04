@@ -59,7 +59,9 @@ export default function ProfileScreen() {
       >
         <Text style={styles.statSectionTitle}>Play Stats</Text>
         <View style={styles.statRow}>
-          <Text style={styles.statTitle}>Games played</Text>
+          <ThemedText style={styles.statTitle} colorType="secondaryText">
+            Games played
+          </ThemedText>
           <Text style={styles.statValue}>14</Text>
         </View>
         <View style={styles.statRow}>
