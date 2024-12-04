@@ -10,8 +10,8 @@ export function ContainerView({ style, ...otherProps }: ViewProps) {
       style={[
         {
           backgroundColor,
-          flexGrow: 0,
-          flexShrink: 1,
+          flexGrow: 1,
+          flexShrink: 0,
           flexBasis: "auto",
           width: "100%",
           flexDirection: "row",
