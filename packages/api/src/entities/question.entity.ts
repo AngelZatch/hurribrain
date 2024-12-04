@@ -34,6 +34,7 @@ export class Question {
   })
   choices = new Collection<Choice>(this)
 
+  // Statistics
   @Property()
   correctAnswers: number = 0
 
@@ -66,6 +67,7 @@ export class Question {
     }
   }
 
+  // Timestamps
   @Property()
   createdAt: Date = new Date()
 

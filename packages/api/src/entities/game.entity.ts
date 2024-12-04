@@ -51,7 +51,7 @@ export class Game {
   @Property({ type: "number", persist: false })
   playerCount: number = 0
 
-  // System lifecycle
+  // Timestamps
   @Property()
   createdAt: Date = new Date()
 

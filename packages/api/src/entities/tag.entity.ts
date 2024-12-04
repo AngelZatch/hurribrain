@@ -13,6 +13,7 @@ export class Tag {
   @Property()
   description?: string = ""
 
+  // Timestamps
   @Property()
   createdAt: Date = new Date()
 
