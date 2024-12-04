@@ -4,6 +4,8 @@ import Avatar from "./Avatar";
 
 import { useColorScheme } from "../hooks/useColorScheme";
 import { ThemedText } from "./ThemedText";
+import CoinCount from "./CoinCount";
+import { Divider } from "./ui/Divider";
 
 export default function ProfileBanner() {
   const colorScheme = useColorScheme() ?? "light";
@@ -36,7 +38,19 @@ export default function ProfileBanner() {
         >
           Na'el
         </ThemedText>
-        <ExperienceBar current={50} level={2} />
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            gap: 10,
+            paddingVertical: 3,
+            alignItems: "center",
+          }}
+        >
+          <ExperienceBar current={50} level={2} />
+          <Divider orientation="vertical" size={15} />
+          <CoinCount count={138} />
+        </View>
       </View>
     </View>
   );

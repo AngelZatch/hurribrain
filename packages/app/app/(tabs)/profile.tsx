@@ -65,24 +65,34 @@ export default function ProfileScreen() {
           <Text style={styles.statValue}>14</Text>
         </View>
         <View style={styles.statRow}>
-          <Text style={styles.statTitle}>Games won</Text>
+          <ThemedText style={styles.statTitle} colorType="secondaryText">
+            Games won
+          </ThemedText>
           <Text style={styles.statValue}>12</Text>
         </View>
         <View style={styles.statRow}>
-          <Text style={styles.statTitle}>Games played</Text>
+          <ThemedText style={styles.statTitle} colorType="secondaryText">
+            Games played
+          </ThemedText>
           <Text style={styles.statValue}>85.71%</Text>
         </View>
-        <Divider />
+        <Divider orientation="horizontal" size="100%" />
         <View style={styles.statRow}>
-          <Text style={styles.statTitle}>Question asked</Text>
+          <ThemedText style={styles.statTitle} colorType="secondaryText">
+            Question asked
+          </ThemedText>
           <Text style={styles.statValue}>280</Text>
         </View>
         <View style={styles.statRow}>
-          <Text style={styles.statTitle}>Correct answers</Text>
+          <ThemedText style={styles.statTitle} colorType="secondaryText">
+            Correct answers
+          </ThemedText>
           <Text style={styles.statValue}>217</Text>
         </View>
         <View style={styles.statRow}>
-          <Text style={styles.statTitle}>Win rate</Text>
+          <ThemedText style={styles.statTitle} colorType="secondaryText">
+            Win rate
+          </ThemedText>
           <Text style={styles.statValue}>77.50%</Text>
         </View>
       </ContainerView>
@@ -93,15 +103,21 @@ export default function ProfileScreen() {
       >
         <Text style={styles.statSectionTitle}>Account Stats</Text>
         <View style={styles.statRow}>
-          <Text style={styles.statTitle}>Arrived</Text>
+          <ThemedText style={styles.statTitle} colorType="secondaryText">
+            Arrived
+          </ThemedText>
           <Text style={styles.statValue}>Sept. 14, 2024</Text>
         </View>
         <View style={styles.statRow}>
-          <Text style={styles.statTitle}>First game</Text>
+          <ThemedText style={styles.statTitle} colorType="secondaryText">
+            First game
+          </ThemedText>
           <Text style={styles.statValue}>Sept. 14, 2024</Text>
         </View>
         <View style={styles.statRow}>
-          <Text style={styles.statTitle}>First victory</Text>
+          <ThemedText style={styles.statTitle} colorType="secondaryText">
+            First victory
+          </ThemedText>
           <Text style={styles.statValue}>Sept. 17, 2024</Text>
         </View>
       </ContainerView>

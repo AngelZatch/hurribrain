@@ -28,7 +28,7 @@ export default function ExperienceBar({ current, level }: ExperienceBarProps) {
         alignItems: "center",
         flexDirection: "row",
         flexGrow: 1,
-        flexShrink: 0,
+        flexShrink: 1,
         flexBasis: "auto",
         gap: 10,
         width: "100%",
