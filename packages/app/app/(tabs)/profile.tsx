@@ -34,8 +34,7 @@ export default function ProfileScreen() {
             }}
             style={{
               aspectRatio: 1,
-              flexGrow: 2,
-              flexShrink: 0,
+              width: "33%",
               flexBasis: "auto",
               borderRadius: 10,
             }}
