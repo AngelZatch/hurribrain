@@ -4,7 +4,7 @@ import * as SplashScreen from "expo-splash-screen";
 
 import { useColorScheme } from "../hooks/useColorScheme";
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useMemo, useReducer } from "react";
+import React, { useContext, useEffect, useMemo, useReducer } from "react";
 import {
   useFonts,
   Exo_100Thin,
@@ -28,7 +28,7 @@ import {
 } from "@expo-google-fonts/exo";
 import { BackgroundView } from "@/components/BackgroundView";
 import { MyDarkTheme, MyLightTheme } from "@/constants/Colors";
-import { AuthProvider } from "@/contexts/auth.context";
+import { AuthContext, AuthProvider } from "@/contexts/auth.context";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -63,6 +63,10 @@ export default function RootLayout() {
     }
   }, [loaded]);
 
+  const { token } = useContext(AuthContext);
+
+  console.log(token);
+
   const authContext = useMemo(
     () => ({
       signIn: async () => {
@@ -85,13 +89,32 @@ export default function RootLayout() {
         value={colorScheme === "dark" ? MyDarkTheme : MyLightTheme}
       >
         <BackgroundView>
-          <Stack>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
             <Stack.Screen
-              name="(tabs)"
+              name="(auth)"
               options={{
                 headerShown: false,
               }}
             />
+            {/* {token !== null ? (
+              <Stack.Screen
+                name="(tabs)"
+                options={{
+                  headerShown: false,
+                }}
+              />
+            ) : (
+              <Stack.Screen
+                name="(auth)"
+                options={{
+                  headerShown: false,
+                }}
+              />
+            )} */}
             <Stack.Screen name="+not-found" />
           </Stack>
           <StatusBar style="auto" />

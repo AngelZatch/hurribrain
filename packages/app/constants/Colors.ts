@@ -10,6 +10,7 @@ const tintColorDark = '#fff';
 
 export const Colors = {
   light: {
+    main: "#0A99FF",
     text: '#11181C',
     background: 'transparent',
     tint: tintColorLight,
@@ -21,6 +22,7 @@ export const Colors = {
     secondaryText: "#0F2969",
   },
   dark: {
+    main: "#0A99FF",
     text: '#fff',
     background: 'transparent',
     tint: tintColorDark,
@@ -37,13 +39,15 @@ export const MyLightTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    background: "transparent"
+    background: "transparent",
+    main: "#0A99FF",
   }
 }
 export const MyDarkTheme = {
   ...DarkTheme,
   colors: {
     ...DarkTheme.colors,
-    background: "transparent"
+    background: "transparent",
+    main: "#0A99FF",
   }
 }
