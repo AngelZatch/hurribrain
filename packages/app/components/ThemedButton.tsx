@@ -5,12 +5,14 @@ export type ThemedButtonProps = ButtonProps & {
   variant?: "contained" | "outlined" | "text";
   size?: "small" | "medium" | "large";
   type?: "primary" | "secondary";
+  fullWidth?: boolean;
 };
 
 export function ThemedButton({
   type = "primary",
   variant = "contained",
   size = "large",
+  fullWidth = false,
   ...rest
 }: ThemedButtonProps) {
   const colorScheme = useColorScheme();
@@ -27,12 +29,22 @@ export function ThemedButton({
         gap: 10,
         borderRadius: 10,
         backgroundColor:
-          type === "primary" ? Colors[colorScheme ?? "light"].main : "green",
+          type === "primary" ? Colors[colorScheme ?? "light"].main : "white",
         paddingHorizontal: size === "small" ? 12 : size === "medium" ? 12 : 16,
         paddingVertical: size === "small" ? 4 : size === "medium" ? 6 : 16,
+        width: fullWidth ? "100%" : "auto",
       }}
     >
-      <Text style={{ color: "white" }}>{rest.title}</Text>
+      <Text
+        style={{
+          color:
+            type === "primary" ? "white" : Colors[colorScheme ?? "light"].text,
+          fontFamily: "Exo_600SemiBold",
+          fontSize: size === "small" ? 12 : size === "medium" ? 14 : 16,
+        }}
+      >
+        {rest.title}
+      </Text>
     </Pressable>
   );
 }

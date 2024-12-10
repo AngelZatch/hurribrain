@@ -10,18 +10,10 @@ export default function WelcomeScreen() {
         justifyContent: "center",
       }}
     >
-      <ThemedText
-        type="title"
-        style={{
-          fontSize: 48,
-          fontFamily: "Exo_900Black",
-        }}
-      >
-        Hurribrain
-      </ThemedText>
+      <ThemedText type="title">Hurribrain</ThemedText>
       <ThemedText type="subtitle">Come test your knowledge!</ThemedText>
-      <ThemedButton title={"Create my account"} />
-      <ThemedButton title={"Login"} />
+      <ThemedButton title={"Create my account"} type="secondary" fullWidth />
+      <ThemedButton title={"Login"} fullWidth />
     </PageContainer>
   );
 }

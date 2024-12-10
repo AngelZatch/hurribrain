@@ -49,13 +49,14 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   title: {
-    fontSize: 32,
-    fontWeight: "bold",
-    lineHeight: 32,
+    fontSize: 48,
+    fontFamily: "Exo_900Black",
+    letterSpacing: 2.4,
   },
   subtitle: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontFamily: "Exo_500Medium",
+    letterSpacing: 1,
   },
   link: {
     lineHeight: 30,
