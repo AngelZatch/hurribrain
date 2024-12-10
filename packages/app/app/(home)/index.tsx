@@ -1,7 +1,6 @@
-import { BackgroundView } from "@/components/BackgroundView";
 import ProfileBanner from "@/components/ProfileBanner";
 import { PageContainer } from "@/components/ui/PageContainer";
-import { Image, View, Text, Pressable } from "react-native";
+import { Image, Text, Pressable } from "react-native";
 
 export default function HomeScreen() {
   return (

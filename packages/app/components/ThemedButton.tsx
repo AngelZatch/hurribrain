@@ -1,14 +1,14 @@
 import { Colors } from "@/constants/Colors";
 import { ButtonProps, Pressable, Text, useColorScheme } from "react-native";
 
-export type ThemedButtonProps = ButtonProps & {
+type ThemedButtonProps = ButtonProps & {
   variant?: "contained" | "outlined" | "text";
   size?: "small" | "medium" | "large";
   type?: "primary" | "secondary";
   fullWidth?: boolean;
 };
 
-export function ThemedButton({
+export default function ThemedButton({
   type = "primary",
   variant = "contained",
   size = "large",
@@ -38,7 +38,9 @@ export function ThemedButton({
       <Text
         style={{
           color:
-            type === "primary" ? "white" : Colors[colorScheme ?? "light"].text,
+            type === "primary"
+              ? "white"
+              : Colors[colorScheme ?? "light"].inheritText,
           fontFamily: "Exo_600SemiBold",
           fontSize: size === "small" ? 12 : size === "medium" ? 14 : 16,
         }}

@@ -4,7 +4,7 @@ import * as SplashScreen from "expo-splash-screen";
 
 import { useColorScheme } from "../hooks/useColorScheme";
 import { StatusBar } from "expo-status-bar";
-import React, { useContext, useEffect, useMemo, useReducer } from "react";
+import React, { useContext, useEffect, useMemo } from "react";
 import {
   useFonts,
   Exo_100Thin,
@@ -89,34 +89,35 @@ export default function RootLayout() {
         value={colorScheme === "dark" ? MyDarkTheme : MyLightTheme}
       >
         <BackgroundView>
-          <Stack
-            screenOptions={{
-              headerShown: false,
-            }}
-          >
-            <Stack.Screen
-              name="(auth)"
-              options={{
+          {token !== null ? (
+            <Stack
+              screenOptions={{
                 headerShown: false,
               }}
-            />
-            {/* {token !== null ? (
+            >
               <Stack.Screen
                 name="(tabs)"
                 options={{
                   headerShown: false,
                 }}
               />
-            ) : (
+              <Stack.Screen name="+not-found" />
+            </Stack>
+          ) : (
+            <Stack
+              screenOptions={{
+                headerShown: false,
+              }}
+            >
               <Stack.Screen
                 name="(auth)"
                 options={{
                   headerShown: false,
                 }}
               />
-            )} */}
-            <Stack.Screen name="+not-found" />
-          </Stack>
+              <Stack.Screen name="+not-found" />
+            </Stack>
+          )}
           <StatusBar style="auto" />
         </BackgroundView>
       </ThemeProvider>

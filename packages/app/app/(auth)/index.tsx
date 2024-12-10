@@ -1,7 +1,8 @@
-import { ThemedButton } from "@/components/ThemedButton";
-import { ThemedText } from "@/components/ThemedText";
+import ThemedButton from "@/components/ThemedButton";
+import ThemedText from "@/components/ThemedText";
 import { PageContainer } from "@/components/ui/PageContainer";
-import { Button, Pressable, View } from "react-native";
+import { Link } from "expo-router";
+import { Pressable } from "react-native";
 
 export default function WelcomeScreen() {
   return (
@@ -13,7 +14,11 @@ export default function WelcomeScreen() {
       <ThemedText type="title">Hurribrain</ThemedText>
       <ThemedText type="subtitle">Come test your knowledge!</ThemedText>
       <ThemedButton title={"Create my account"} type="secondary" fullWidth />
-      <ThemedButton title={"Login"} fullWidth />
+      <Link href="/login" asChild>
+        <Pressable style={{ width: "100%" }}>
+          <ThemedButton title={"Login"} fullWidth />
+        </Pressable>
+      </Link>
     </PageContainer>
   );
 }

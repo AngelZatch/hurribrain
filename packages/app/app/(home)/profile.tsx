@@ -1,5 +1,5 @@
 import ExperienceBar from "@/components/ExperienceBar";
-import { ThemedText } from "@/components/ThemedText";
+import ThemedText from "@/components/ThemedText";
 import { ContainerView } from "@/components/ui/ContainerView";
 import { Divider } from "@/components/ui/Divider";
 import { PageContainer } from "@/components/ui/PageContainer";

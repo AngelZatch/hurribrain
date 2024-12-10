@@ -12,6 +12,7 @@ export const Colors = {
   light: {
     main: "#0A99FF",
     text: '#0F2969',
+    inheritText: '#0F2969',
     background: 'transparent',
     tint: tintColorLight,
     icon: '#687076',
@@ -24,6 +25,7 @@ export const Colors = {
   dark: {
     main: "#0A99FF",
     text: '#fff',
+    inheritText: '#0F2969',
     background: 'transparent',
     tint: tintColorDark,
     icon: '#9BA1A6',
