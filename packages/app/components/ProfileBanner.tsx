@@ -3,7 +3,7 @@ import ExperienceBar from "./ExperienceBar";
 import Avatar from "./Avatar";
 
 import { useColorScheme } from "../hooks/useColorScheme";
-import { ThemedText } from "./ThemedText";
+import ThemedText from "./ThemedText";
 import CoinCount from "./CoinCount";
 import { Divider } from "./ui/Divider";
 
