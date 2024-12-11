@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 import { Button, View } from "react-native";
 
 type TopNavigationProps = {
@@ -7,7 +7,8 @@ type TopNavigationProps = {
 };
 
 export default function TopNavigation() {
-  const navigator = useNavigation();
+  const router = useRouter();
+
   return (
     <View
       style={{
@@ -23,7 +24,7 @@ export default function TopNavigation() {
       <Button
         title="BACK"
         onPress={() => {
-          navigator.goBack();
+          router.back();
         }}
       />
     </View>

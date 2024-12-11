@@ -26,7 +26,7 @@ import {
   Exo_800ExtraBold_Italic,
   Exo_900Black_Italic,
 } from "@expo-google-fonts/exo";
-import { BackgroundView } from "@/components/BackgroundView";
+import { BackgroundView } from "@/components/ui/BackgroundView";
 import { MyDarkTheme, MyLightTheme } from "@/constants/Colors";
 import { AuthContext, AuthProvider } from "@/contexts/auth.context";
 

@@ -1,17 +1,17 @@
-import { PageContainer } from "@/components/ui/PageContainer";
 import ThemedButton from "@/components/ui/ThemedButton";
 import ThemedText from "@/components/ui/ThemedText";
 import TopNavigation from "@/components/TopNavigation";
 import { BodyContainer } from "@/components/ui/BodyContainer";
-import { useForm, Controller } from "react-hook-form";
+import { PageContainer } from "@/components/ui/PageContainer";
 import ThemedTextInput from "@/components/ui/ThemedTextInput";
+import { Controller, useForm } from "react-hook-form";
 
 type FormData = {
   email: string;
   password: string;
 };
 
-export default function LoginScreen() {
+export default function RegisterScreen() {
   const {
     control,
     handleSubmit,
@@ -33,7 +33,7 @@ export default function LoginScreen() {
     >
       <TopNavigation />
       <BodyContainer>
-        <ThemedText type="smallTitle">Welcome back!</ThemedText>
+        <ThemedText type="smallTitle">Welcome!</ThemedText>
         <Controller
           control={control}
           rules={{
@@ -72,9 +72,9 @@ export default function LoginScreen() {
         />
         {errors.password && <ThemedText>This field is required</ThemedText>}
         <ThemedButton
-          title="Login"
-          fullWidth
+          title="Register"
           onPress={handleSubmit(onSubmit)}
+          fullWidth
         />
       </BodyContainer>
     </PageContainer>

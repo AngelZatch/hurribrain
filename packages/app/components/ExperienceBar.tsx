@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import ThemedText from "./ThemedText";
+import ThemedText from "./ui/ThemedText";
 
 interface ExperienceBarProps {
   current: number;
