@@ -5,6 +5,7 @@ import { BodyContainer } from "@/components/ui/BodyContainer";
 import { PageContainer } from "@/components/ui/PageContainer";
 import ThemedTextInput from "@/components/ui/ThemedTextInput";
 import { Controller, useForm } from "react-hook-form";
+import { InputContainer } from "@/components/ui/InputContainer";
 
 type FormData = {
   email: string;
@@ -34,45 +35,51 @@ export default function RegisterScreen() {
       <TopNavigation />
       <BodyContainer>
         <ThemedText type="smallTitle">Welcome!</ThemedText>
-        <Controller
-          control={control}
-          rules={{
-            required: true,
-          }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <ThemedTextInput
-              placeholder="Type here..."
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              inputMode="email"
-              textContentType="emailAddress"
-            />
-          )}
-          name="email"
-        />
+        <InputContainer>
+          <ThemedText type="label">Email address</ThemedText>
+          <Controller
+            control={control}
+            rules={{
+              required: true,
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <ThemedTextInput
+                placeholder="Type here..."
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                inputMode="email"
+                textContentType="emailAddress"
+              />
+            )}
+            name="email"
+          />
+        </InputContainer>
         {errors.email && <ThemedText>This field is required</ThemedText>}
-        <Controller
-          control={control}
-          rules={{
-            required: true,
-          }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <ThemedTextInput
-              placeholder="Type here..."
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              inputMode="text"
-              secureTextEntry
-              textContentType="password"
-            />
-          )}
-          name="password"
-        />
+        <InputContainer>
+          <ThemedText type="label">Password</ThemedText>
+          <Controller
+            control={control}
+            rules={{
+              required: true,
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <ThemedTextInput
+                placeholder="Type here..."
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                inputMode="text"
+                secureTextEntry
+                textContentType="password"
+              />
+            )}
+            name="password"
+          />
+        </InputContainer>
         {errors.password && <ThemedText>This field is required</ThemedText>}
         <ThemedButton
-          title="Register"
+          title="Create"
           onPress={handleSubmit(onSubmit)}
           fullWidth
         />

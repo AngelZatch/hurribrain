@@ -12,7 +12,8 @@ type ThemedTextProps = TextProps & {
     | "defaultSemiBold"
     | "subtitle"
     | "link"
-    | "smallTitle";
+    | "smallTitle"
+    | "label";
 };
 
 export default function ThemedText({
@@ -38,6 +39,7 @@ export default function ThemedText({
         type === "subtitle" ? styles.subtitle : undefined,
         type === "link" ? styles.link : undefined,
         type === "smallTitle" ? styles.smallTitle : undefined,
+        type === "label" ? styles.label : undefined,
         style,
       ]}
       {...rest}
@@ -49,6 +51,7 @@ const styles = StyleSheet.create({
   default: {
     fontSize: 16,
     lineHeight: 24,
+    fontFamily: "Exo_400Regular",
   },
   defaultSemiBold: {
     fontSize: 16,
@@ -74,5 +77,9 @@ const styles = StyleSheet.create({
     lineHeight: 30,
     fontSize: 16,
     color: "#0a7ea4",
+  },
+  label: {
+    fontSize: 14,
+    fontFamily: "Exo_600SemiBold",
   },
 });
