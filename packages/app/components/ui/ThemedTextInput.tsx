@@ -7,7 +7,7 @@ type ThemedTextInputProps = TextInputProps & {
 
 export default function ThemedTextInput({
   type,
-  ...otherProps
+  ...rest
 }: ThemedTextInputProps) {
   const colorScheme = useColorScheme();
 
@@ -26,7 +26,7 @@ export default function ThemedTextInput({
         fontFamily: "Exo_600SemiBold",
       }}
       placeholderTextColor="#ABABAB"
-      {...otherProps}
+      {...rest}
     />
   );
 }

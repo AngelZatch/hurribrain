@@ -34,6 +34,7 @@ export default function ThemedButton({
         paddingVertical: size === "small" ? 4 : size === "medium" ? 6 : 16,
         width: fullWidth ? "100%" : "auto",
       }}
+      {...rest}
     >
       <Text
         style={{

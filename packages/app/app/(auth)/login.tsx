@@ -12,7 +12,11 @@ type FormData = {
 };
 
 export default function LoginScreen() {
-  const { control, handleSubmit } = useForm<FormData>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
     defaultValues: {
       email: "",
       password: "",
@@ -47,6 +51,7 @@ export default function LoginScreen() {
           )}
           name="email"
         />
+        {errors.email && <ThemedText>This field is required</ThemedText>}
         <Controller
           control={control}
           rules={{
@@ -65,8 +70,9 @@ export default function LoginScreen() {
           )}
           name="password"
         />
+        {errors.password && <ThemedText>This field is required</ThemedText>}
         <ThemedButton
-          title={"Login"}
+          title="Login"
           fullWidth
           onPress={handleSubmit(onSubmit)}
         />
