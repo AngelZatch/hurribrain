@@ -6,6 +6,7 @@ import QuestionController from "./controllers/question.controller.js"
 import { ErrorResponseTemplateSchema } from "./schemas/errors.schema.js"
 import TagController from "./controllers/tag.controller.js"
 import { getEntityManager } from "./middlewares/entityManager.middleware.js"
+import AuthController from "./controllers/auth.controller.js"
 
 export const server = Fastify()
 
@@ -51,6 +52,7 @@ export const initializeServer = async () => {
       request.em = getEntityManager()
     })
 
+    await instance.register(AuthController, { prefix: "/auth" })
     await instance.register(QuestionController, { prefix: "/questions" })
     await instance.register(TagController, { prefix: "/tags" })
   })

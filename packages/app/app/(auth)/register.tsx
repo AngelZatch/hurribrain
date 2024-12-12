@@ -6,13 +6,22 @@ import { PageContainer } from "@/components/ui/PageContainer";
 import ThemedTextInput from "@/components/ui/ThemedTextInput";
 import { Controller, useForm } from "react-hook-form";
 import { InputContainer } from "@/components/ui/InputContainer";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import { useContext } from "react";
+import { AuthContext } from "@/contexts/auth.context";
+import { useRegister } from "@/api/auth.api";
 
 type FormData = {
   email: string;
+  name: string;
   password: string;
 };
 
 export default function RegisterScreen() {
+  const { mutateAsync: register } = useRegister();
+  const { login } = useContext(AuthContext);
+
   const {
     control,
     handleSubmit,
@@ -20,11 +29,15 @@ export default function RegisterScreen() {
   } = useForm<FormData>({
     defaultValues: {
       email: "",
+      name: "",
       password: "",
     },
   });
 
-  const onSubmit = (data: FormData) => console.log(data);
+  const onSubmit = async (data: FormData) => {
+    await register(data);
+    login();
+  };
 
   return (
     <PageContainer
@@ -35,6 +48,27 @@ export default function RegisterScreen() {
       <TopNavigation />
       <BodyContainer>
         <ThemedText type="smallTitle">Welcome!</ThemedText>
+        <InputContainer>
+          <ThemedText type="label">Name</ThemedText>
+          <Controller
+            control={control}
+            rules={{
+              required: true,
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <ThemedTextInput
+                placeholder="Type here..."
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                inputMode="text"
+                textContentType="name"
+              />
+            )}
+            name="name"
+          />
+        </InputContainer>
+        {errors.name && <ThemedText>This field is required</ThemedText>}
         <InputContainer>
           <ThemedText type="label">Email address</ThemedText>
           <Controller

@@ -35,12 +35,22 @@ export const UnauthorizedErrorResponseSchema = {
   401: Type.Ref(ErrorResponseTemplateSchema, { description: "Unauthorized" }),
 }
 
+export const InvalidCredentialsErrorResponseSchema = {
+  401: Type.Ref(ErrorResponseTemplateSchema, {
+    description: "Invalid credentials",
+  }),
+}
+
 export const ForbiddenErrorResponseSchema = {
   403: Type.Ref(ErrorResponseTemplateSchema, { description: "Forbidden" }),
 }
 
 export const NotFoundErrorResponseSchema = {
   404: Type.Ref(ErrorResponseTemplateSchema, { description: "Not Found" }),
+}
+
+export const ConflictErrorResponseSchema = {
+  409: Type.Ref(ErrorResponseTemplateSchema, { description: "Conflict" }),
 }
 
 export const AuthenticationTimeoutErrorResponseSchema = {
@@ -68,5 +78,13 @@ export const ErrorResponsesSchema = {
   ...NotFoundErrorResponseSchema,
   ...AuthenticationTimeoutErrorResponseSchema,
   ...UnprocessableEntityErrorResponseSchema,
+  ...InternalServerErrorResponseSchema,
+}
+
+export const AuthErrorResponsesSchema = {
+  ...BadRequestErrorResponseSchema,
+  ...InvalidCredentialsErrorResponseSchema,
+  ...ConflictErrorResponseSchema,
+  ...AuthenticationTimeoutErrorResponseSchema,
   ...InternalServerErrorResponseSchema,
 }

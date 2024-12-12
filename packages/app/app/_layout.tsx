@@ -30,9 +30,12 @@ import { BackgroundView } from "@/components/ui/BackgroundView";
 import { MyDarkTheme, MyLightTheme } from "@/constants/Colors";
 import { AuthContext, AuthProvider } from "@/contexts/auth.context";
 import { useAsyncStorage } from "@react-native-async-storage/async-storage";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+
+const queryClient = new QueryClient();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -87,43 +90,45 @@ export default function RootLayout() {
   }
 
   return (
-    <AuthProvider>
-      <ThemeProvider
-        value={colorScheme === "dark" ? MyDarkTheme : MyLightTheme}
-      >
-        <BackgroundView>
-          {token !== null ? (
-            <Stack
-              screenOptions={{
-                headerShown: false,
-              }}
-            >
-              <Stack.Screen
-                name="(tabs)"
-                options={{
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <ThemeProvider
+          value={colorScheme === "dark" ? MyDarkTheme : MyLightTheme}
+        >
+          <BackgroundView>
+            {token !== null ? (
+              <Stack
+                screenOptions={{
                   headerShown: false,
                 }}
-              />
-              <Stack.Screen name="+not-found" />
-            </Stack>
-          ) : (
-            <Stack
-              screenOptions={{
-                headerShown: false,
-              }}
-            >
-              <Stack.Screen
-                name="(auth)"
-                options={{
+              >
+                <Stack.Screen
+                  name="(tabs)"
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+                <Stack.Screen name="+not-found" />
+              </Stack>
+            ) : (
+              <Stack
+                screenOptions={{
                   headerShown: false,
                 }}
-              />
-              <Stack.Screen name="+not-found" />
-            </Stack>
-          )}
-          <StatusBar style="auto" />
-        </BackgroundView>
-      </ThemeProvider>
-    </AuthProvider>
+              >
+                <Stack.Screen
+                  name="(auth)"
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+                <Stack.Screen name="+not-found" />
+              </Stack>
+            )}
+            <StatusBar style="auto" />
+          </BackgroundView>
+        </ThemeProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }

@@ -1,4 +1,4 @@
-import { User } from "@src/entities/user.entity.js"
+import { User } from "./../entities/user.entity.js"
 import { FastifyInstance } from "fastify"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
@@ -8,8 +8,8 @@ import {
   LoginRequestSchema,
   RegistrationRequestBody,
   RegistrationRequestSchema,
-} from "@src/schemas/auth.schema.js"
-import { ErrorResponsesSchema } from "@src/schemas/errors.schema.js"
+} from "./../schemas/auth.schema.js"
+import { AuthErrorResponsesSchema } from "./../schemas/errors.schema.js"
 
 const AuthController = async (fastify: FastifyInstance) => {
   fastify.post<{
@@ -23,7 +23,7 @@ const AuthController = async (fastify: FastifyInstance) => {
         body: LoginRequestSchema,
         response: {
           200: AuthResponseSchema,
-          ...ErrorResponsesSchema,
+          ...AuthErrorResponsesSchema,
         },
       },
     },
@@ -82,7 +82,7 @@ const AuthController = async (fastify: FastifyInstance) => {
         body: RegistrationRequestSchema,
         response: {
           201: AuthResponseSchema,
-          ...ErrorResponsesSchema,
+          ...AuthErrorResponsesSchema,
         },
       },
     },
