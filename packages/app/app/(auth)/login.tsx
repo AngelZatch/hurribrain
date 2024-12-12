@@ -7,6 +7,8 @@ import { useForm, Controller } from "react-hook-form";
 import ThemedTextInput from "@/components/ui/ThemedTextInput";
 import { View } from "react-native";
 import { InputContainer } from "@/components/ui/InputContainer";
+import { useContext } from "react";
+import { AuthContext } from "@/contexts/auth.context";
 
 type FormData = {
   email: string;
@@ -14,6 +16,8 @@ type FormData = {
 };
 
 export default function LoginScreen() {
+  const { login } = useContext(AuthContext);
+
   const {
     control,
     handleSubmit,
@@ -25,7 +29,13 @@ export default function LoginScreen() {
     },
   });
 
-  const onSubmit = (data: FormData) => console.log(data);
+  const onSubmit = (data: FormData) => {
+    console.log("LOGIN", data);
+
+    // Ping the login API
+
+    login();
+  };
 
   return (
     <PageContainer

@@ -14,6 +14,13 @@
     "database:rebuild": "yarn mikro-orm migration:fresh --seed",
     "test": "ts-mocha -p tsconfig.json --file src/utils/setupTests.ts src/**/*.test.ts --exit"
   },
+  "mikro-orm": {
+    "useTsNode": true,
+    "configPaths": [
+      "./src/mikro-orm.config.ts",
+      "./dist/mikro-orm.config.js"
+    ]
+  },
   "devDependencies": {
     "@eslint/js": "^9.12.0",
     "@faker-js/faker": "^9.0.3",

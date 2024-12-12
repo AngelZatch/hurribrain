@@ -29,12 +29,15 @@ import {
 import { BackgroundView } from "@/components/ui/BackgroundView";
 import { MyDarkTheme, MyLightTheme } from "@/constants/Colors";
 import { AuthContext, AuthProvider } from "@/contexts/auth.context";
+import { useAsyncStorage } from "@react-native-async-storage/async-storage";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const { login, user, token } = useContext(AuthContext);
+  const { getItem } = useAsyncStorage("hurribrain-access-token");
 
   const [loaded] = useFonts({
     Exo_100Thin,
@@ -57,27 +60,27 @@ export default function RootLayout() {
     Exo_900Black_Italic,
   });
 
+  const getUser = async () => {
+    try {
+      const value = await getItem();
+      if (value !== null) {
+        console.log("TOKEN EXISTS", value);
+        login();
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
-
-  const { token } = useContext(AuthContext);
-
-  console.log(token);
-
-  const authContext = useMemo(
-    () => ({
-      signIn: async () => {
-        console.log("Sign in");
-      },
-      signOut: async () => {
-        console.log("Sign out");
-      },
-    }),
-    []
-  );
 
   if (!loaded) {
     return null;
