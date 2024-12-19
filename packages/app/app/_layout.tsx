@@ -4,7 +4,7 @@ import * as SplashScreen from "expo-splash-screen";
 
 import { useColorScheme } from "../hooks/useColorScheme";
 import { StatusBar } from "expo-status-bar";
-import React, { useContext, useEffect, useMemo } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import {
   useFonts,
   Exo_100Thin,
@@ -39,10 +39,21 @@ const queryClient = new QueryClient();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const { login, user, token } = useContext(AuthContext);
+  const { refresh, user } = useContext(AuthContext);
   const { getItem } = useAsyncStorage("hurribrain-access-token");
 
-  const [loaded] = useFonts({
+  const [userLoaded, setUserLoaded] = useState(false);
+
+  const getUser = async () => {
+    const value = await getItem();
+    if (value !== null) {
+      console.log("TOKEN EXISTS", value);
+      refresh();
+    }
+    setUserLoaded(true);
+  };
+
+  const [fontsLoaded] = useFonts({
     Exo_100Thin,
     Exo_200ExtraLight,
     Exo_300Light,
@@ -63,29 +74,17 @@ export default function RootLayout() {
     Exo_900Black_Italic,
   });
 
-  const getUser = async () => {
-    try {
-      const value = await getItem();
-      if (value !== null) {
-        console.log("TOKEN EXISTS", value);
-        login();
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   useEffect(() => {
     getUser();
   }, []);
 
   useEffect(() => {
-    if (loaded) {
+    if (fontsLoaded && userLoaded) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [fontsLoaded, userLoaded]);
 
-  if (!loaded) {
+  if (!fontsLoaded) {
     return null;
   }
 
@@ -96,35 +95,28 @@ export default function RootLayout() {
           value={colorScheme === "dark" ? MyDarkTheme : MyLightTheme}
         >
           <BackgroundView>
-            {token !== null ? (
-              <Stack
-                screenOptions={{
-                  headerShown: false,
-                }}
-              >
+            <Stack
+              screenOptions={{
+                headerShown: false,
+              }}
+            >
+              {user !== null ? (
                 <Stack.Screen
                   name="(tabs)"
                   options={{
                     headerShown: false,
                   }}
                 />
-                <Stack.Screen name="+not-found" />
-              </Stack>
-            ) : (
-              <Stack
-                screenOptions={{
-                  headerShown: false,
-                }}
-              >
+              ) : (
                 <Stack.Screen
                   name="(auth)"
                   options={{
                     headerShown: false,
                   }}
                 />
-                <Stack.Screen name="+not-found" />
-              </Stack>
-            )}
+              )}
+              <Stack.Screen name="+not-found" />
+            </Stack>
             <StatusBar style="auto" />
           </BackgroundView>
         </ThemeProvider>

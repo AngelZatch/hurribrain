@@ -21,11 +21,15 @@ const AuthContext = createContext<{
   user: User | null;
   login: () => void;
   logout: () => void;
+  refresh: () => void;
+  register: () => void;
 }>({
   token: null,
   user: null,
   login: () => {},
   logout: () => {},
+  refresh: () => {},
+  register: () => {},
 });
 
 const authReducer = (
@@ -49,6 +53,12 @@ const authReducer = (
         ...state,
         user: null,
         token: null,
+      };
+
+    case "REFRESH":
+      return {
+        ...state,
+        user: action.user,
       };
   }
 };
@@ -86,8 +96,22 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     });
   }, []);
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
+    await AsyncStorage.removeItem("hurribrain-access-token");
     dispatch({ type: "LOGOUT", token: null, user: null });
+  }, []);
+
+  const refresh = useCallback(() => {
+    console.log("REFRESH CALLED");
+    dispatch({
+      type: "REFRESH",
+      user: {
+        uuid: "35b0f1e8-4530-4633-a8c4-65b5aef16b13",
+        name: "Siege",
+        email: "siege@gmail.com",
+        role: "standard",
+      },
+    });
   }, []);
 
   const value = useMemo(() => {
@@ -97,8 +121,9 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       register,
       login,
       logout,
+      refresh,
     };
-  }, [state.token, state.user, register, login, logout]);
+  }, [state.token, state.user, register, login, logout, refresh]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

@@ -95,6 +95,8 @@ const AuthController = async (fastify: FastifyInstance) => {
         $or: [{ email }, { name }],
       })
 
+      console.log(existingUser)
+
       if (existingUser) {
         reply.statusCode = 409
         return new Error("User already exists")
