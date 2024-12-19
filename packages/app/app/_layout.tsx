@@ -4,7 +4,7 @@ import * as SplashScreen from "expo-splash-screen";
 
 import { useColorScheme } from "../hooks/useColorScheme";
 import { StatusBar } from "expo-status-bar";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   useFonts,
   Exo_100Thin,
@@ -39,7 +39,7 @@ const queryClient = new QueryClient();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const { refresh, user } = useContext(AuthContext);
+  const authContext = useContext(AuthContext);
   const { getItem } = useAsyncStorage("hurribrain-access-token");
 
   const [userLoaded, setUserLoaded] = useState(false);
@@ -48,7 +48,7 @@ export default function RootLayout() {
     const value = await getItem();
     if (value !== null) {
       console.log("TOKEN EXISTS", value);
-      refresh();
+      authContext.refresh();
     }
     setUserLoaded(true);
   };
@@ -79,10 +79,22 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
+    if (fontsLoaded) {
+      console.log("FONTS LOADED");
+    }
+    if (userLoaded) {
+      console.log("USER LOADED");
+    }
     if (fontsLoaded && userLoaded) {
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded, userLoaded]);
+
+  useEffect(() => {
+    if (authContext.user !== null) {
+      console.log("USER EXISTS", authContext.user);
+    }
+  }, [authContext.user]);
 
   if (!fontsLoaded) {
     return null;
@@ -100,16 +112,16 @@ export default function RootLayout() {
                 headerShown: false,
               }}
             >
-              {user !== null ? (
+              {!authContext.user ? (
                 <Stack.Screen
-                  name="(tabs)"
+                  name="(auth)"
                   options={{
                     headerShown: false,
                   }}
                 />
               ) : (
                 <Stack.Screen
-                  name="(auth)"
+                  name="(tabs)"
                   options={{
                     headerShown: false,
                   }}
