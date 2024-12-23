@@ -15,7 +15,7 @@ export default function AppLayout() {
     console.log("we are at least going there; app layout");
   }, []);
 
-  if (!isLoading) {
+  if (isLoading) {
     return null;
   }
 
