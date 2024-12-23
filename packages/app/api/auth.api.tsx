@@ -17,5 +17,26 @@ export const useRegister = () => {
     onSuccess: (data) => {
       console.log("REGISTERED", data);
     },
+    onError: (error) => {
+      console.error("REGISTER ERROR", error);
+    },
+  });
+};
+
+export const useLogin = () => {
+  return useMutation({
+    mutationFn: async (data: { email: string; password: String }) => {
+      const response = await axios.post(
+        "http://localhost:8080/auth/login",
+        data
+      );
+      return response.data;
+    },
+    onSuccess: (data) => {
+      console.log("LOGGED IN", data);
+    },
+    onError: (error) => {
+      console.error("LOGIN ERROR", error);
+    },
   });
 };

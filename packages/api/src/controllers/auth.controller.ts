@@ -48,7 +48,7 @@ const AuthController = async (fastify: FastifyInstance) => {
 
       if (!match) {
         reply.statusCode = 401
-        return new Error("Invalid credentials")
+        return new Error("Invalid credentials (password)")
       }
 
       const accessToken = jwt.sign(
