@@ -5,14 +5,23 @@ import { Divider } from "@/components/ui/Divider";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { Link } from "expo-router";
 import { View, Text, Image, Button, StyleSheet } from "react-native";
+import { useAuth } from "@/contexts/auth.context";
 
 export default function ProfileScreen() {
+  const { logout } = useAuth();
+
   return (
     <PageContainer>
       <View>
         <Link href="/settings">
           <Button title="Settings"></Button>
         </Link>
+        <Button
+          onPress={() => {
+            logout();
+          }}
+          title="Logout"
+        ></Button>
       </View>
       <View
         style={{

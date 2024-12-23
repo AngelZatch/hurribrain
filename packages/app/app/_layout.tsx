@@ -66,7 +66,7 @@ export default function RootLayout() {
       >
         <QueryClientProvider client={queryClient}>
           <BackgroundView>
-            <Slot />
+            <Slot initialRouteName="welcome" />
           </BackgroundView>
         </QueryClientProvider>
       </ThemeProvider>

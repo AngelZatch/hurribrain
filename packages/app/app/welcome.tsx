@@ -2,7 +2,6 @@ import ThemedButton from "@/components/ui/ThemedButton";
 import ThemedText from "@/components/ui/ThemedText";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { Link } from "expo-router";
-import { Button, Pressable, View } from "react-native";
 
 export default function WelcomeScreen() {
   return (

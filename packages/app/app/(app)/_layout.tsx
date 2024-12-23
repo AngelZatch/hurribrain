@@ -11,17 +11,26 @@ SplashScreen.preventAutoHideAsync();
 export default function AppLayout() {
   const { user, isLoading } = useAuth();
 
-  useEffect(() => {
-    console.log("we are at least going there; app layout");
-  }, []);
-
   if (isLoading) {
     return null;
   }
 
-  if (!user) {
-    <Redirect href="/register" />;
+  if (user === null && !isLoading) {
+    return <Redirect href="/welcome" />;
   }
 
-  return <Stack />;
+  return (
+    <Stack
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen
+        name="(home)"
+        options={{
+          headerShown: false,
+        }}
+      />
+    </Stack>
+  );
 }
