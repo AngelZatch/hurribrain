@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 export const useRegister = () => {
@@ -14,12 +14,6 @@ export const useRegister = () => {
       );
       return response.data;
     },
-    onSuccess: (data) => {
-      console.log("REGISTERED", data);
-    },
-    onError: (error) => {
-      console.error("REGISTER ERROR", error);
-    },
   });
 };
 
@@ -31,12 +25,6 @@ export const useLogin = () => {
         data
       );
       return response.data;
-    },
-    onSuccess: (data) => {
-      console.log("LOGGED IN", data);
-    },
-    onError: (error) => {
-      console.error("LOGIN ERROR", error);
     },
   });
 };

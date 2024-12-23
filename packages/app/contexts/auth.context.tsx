@@ -1,5 +1,6 @@
 import { createContext, useContext } from "react";
 import { useStorageState } from "@/hooks/useStorageState";
+import { useLogin } from "@/api/auth.api";
 
 export type User = {
   uuid: string;
@@ -11,7 +12,7 @@ export type User = {
 const AuthContext = createContext<{
   isLoading: boolean;
   user: string | null;
-  login: () => void;
+  login: (token: string) => void;
   logout: () => void;
 }>({
   isLoading: false,
@@ -22,9 +23,6 @@ const AuthContext = createContext<{
 
 export function useAuth() {
   const value = useContext(AuthContext);
-
-  console.log("AUTH CONTEXT VALUE", value);
-
   return value;
 }
 
@@ -40,9 +38,8 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       value={{
         user,
         isLoading,
-        login: () => {
-          // TODO: Ping the login API to authenticate
-          setUser("dummy-auth-token");
+        login: (token) => {
+          setUser(token);
         },
         logout: () => {
           setUser(null);

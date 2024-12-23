@@ -33,12 +33,8 @@ export default function LoginScreen() {
   });
 
   const onSubmit = async (data: FormData) => {
-    console.log("LOGIN", data);
-
-    // Ping the login API
-    // await signIn(data);
-
-    login();
+    const tokens = await signIn(data);
+    login(tokens.accessToken);
     router.replace("/");
   };
 

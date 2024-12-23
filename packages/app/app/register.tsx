@@ -36,8 +36,8 @@ export default function RegisterScreen() {
   });
 
   const onSubmit = async (data: FormData) => {
-    await register(data);
-    login();
+    const tokens = await register(data);
+    login(tokens.accessToken);
     router.replace("/");
   };
 
