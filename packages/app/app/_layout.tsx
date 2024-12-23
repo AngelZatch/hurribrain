@@ -1,10 +1,11 @@
-import { Stack } from "expo-router";
-import { ThemeProvider } from "@react-navigation/native";
-import * as SplashScreen from "expo-splash-screen";
+import React from "react";
+import { Slot } from "expo-router";
 
-import { useColorScheme } from "../hooks/useColorScheme";
-import { StatusBar } from "expo-status-bar";
-import React, { useContext, useEffect, useState } from "react";
+import { AuthProvider } from "@/contexts/auth.context";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ThemeProvider } from "@react-navigation/native";
+import { useColorScheme } from "@/hooks/useColorScheme";
+import { MyDarkTheme, MyLightTheme } from "@/constants/Colors";
 import {
   useFonts,
   Exo_100Thin,
@@ -27,31 +28,11 @@ import {
   Exo_900Black_Italic,
 } from "@expo-google-fonts/exo";
 import { BackgroundView } from "@/components/ui/BackgroundView";
-import { MyDarkTheme, MyLightTheme } from "@/constants/Colors";
-import { AuthContext, AuthProvider } from "@/contexts/auth.context";
-import { useAsyncStorage } from "@react-native-async-storage/async-storage";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const authContext = useContext(AuthContext);
-  const { getItem } = useAsyncStorage("hurribrain-access-token");
-
-  const [userLoaded, setUserLoaded] = useState(false);
-
-  const getUser = async () => {
-    const value = await getItem();
-    if (value !== null) {
-      console.log("TOKEN EXISTS", value);
-      authContext.refresh();
-    }
-    setUserLoaded(true);
-  };
 
   const [fontsLoaded] = useFonts({
     Exo_100Thin,
@@ -74,65 +55,21 @@ export default function RootLayout() {
     Exo_900Black_Italic,
   });
 
-  useEffect(() => {
-    getUser();
-  }, []);
-
-  useEffect(() => {
-    if (fontsLoaded) {
-      console.log("FONTS LOADED");
-    }
-    if (userLoaded) {
-      console.log("USER LOADED");
-    }
-    if (fontsLoaded && userLoaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded, userLoaded]);
-
-  useEffect(() => {
-    if (authContext.user !== null) {
-      console.log("USER EXISTS", authContext.user);
-    }
-  }, [authContext.user]);
-
   if (!fontsLoaded) {
     return null;
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <ThemeProvider
-          value={colorScheme === "dark" ? MyDarkTheme : MyLightTheme}
-        >
+    <AuthProvider>
+      <ThemeProvider
+        value={colorScheme === "dark" ? MyDarkTheme : MyLightTheme}
+      >
+        <QueryClientProvider client={queryClient}>
           <BackgroundView>
-            <Stack
-              screenOptions={{
-                headerShown: false,
-              }}
-            >
-              {!authContext.user ? (
-                <Stack.Screen
-                  name="(auth)"
-                  options={{
-                    headerShown: false,
-                  }}
-                />
-              ) : (
-                <Stack.Screen
-                  name="(tabs)"
-                  options={{
-                    headerShown: false,
-                  }}
-                />
-              )}
-              <Stack.Screen name="+not-found" />
-            </Stack>
-            <StatusBar style="auto" />
+            <Slot />
           </BackgroundView>
-        </ThemeProvider>
-      </AuthProvider>
-    </QueryClientProvider>
+        </QueryClientProvider>
+      </ThemeProvider>
+    </AuthProvider>
   );
 }

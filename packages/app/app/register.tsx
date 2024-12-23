@@ -11,6 +11,7 @@ import axios from "axios";
 import { useContext } from "react";
 import { AuthContext } from "@/contexts/auth.context";
 import { useRegister } from "@/api/auth.api";
+import { router } from "expo-router";
 
 type FormData = {
   email: string;
@@ -37,6 +38,7 @@ export default function RegisterScreen() {
   const onSubmit = async (data: FormData) => {
     await register(data);
     login();
+    router.replace("/");
   };
 
   return (

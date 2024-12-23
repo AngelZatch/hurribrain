@@ -8,8 +8,9 @@ import ThemedTextInput from "@/components/ui/ThemedTextInput";
 import { View } from "react-native";
 import { InputContainer } from "@/components/ui/InputContainer";
 import { useContext } from "react";
-import { AuthContext } from "@/contexts/auth.context";
+import { AuthContext, useAuth } from "@/contexts/auth.context";
 import { useLogin } from "@/api/auth.api";
+import { router } from "expo-router";
 
 type FormData = {
   email: string;
@@ -18,7 +19,7 @@ type FormData = {
 
 export default function LoginScreen() {
   const { mutateAsync: signIn } = useLogin();
-  const { login } = useContext(AuthContext);
+  const { login } = useAuth();
 
   const {
     control,
@@ -35,9 +36,10 @@ export default function LoginScreen() {
     console.log("LOGIN", data);
 
     // Ping the login API
-    await signIn(data);
+    // await signIn(data);
 
     login();
+    router.replace("/");
   };
 
   return (
