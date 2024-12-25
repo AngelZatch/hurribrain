@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 export const useRegister = () => {
@@ -24,6 +24,26 @@ export const useLogin = () => {
         "http://localhost:8080/auth/login",
         data
       );
+      return response.data;
+    },
+  });
+};
+
+export const useGetMe = (token: string) => {
+  return useQuery({
+    queryKey: ["me"],
+    queryFn: async (): Promise<{
+      uuid: string;
+      email: string;
+      name: string;
+      createdAt: string;
+      updatedAt: string;
+    }> => {
+      const response = await axios.get("http://localhost:8080/auth/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return response.data;
     },
   });

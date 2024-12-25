@@ -55,7 +55,7 @@ export class User {
   @Property({ onUpdate: () => new Date() })
   updatedAt: Date = new Date()
 
-  @Property({ nullable: true })
+  @Property({ hidden: true, nullable: true })
   deletedAt?: Date
 
   constructor(body: Pick<User, "email" | "name">) {

@@ -8,9 +8,22 @@ import { View, Text, Image, Button, StyleSheet } from "react-native";
 import { useAuth } from "@/contexts/auth.context";
 import ThemedIconButton from "@/components/ui/ThemedIconButton";
 import ThemedButton from "@/components/ui/ThemedButton";
+import { useGetMe } from "@/api/auth.api";
 
 export default function ProfileScreen() {
-  const { logout } = useAuth();
+  const { user } = useAuth();
+
+  if (!user) {
+    return null;
+  }
+
+  const { data, isLoading, isError } = useGetMe(user);
+
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
+
+  console.log(data);
 
   return (
     <PageContainer>
@@ -69,7 +82,7 @@ export default function ProfileScreen() {
                 fontFamily: "Exo_700Bold",
               }}
             >
-              Na'el
+              {data?.name}
             </ThemedText>
             <Text
               style={{
@@ -138,7 +151,7 @@ export default function ProfileScreen() {
             <ThemedText style={styles.statTitle} colorType="secondaryText">
               Arrived
             </ThemedText>
-            <Text style={styles.statValue}>Sept. 14, 2024</Text>
+            <Text style={styles.statValue}>{data?.createdAt}</Text>
           </View>
           <View style={styles.statRow}>
             <ThemedText style={styles.statTitle} colorType="secondaryText">
