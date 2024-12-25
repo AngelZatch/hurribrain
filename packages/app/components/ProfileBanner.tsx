@@ -7,7 +7,7 @@ import ThemedText from "./ui/ThemedText";
 import CoinCount from "./CoinCount";
 import { Divider } from "./ui/Divider";
 import { useAuth } from "@/contexts/auth.context";
-import { useGetMe } from "@/api/auth.api";
+import { useGetMeWithStats } from "@/api/auth.api";
 
 export default function ProfileBanner() {
   const colorScheme = useColorScheme() ?? "light";
@@ -17,7 +17,7 @@ export default function ProfileBanner() {
     return null;
   }
 
-  const { data, isLoading, isError } = useGetMe(user);
+  const { data, isLoading, isError } = useGetMeWithStats(user);
 
   if (isLoading) {
     return <Text>Loading...</Text>;
@@ -61,7 +61,10 @@ export default function ProfileBanner() {
             alignItems: "center",
           }}
         >
-          <ExperienceBar current={50} level={2} />
+          <ExperienceBar
+            current={data!.stats.experiencePoints}
+            level={data!.stats.level}
+          />
           <Divider orientation="vertical" size={15} />
           <CoinCount count={138} />
         </View>
