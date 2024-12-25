@@ -8,7 +8,7 @@ import { View, Text, Image, Button, StyleSheet } from "react-native";
 import { useAuth } from "@/contexts/auth.context";
 import ThemedIconButton from "@/components/ui/ThemedIconButton";
 import ThemedButton from "@/components/ui/ThemedButton";
-import { useGetMe } from "@/api/auth.api";
+import { useGetMeWithStats } from "@/api/auth.api";
 
 export default function ProfileScreen() {
   const { user } = useAuth();
@@ -17,13 +17,17 @@ export default function ProfileScreen() {
     return null;
   }
 
-  const { data, isLoading, isError } = useGetMe(user);
+  const { data, isLoading, isError } = useGetMeWithStats(user);
 
   if (isLoading) {
     return <Text>Loading...</Text>;
   }
 
   console.log(data);
+
+  const computeWinRate = (gamesPlayed: number, gamesWon: number) => {
+    return gamesPlayed > 0 ? (gamesWon / gamesPlayed) * 100 : 0;
+  };
 
   return (
     <PageContainer>
@@ -93,7 +97,10 @@ export default function ProfileScreen() {
             >
               Master of the Quiz
             </Text>
-            <ExperienceBar current={40} level={2} />
+            <ExperienceBar
+              current={data!.stats.experiencePoints}
+              level={data!.stats.level}
+            />
             <ThemedButton title="Edit Profile" size="medium" />
           </View>
         </ContainerView>
@@ -107,21 +114,37 @@ export default function ProfileScreen() {
             <ThemedText style={styles.statTitle} colorType="secondaryText">
               Games played
             </ThemedText>
-            <Text style={styles.statValue}>14</Text>
+            <Text style={styles.statValue}>{data?.stats.gamesPlayed}</Text>
           </View>
+          <View style={styles.statRow}>
+            <ThemedText style={styles.statTitle} colorType="secondaryText">
+              First game
+            </ThemedText>
+            <Text style={styles.statValue}>{data?.stats.firstGamePlayed}</Text>
+          </View>
+          <Divider orientation="horizontal" size="100%" />
           <View style={styles.statRow}>
             <ThemedText style={styles.statTitle} colorType="secondaryText">
               Games won
             </ThemedText>
-            <Text style={styles.statValue}>12</Text>
+            <Text style={styles.statValue}>{data?.stats.gamesWon}</Text>
           </View>
           <View style={styles.statRow}>
             <ThemedText style={styles.statTitle} colorType="secondaryText">
-              Games played
+              First victory
             </ThemedText>
-            <Text style={styles.statValue}>85.71%</Text>
+            <Text style={styles.statValue}>{data?.stats.firstGameWon}</Text>
           </View>
           <Divider orientation="horizontal" size="100%" />
+          <View style={styles.statRow}>
+            <ThemedText style={styles.statTitle} colorType="secondaryText">
+              Win rate
+            </ThemedText>
+            <Text style={styles.statValue}>
+              {computeWinRate(data!.stats.gamesWon, data!.stats.gamesPlayed)} %
+            </Text>
+          </View>
+          {/* 
           <View style={styles.statRow}>
             <ThemedText style={styles.statTitle} colorType="secondaryText">
               Question asked
@@ -139,7 +162,7 @@ export default function ProfileScreen() {
               Win rate
             </ThemedText>
             <Text style={styles.statValue}>77.50%</Text>
-          </View>
+          </View> */}
         </ContainerView>
         <ContainerView
           style={{
@@ -152,18 +175,6 @@ export default function ProfileScreen() {
               Arrived
             </ThemedText>
             <Text style={styles.statValue}>{data?.createdAt}</Text>
-          </View>
-          <View style={styles.statRow}>
-            <ThemedText style={styles.statTitle} colorType="secondaryText">
-              First game
-            </ThemedText>
-            <Text style={styles.statValue}>Sept. 14, 2024</Text>
-          </View>
-          <View style={styles.statRow}>
-            <ThemedText style={styles.statTitle} colorType="secondaryText">
-              First victory
-            </ThemedText>
-            <Text style={styles.statValue}>Sept. 17, 2024</Text>
           </View>
         </ContainerView>
       </View>

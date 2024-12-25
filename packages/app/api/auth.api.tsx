@@ -48,3 +48,31 @@ export const useGetMe = (token: string) => {
     },
   });
 };
+
+export const useGetMeWithStats = (token: string) => {
+  return useQuery({
+    queryKey: ["meWithStats"],
+    queryFn: async (): Promise<{
+      uuid: string;
+      email: string;
+      name: string;
+      createdAt: string;
+      updatedAt: string;
+      stats: {
+        level: number;
+        experiencePoints: number;
+        gamesPlayed: number;
+        gamesWon: number;
+        firstGamePlayed: string;
+        firstGameWon: string;
+      };
+    }> => {
+      const response = await axios.get("http://localhost:8080/auth/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    },
+  });
+};

@@ -11,6 +11,7 @@ import {
 } from "./../schemas/auth.schema.js"
 import { AuthErrorResponsesSchema } from "./../schemas/errors.schema.js"
 import { verifyJWT } from "../utils/authChecker.js"
+import { UserStats } from "../entities/userStats.entity.js"
 
 const AuthController = async (fastify: FastifyInstance) => {
   fastify.post<{
@@ -96,8 +97,6 @@ const AuthController = async (fastify: FastifyInstance) => {
         $or: [{ email }, { name }],
       })
 
-      console.log(existingUser)
-
       if (existingUser) {
         reply.statusCode = 409
         return new Error("User already exists")
@@ -106,7 +105,14 @@ const AuthController = async (fastify: FastifyInstance) => {
       const user = new User({ email, name })
       user.password = await bcrypt.hash(password, 10)
 
-      await em.persistAndFlush(user)
+      em.persist(user)
+
+      const stats = new UserStats(user)
+      console.log(stats)
+
+      em.persist(new UserStats(user))
+
+      await em.flush()
 
       reply.statusCode = 201
 
@@ -139,7 +145,12 @@ const AuthController = async (fastify: FastifyInstance) => {
       const em = request.em
       const user = await em.findOneOrFail(User, { uuid: request.user })
 
-      return user
+      const userStats = await em.findOneOrFail(UserStats, { user })
+
+      return {
+        ...user,
+        stats: userStats,
+      }
     }
   )
 }

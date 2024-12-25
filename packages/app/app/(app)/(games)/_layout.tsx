@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 
-export default function HomeStack() {
+export default function ProfileStack() {
   return (
     <Stack
       screenOptions={{
@@ -8,9 +8,9 @@ export default function HomeStack() {
       }}
     >
       <Stack.Screen
-        name="home"
+        name="games"
         options={{
-          title: "Home",
+          title: "Games",
         }}
       />
     </Stack>

@@ -31,13 +31,6 @@ export class User {
   @Index()
   name!: string
 
-  // Level
-  // @Property()
-  // level: number
-
-  // @Property()
-  // experience: number
-
   // Access restrictions
   @Property({ hidden: true, lazy: true })
   password!: string
