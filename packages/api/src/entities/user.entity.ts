@@ -31,6 +31,13 @@ export class User {
   @Index()
   name!: string
 
+  // Level
+  // @Property()
+  // level: number
+
+  // @Property()
+  // experience: number
+
   // Access restrictions
   @Property({ hidden: true, lazy: true })
   password!: string
@@ -54,5 +61,6 @@ export class User {
   constructor(body: Pick<User, "email" | "name">) {
     this.email = body.email
     this.name = body.name
+    // this.level = 1
   }
 }

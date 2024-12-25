@@ -10,6 +10,7 @@ import {
   RegistrationRequestSchema,
 } from "./../schemas/auth.schema.js"
 import { AuthErrorResponsesSchema } from "./../schemas/errors.schema.js"
+import { verifyJWT } from "../utils/authChecker.js"
 
 const AuthController = async (fastify: FastifyInstance) => {
   fastify.post<{
@@ -126,6 +127,19 @@ const AuthController = async (fastify: FastifyInstance) => {
         accessToken,
         refreshToken: "",
       }
+    }
+  )
+
+  fastify.get(
+    "/me",
+    {
+      preHandler: [fastify.auth([verifyJWT])],
+    },
+    async (request) => {
+      const em = request.em
+      const user = await em.findOneOrFail(User, { uuid: request.user })
+
+      return user
     }
   )
 }

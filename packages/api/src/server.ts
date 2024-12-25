@@ -7,6 +7,7 @@ import { ErrorResponseTemplateSchema } from "./schemas/errors.schema.js"
 import TagController from "./controllers/tag.controller.js"
 import { getEntityManager } from "./middlewares/entityManager.middleware.js"
 import AuthController from "./controllers/auth.controller.js"
+import fastifyAuth from "@fastify/auth"
 
 export const server = Fastify()
 
@@ -44,9 +45,12 @@ export const initializeServer = async () => {
     origin: true,
   })
 
+  await server.register(fastifyAuth)
+
   await server.register(async (instance) => {
     instance.addSchema(ErrorResponseTemplateSchema)
     instance.decorateRequest("em")
+    instance.decorateRequest("user")
 
     instance.addHook("preHandler", async (request: FastifyRequest) => {
       request.em = getEntityManager()
