@@ -6,9 +6,23 @@ import { useColorScheme } from "../hooks/useColorScheme";
 import ThemedText from "./ui/ThemedText";
 import CoinCount from "./CoinCount";
 import { Divider } from "./ui/Divider";
+import { useAuth } from "@/contexts/auth.context";
+import { useGetMe } from "@/api/auth.api";
 
 export default function ProfileBanner() {
   const colorScheme = useColorScheme() ?? "light";
+  const { user } = useAuth();
+
+  if (!user) {
+    return null;
+  }
+
+  const { data, isLoading, isError } = useGetMe(user);
+
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
+
   return (
     <View
       style={{
@@ -36,7 +50,7 @@ export default function ProfileBanner() {
             fontFamily: "Exo_700Bold",
           }}
         >
-          Na'el
+          {data?.name}
         </ThemedText>
         <View
           style={{
