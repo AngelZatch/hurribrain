@@ -6,22 +6,27 @@ import { PageContainer } from "@/components/ui/PageContainer";
 import { Link } from "expo-router";
 import { View, Text, Image, Button, StyleSheet } from "react-native";
 import { useAuth } from "@/contexts/auth.context";
+import ThemedIconButton from "@/components/ui/ThemedIconButton";
+import ThemedButton from "@/components/ui/ThemedButton";
 
 export default function ProfileScreen() {
   const { logout } = useAuth();
 
   return (
     <PageContainer>
-      <View>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "flex-end",
+          gap: 10,
+          paddingHorizontal: 0,
+          paddingVertical: 10,
+        }}
+      >
         <Link href="/settings">
-          <Button title="Settings"></Button>
+          <ThemedIconButton icon="gearshape.fill" title="Settings" />
         </Link>
-        <Button
-          onPress={() => {
-            logout();
-          }}
-          title="Logout"
-        ></Button>
       </View>
       <View
         style={{
@@ -76,7 +81,7 @@ export default function ProfileScreen() {
               Master of the Quiz
             </Text>
             <ExperienceBar current={40} level={2} />
-            <Button title="Edit Profile" />
+            <ThemedButton title="Edit Profile" size="medium" />
           </View>
         </ContainerView>
         <ContainerView
