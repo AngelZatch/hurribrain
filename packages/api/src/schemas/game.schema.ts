@@ -1,6 +1,7 @@
 import { Static, Type } from "@sinclair/typebox"
+
 import { TagResponseSchema } from "./tag.schema.js"
-import { GameDifficulty } from "@src/entities/game.entity.js"
+import { GameDifficulty } from "./../entities/game.entity.js"
 
 export const GameResponseSchema = Type.Object(
   {

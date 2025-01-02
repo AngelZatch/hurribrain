@@ -1,4 +1,5 @@
 import { useGetGames } from "@/api/games.api";
+import GameListItem from "@/components/GameListItem";
 import ProfileBanner from "@/components/ProfileBanner";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { useAuth } from "@/contexts/auth.context";
@@ -22,8 +23,21 @@ export default function GamesScreen() {
   return (
     <PageContainer>
       <ProfileBanner />
-      <View style={{ flex: 1 }}>
-        <Text>Games</Text>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-start",
+          gap: 16,
+          flexGrow: 1,
+          flexShrink: 0,
+          flexBasis: 0,
+          alignSelf: "stretch",
+          overflow: "scroll",
+        }}
+      >
+        {data &&
+          data.data.map((game) => <GameListItem key={game.uuid} game={game} />)}
       </View>
     </PageContainer>
   );

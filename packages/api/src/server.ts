@@ -8,6 +8,7 @@ import TagController from "./controllers/tag.controller.js"
 import { getEntityManager } from "./middlewares/entityManager.middleware.js"
 import AuthController from "./controllers/auth.controller.js"
 import fastifyAuth from "@fastify/auth"
+import GameController from "./controllers/game.controller.js"
 
 export const server = Fastify()
 
@@ -59,6 +60,7 @@ export const initializeServer = async () => {
     await instance.register(AuthController, { prefix: "/auth" })
     await instance.register(QuestionController, { prefix: "/questions" })
     await instance.register(TagController, { prefix: "/tags" })
+    await instance.register(GameController, { prefix: "/games" })
   })
 
   await server.ready()

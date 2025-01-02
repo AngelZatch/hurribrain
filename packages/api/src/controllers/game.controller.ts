@@ -1,5 +1,7 @@
-import { Game } from "@src/entities/game.entity.js"
-import { ErrorResponsesSchema } from "@src/schemas/errors.schema.js"
+import { wrap } from "@mikro-orm/core"
+import { FastifyInstance } from "fastify"
+import { Game } from "./../entities/game.entity.js"
+import { ErrorResponsesSchema } from "./../schemas/errors.schema.js"
 import {
   CreateGameSchema,
   GameParams,
@@ -7,10 +9,8 @@ import {
   GameResponseSchema,
   GetGamesReplySchema,
   PostGameBody,
-} from "@src/schemas/game.schema.js"
-import { FastifyInstance } from "fastify"
-import { wrap } from "@mikro-orm/core"
-import { Tag } from "@src/entities/tag.entity.js"
+} from "./../schemas/game.schema.js"
+import { Tag } from "./../entities/tag.entity.js"
 
 const GameController = async (fastify: FastifyInstance) => {
   fastify.addSchema(GameResponseSchema)
@@ -32,6 +32,7 @@ const GameController = async (fastify: FastifyInstance) => {
 
       const games = await em.findAll(Game, {
         refresh: true,
+        populate: ["tags"],
       })
 
       return reply.code(200).send({
@@ -107,7 +108,9 @@ const GameController = async (fastify: FastifyInstance) => {
 
       await em.persistAndFlush(game)
 
-      return reply.code(201).send(game)
+      const createdGame = await em.findOne(Game, { uuid: game.uuid }, { populate: ["tags"] })
+
+      return reply.code(201).send(createdGame)
     }
   )
 }
