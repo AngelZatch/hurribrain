@@ -4,6 +4,7 @@ import ProfileBanner from "@/components/ProfileBanner";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { useAuth } from "@/contexts/auth.context";
 import { View, Text } from "react-native";
+import { Link, router, useRouter } from "expo-router";
 
 export default function GamesScreen() {
   const { user } = useAuth();
@@ -37,7 +38,16 @@ export default function GamesScreen() {
         }}
       >
         {data &&
-          data.data.map((game) => <GameListItem key={game.uuid} game={game} />)}
+          data.data.map((game) => (
+            <Link
+              href={{
+                pathname: "/play/[id]",
+                params: { id: game.uuid },
+              }}
+            >
+              <GameListItem key={game.uuid} game={game} />
+            </Link>
+          ))}
       </View>
     </PageContainer>
   );

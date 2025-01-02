@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import ThemedText from "./ui/ThemedText";
 import TagChip from "./TagChip";
 import Avatar from "./Avatar";

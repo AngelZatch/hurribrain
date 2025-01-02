@@ -1,4 +1,4 @@
-import { Redirect, Stack, Tabs } from "expo-router";
+import { Redirect, Stack, Tabs, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 
 import React from "react";
@@ -15,6 +15,7 @@ SplashScreen.preventAutoHideAsync();
 export default function AppLayout() {
   const { user, isLoading } = useAuth();
   const colorScheme = useColorScheme();
+  const segments = useSegments();
 
   if (isLoading) {
     return null;
@@ -23,6 +24,8 @@ export default function AppLayout() {
   if (user === null && !isLoading) {
     return <Redirect href="/welcome" />;
   }
+
+  const hideTab = segments.includes("play");
 
   return (
     <Tabs
@@ -38,6 +41,7 @@ export default function AppLayout() {
           elevation: 0,
           paddingHorizontal: 16,
           paddingVertical: 32,
+          display: hideTab ? "none" : "flex",
         },
         animation: "shift",
       }}

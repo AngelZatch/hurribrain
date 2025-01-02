@@ -39,7 +39,7 @@ export default function ProfileScreen() {
         style={{
           display: "flex",
           flexDirection: "row",
-          alignItems: "flex-end",
+          alignSelf: "flex-end",
           gap: 10,
           paddingHorizontal: 0,
           paddingVertical: 10,

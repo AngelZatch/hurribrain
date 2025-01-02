@@ -61,7 +61,7 @@ const GameController = async (fastify: FastifyInstance) => {
       const em = request.em
       const { gameId } = request.params
 
-      const game = await em.findOne(Game, { uuid: gameId })
+      const game = await em.findOne(Game, { uuid: gameId }, { populate: ["tags"] })
 
       if (!game) {
         return reply.code(404).send({

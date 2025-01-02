@@ -25,3 +25,26 @@ export const useGetGames = (token: string) => {
     },
   });
 };
+
+export const useGetGame = (token: string, gameId: string) => {
+  return useQuery({
+    queryKey: ["games", gameId],
+    queryFn: async (): Promise<{
+      uuid: string;
+      code: string;
+      tags: Array<{ uuid: string; name: string; description?: string }>;
+      length: number;
+      difficulty: string;
+    }> => {
+      const response = await axios.get(
+        `http://localhost:8080/games/${gameId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    },
+  });
+};
