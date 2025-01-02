@@ -11,7 +11,7 @@ import ThemedButton from "@/components/ui/ThemedButton";
 import { useGetMeWithStats } from "@/api/auth.api";
 
 export default function ProfileScreen() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   if (!user) {
     return null;
@@ -21,6 +21,10 @@ export default function ProfileScreen() {
 
   if (isLoading) {
     return <Text>Loading...</Text>;
+  }
+
+  if (isError) {
+    logout();
   }
 
   console.log(data);
