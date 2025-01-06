@@ -9,10 +9,12 @@ import { getEntityManager } from "./middlewares/entityManager.middleware.js"
 import AuthController from "./controllers/auth.controller.js"
 import fastifyAuth from "@fastify/auth"
 import GameController from "./controllers/game.controller.js"
+import fastifyWebsocket from "@fastify/websocket"
 
 export const server = Fastify()
 
 export const initializeServer = async () => {
+  // Docs
   await server.register(fastifySwagger, {
     mode: "dynamic",
     openapi: {
@@ -41,13 +43,19 @@ export const initializeServer = async () => {
     transformStaticCSP: (header) => header,
   })
 
+  // Cors
   await server.register(fastifyCors, {
     credentials: true,
     origin: true,
   })
 
+  // Websockets
+  await server.register(fastifyWebsocket)
+
+  // Authentication
   await server.register(fastifyAuth)
 
+  // Routes
   await server.register(async (instance) => {
     instance.addSchema(ErrorResponseTemplateSchema)
     instance.decorateRequest("em")

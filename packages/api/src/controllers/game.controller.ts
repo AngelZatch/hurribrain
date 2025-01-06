@@ -11,6 +11,9 @@ import {
   PostGameBody,
 } from "./../schemas/game.schema.js"
 import { Tag } from "./../entities/tag.entity.js"
+import { Participation } from "./../entities/participation.entity.js"
+import { User } from "./../entities/user.entity.js"
+import { verifyJWT } from "./../utils/authChecker.js"
 
 const GameController = async (fastify: FastifyInstance) => {
   fastify.addSchema(GameResponseSchema)
@@ -119,6 +122,45 @@ const GameController = async (fastify: FastifyInstance) => {
       )
 
       return reply.code(201).send(createdGame)
+    }
+  )
+
+  fastify.post<{
+    Params: GameParams
+  }>(
+    "/:gameId/join",
+    {
+      schema: {
+        tags: ["Games"],
+        summary: "Joins a game",
+      },
+      preHandler: [fastify.auth([verifyJWT])],
+    },
+    async (request, reply) => {
+      const em = request.em
+      const { gameId } = request.params
+
+      const game = await em.findOneOrFail(
+        Game,
+        {
+          uuid: gameId,
+          finishedAt: null,
+        },
+        {
+          failHandler: () => {
+            reply.statusCode = 404
+            return new Error("Game not found")
+          },
+        }
+      )
+
+      const participation = new Participation({
+        user: { uuid: request.user } as User,
+        game,
+      })
+      await em.persistAndFlush(participation)
+
+      return reply.code(201).send(participation)
     }
   )
 }
