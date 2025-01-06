@@ -65,7 +65,7 @@ export default function ProfileScreen() {
         <ContainerView>
           <Image
             source={{
-              uri: "https://img3.gelbooru.com/images/b0/2b/b02b35d59f9e6611ba6d5e19958690f0.jpg",
+              uri: "https://images.squarespace-cdn.com/content/v1/5c39e499697a984f8b163b5c/1689188407060-92YLPDG9ZPJ2CFWQIUIN/03+Y%27shtola.jpg",
             }}
             style={{
               aspectRatio: 1,

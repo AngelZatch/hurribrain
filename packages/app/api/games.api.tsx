@@ -1,19 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
+export type Game = {
+  uuid: string;
+  code: string;
+  tags: Array<{ uuid: string; name: string; description?: string }>;
+  length: number;
+  difficulty: "easy" | "medium" | "hard" | "expert" | "unknown";
+};
+
 export const useGetGames = (token: string) => {
   return useQuery({
     queryKey: ["games"],
     queryFn: async (): Promise<{
-      data: [
-        {
-          uuid: string;
-          code: string;
-          tags: Array<{ uuid: string; name: string; description?: string }>;
-          length: number;
-          difficulty: string;
-        },
-      ];
+      data: Array<Game>;
       nextCursor: number;
     }> => {
       const response = await axios.get("http://localhost:8080/games", {
@@ -29,13 +29,7 @@ export const useGetGames = (token: string) => {
 export const useGetGame = (token: string, gameId: string) => {
   return useQuery({
     queryKey: ["games", gameId],
-    queryFn: async (): Promise<{
-      uuid: string;
-      code: string;
-      tags: Array<{ uuid: string; name: string; description?: string }>;
-      length: number;
-      difficulty: string;
-    }> => {
+    queryFn: async (): Promise<Game> => {
       const response = await axios.get(
         `http://localhost:8080/games/${gameId}`,
         {

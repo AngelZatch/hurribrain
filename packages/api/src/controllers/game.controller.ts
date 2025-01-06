@@ -61,7 +61,11 @@ const GameController = async (fastify: FastifyInstance) => {
       const em = request.em
       const { gameId } = request.params
 
-      const game = await em.findOne(Game, { uuid: gameId }, { populate: ["tags"] })
+      const game = await em.findOne(
+        Game,
+        { uuid: gameId },
+        { populate: ["tags"] }
+      )
 
       if (!game) {
         return reply.code(404).send({
@@ -108,7 +112,11 @@ const GameController = async (fastify: FastifyInstance) => {
 
       await em.persistAndFlush(game)
 
-      const createdGame = await em.findOne(Game, { uuid: game.uuid }, { populate: ["tags"] })
+      const createdGame = await em.findOne(
+        Game,
+        { uuid: game.uuid },
+        { populate: ["tags"] }
+      )
 
       return reply.code(201).send(createdGame)
     }

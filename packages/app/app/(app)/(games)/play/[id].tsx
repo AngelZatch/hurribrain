@@ -7,6 +7,7 @@ import { PageContainer } from "@/components/ui/PageContainer";
 import TopNavigation from "@/components/TopNavigation";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import GameLobby from "@/components/GameLobby";
 
 export default function PlayScreen() {
   const colorScheme = useColorScheme();
@@ -42,7 +43,7 @@ export default function PlayScreen() {
             "linear-gradient(45deg, rgba(255, 255, 255, 1) 0%, rgba(218, 191, 224, 0.1) 33%, rgba(176, 130, 193, 0.3) 67%, rgba(176, 130, 193, 0.5) 100%)",
         }}
       >
-        <Text>Play Screen</Text>
+        <GameLobby game={data!} />
       </View>
     </PageContainer>
   );
