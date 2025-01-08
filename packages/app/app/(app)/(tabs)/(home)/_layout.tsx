@@ -7,10 +7,11 @@ export default function HomeStack() {
         headerShown: false,
       }}
     >
+      <Stack.Screen name="home" />
       <Stack.Screen
-        name="home"
+        name="lobby"
         options={{
-          title: "Home",
+          presentation: "modal",
         }}
       />
     </Stack>

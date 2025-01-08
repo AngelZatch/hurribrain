@@ -1,7 +1,5 @@
-import fastify from "fastify";
-
-class GameService {
-  const initService = () => {
-  fastify.
+export default class GameService {
+  startGame = async (gameId: string) => {
+    console.log(gameId)
   }
 }

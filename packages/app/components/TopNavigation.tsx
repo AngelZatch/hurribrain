@@ -8,11 +8,13 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 type TopNavigationProps = {
   topLabel?: string;
   subLabel?: string;
+  onPress?: () => void;
 };
 
 export default function TopNavigation({
   topLabel,
   subLabel,
+  onPress,
 }: TopNavigationProps) {
   const router = useRouter();
   const colorScheme = useColorScheme();
@@ -34,7 +36,7 @@ export default function TopNavigation({
         title="BACK"
         icon={"chevron.left"}
         onPress={() => {
-          router.back();
+          onPress ?? router.back();
         }}
       />
       <View

@@ -1,5 +1,6 @@
 import ProfileBanner from "@/components/ProfileBanner";
 import { PageContainer } from "@/components/ui/PageContainer";
+import { Link } from "expo-router";
 import { Image, Text, Pressable } from "react-native";
 
 export default function HomeScreen() {
@@ -15,27 +16,29 @@ export default function HomeScreen() {
           flex: 1,
         }}
       />
-      <Pressable
-        style={{
-          width: "100%",
-          maxHeight: 135,
-          minHeight: 135,
-          backgroundImage: "linear-gradient(#3C73FF, #3AF2F8)",
-          justifyContent: "center",
-          alignItems: "center",
-          borderRadius: 20,
-        }}
-      >
-        <Text
+      <Link href="/lobby" style={{ width: "100%" }} asChild>
+        <Pressable
           style={{
-            color: "white",
-            fontSize: 32,
-            fontFamily: "Exo_700Bold",
+            width: "100%",
+            maxHeight: 135,
+            minHeight: 135,
+            backgroundImage: "linear-gradient(#3C73FF, #3AF2F8)",
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: 20,
           }}
         >
-          Play
-        </Text>
-      </Pressable>
+          <Text
+            style={{
+              color: "white",
+              fontSize: 32,
+              fontFamily: "Exo_700Bold",
+            }}
+          >
+            Play
+          </Text>
+        </Pressable>
+      </Link>
     </PageContainer>
   );
 }
