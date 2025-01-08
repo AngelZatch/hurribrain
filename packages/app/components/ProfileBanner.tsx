@@ -2,7 +2,6 @@ import { Text, View } from "react-native";
 import ExperienceBar from "./ExperienceBar";
 import Avatar from "./Avatar";
 
-import { useColorScheme } from "../hooks/useColorScheme";
 import ThemedText from "./ui/ThemedText";
 import CoinCount from "./CoinCount";
 import { Divider } from "./ui/Divider";
@@ -10,7 +9,6 @@ import { useAuth } from "@/contexts/auth.context";
 import { useGetMeWithStats } from "@/api/auth.api";
 
 export default function ProfileBanner() {
-  const colorScheme = useColorScheme() ?? "light";
   const { user } = useAuth();
 
   if (!user) {

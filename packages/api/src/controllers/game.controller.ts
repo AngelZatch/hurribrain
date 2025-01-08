@@ -163,6 +163,13 @@ const GameController = async (fastify: FastifyInstance) => {
       return reply.code(201).send(participation)
     }
   )
+
+  fastify.get("/:gameId/play", { websocket: true }, (socket) => {
+    socket.on("message", (message) => {
+      console.log(message)
+      socket.send("pong")
+    })
+  })
 }
 
 export default GameController

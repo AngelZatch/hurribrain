@@ -44,6 +44,7 @@ export default function GamesScreen() {
                 pathname: "/play/[id]",
                 params: { id: game.uuid },
               }}
+              style={{ width: "100%" }}
             >
               <GameListItem key={game.uuid} game={game} />
             </Link>
