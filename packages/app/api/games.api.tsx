@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 export type Game = {
@@ -32,6 +32,23 @@ export const useGetGame = (token: string, gameId: string) => {
     queryFn: async (): Promise<Game> => {
       const response = await axios.get(
         `http://localhost:8080/games/${gameId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    },
+  });
+};
+
+export const useJoinGame = (token: string) => {
+  return useMutation({
+    mutationFn: async (gameId: string) => {
+      const response = await axios.post(
+        `http://localhost:8080/games/${gameId}/join`,
+        {},
         {
           headers: {
             Authorization: `Bearer ${token}`,

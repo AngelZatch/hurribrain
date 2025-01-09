@@ -1,12 +1,18 @@
+import JoinGameForm from "@/components/JoinGameForm";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { PageContainer } from "@/components/ui/PageContainer";
 import ThemedIconButton from "@/components/ui/ThemedIconButton";
 import ThemedText from "@/components/ui/ThemedText";
 import { Link, router } from "expo-router";
+import { useState } from "react";
 import { Pressable, View, StyleSheet } from "react-native";
 
 export default function Lobby() {
   const isPresented = router.canGoBack();
+
+  const [lobbyState, setLobbyState] = useState<
+    "quick" | "create" | "join" | null
+  >(null);
 
   return (
     <PageContainer>
@@ -22,10 +28,15 @@ export default function Lobby() {
           alignSelf: "stretch",
         }}
       >
-        {isPresented && (
-          <Link href="../" asChild>
+        {lobbyState === null ? (
+          <Link href={isPresented ? "../" : "/"} asChild>
             <ThemedIconButton icon="xmark" />
           </Link>
+        ) : (
+          <ThemedIconButton
+            icon="chevron.left"
+            onPress={() => setLobbyState(null)}
+          />
         )}
       </View>
       <View
@@ -41,87 +52,97 @@ export default function Lobby() {
           alignSelf: "stretch",
         }}
       >
-        <Pressable
-          style={[
-            styles.playOption,
-            {
-              backgroundImage:
-                "linear-gradient(180deg, #FC731D 0%, #F3985F 100%)",
-            },
-          ]}
-        >
-          <IconSymbol name="play" size={32} color="white" />
-          <View style={styles.playOptionDetailsContainer}>
-            <ThemedText
-              style={{
-                fontSize: 20,
-                fontFamily: "Exo_700Bold",
-                color: "white",
-              }}
+        {lobbyState === null && (
+          <>
+            <Pressable
+              style={[
+                styles.playOption,
+                {
+                  backgroundImage:
+                    "linear-gradient(180deg, #FC731D 0%, #F3985F 100%)",
+                },
+              ]}
+              onPress={() => setLobbyState("quick")}
             >
-              Quick Play
-            </ThemedText>
-            <ThemedText
-              style={{
-                color: "white",
-                fontSize: 14,
-                fontFamily: "Exo_400Regular",
-              }}
+              <IconSymbol name="play" size={32} color="white" />
+              <View style={styles.playOptionDetailsContainer}>
+                <ThemedText
+                  style={{
+                    fontSize: 20,
+                    fontFamily: "Exo_700Bold",
+                    color: "white",
+                  }}
+                >
+                  Quick Play
+                </ThemedText>
+                <ThemedText
+                  style={{
+                    color: "white",
+                    fontSize: 14,
+                    fontFamily: "Exo_400Regular",
+                  }}
+                >
+                  Join or create a public game. 20 questions, up to 10 players.
+                </ThemedText>
+              </View>
+            </Pressable>
+            <Pressable
+              style={[
+                styles.playOption,
+                {
+                  backgroundImage:
+                    "linear-gradient(180deg, #C746FA 0%, #762994 100%)",
+                },
+              ]}
+              onPress={() => setLobbyState("create")}
             >
-              Join or create a public game. 20 questions, up to 10 players.
-            </ThemedText>
-          </View>
-        </Pressable>
-        <Pressable
-          style={[
-            styles.playOption,
-            {
-              backgroundImage:
-                "linear-gradient(180deg, #C746FA 0%, #762994 100%)",
-            },
-          ]}
-        >
-          <IconSymbol name="plus" size={32} color="white" />
-          <View style={styles.playOptionDetailsContainer}>
-            <ThemedText
-              style={{
-                fontSize: 20,
-                fontFamily: "Exo_700Bold",
-                color: "white",
-              }}
+              <IconSymbol name="plus" size={32} color="white" />
+              <View style={styles.playOptionDetailsContainer}>
+                <ThemedText
+                  style={{
+                    fontSize: 20,
+                    fontFamily: "Exo_700Bold",
+                    color: "white",
+                  }}
+                >
+                  Create Private Game
+                </ThemedText>
+                <ThemedText
+                  style={{
+                    color: "white",
+                    fontSize: 14,
+                    fontFamily: "Exo_400Regular",
+                  }}
+                >
+                  Create a private game to play with your friends.
+                </ThemedText>
+              </View>
+            </Pressable>
+            <Pressable
+              style={[
+                styles.playOption,
+                {
+                  backgroundImage:
+                    "linear-gradient(180deg, #C746FA 0%, #762994 100%)",
+                },
+              ]}
+              onPress={() => setLobbyState("join")}
             >
-              Create Private Game
-            </ThemedText>
-            <ThemedText
-              style={{
-                color: "white",
-                fontSize: 14,
-                fontFamily: "Exo_400Regular",
-              }}
-            >
-              Create a private game to play with your friends.
-            </ThemedText>
-          </View>
-        </Pressable>
-        <Pressable
-          style={[
-            styles.playOption,
-            {
-              backgroundImage:
-                "linear-gradient(180deg, #C746FA 0%, #762994 100%)",
-            },
-          ]}
-        >
-          <IconSymbol name="arrow.forward.square" size={32} color="white" />
-          <View style={styles.playOptionDetailsContainer}>
-            <ThemedText style={styles.playOptionText}>
-              Join Private Game
-            </ThemedText>
-            <ThemedText style={styles.playOptionDescription}>
-              Enter your game code and join your friends.
-            </ThemedText>
-          </View>
-        </Pressable>
+              <IconSymbol name="arrow.forward.square" size={32} color="white" />
+              <View style={styles.playOptionDetailsContainer}>
+                <ThemedText style={styles.playOptionText}>
+                  Join Private Game
+                </ThemedText>
+                <ThemedText style={styles.playOptionDescription}>
+                  Enter your game code and join your friends.
+                </ThemedText>
+              </View>
+            </Pressable>
+          </>
+        )}
+        {lobbyState === "quick" && <View>Quick Play</View>}
+        {lobbyState === "create" && <View>Create Game</View>}
+        {lobbyState === "join" && <JoinGameForm />}
       </View>
     </PageContainer>
   );

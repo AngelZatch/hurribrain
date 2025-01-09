@@ -9,6 +9,7 @@ import {
   GameResponseSchema,
   GetGamesReplySchema,
   PostGameBody,
+  SearchGameParams,
 } from "./../schemas/game.schema.js"
 import { Tag } from "./../entities/tag.entity.js"
 import { Participation } from "./../entities/participation.entity.js"
@@ -46,13 +47,13 @@ const GameController = async (fastify: FastifyInstance) => {
   )
 
   fastify.get<{
-    Params: GameParams
+    Params: SearchGameParams
   }>(
-    "/:gameId",
+    "/:identifier",
     {
       schema: {
         tags: ["Games"],
-        summary: "Returns a game by id",
+        summary: "Returns a game by id or code",
         params: GameParamsSchema,
         response: {
           200: GameResponseSchema,
@@ -62,11 +63,11 @@ const GameController = async (fastify: FastifyInstance) => {
     },
     async (request, reply) => {
       const em = request.em
-      const { gameId } = request.params
+      const { identifier } = request.params
 
       const game = await em.findOne(
         Game,
-        { uuid: gameId },
+        { $or: [{ uuid: identifier }, { code: identifier }] },
         { populate: ["tags"] }
       )
 
