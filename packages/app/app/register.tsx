@@ -6,8 +6,6 @@ import { PageContainer } from "@/components/ui/PageContainer";
 import ThemedTextInput from "@/components/ui/ThemedTextInput";
 import { Controller, useForm } from "react-hook-form";
 import { InputContainer } from "@/components/ui/InputContainer";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 import { useContext } from "react";
 import { AuthContext } from "@/contexts/auth.context";
 import { useRegister } from "@/api/auth.api";

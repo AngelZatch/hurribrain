@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { Button, View } from "react-native";
+import { View } from "react-native";
 import ThemedIconButton from "./ui/ThemedIconButton";
 import ThemedText from "./ui/ThemedText";
 import { Colors } from "@/constants/Colors";
@@ -33,7 +33,6 @@ export default function TopNavigation({
       }}
     >
       <ThemedIconButton
-        title="BACK"
         icon={"chevron.left"}
         onPress={() => {
           onPress ?? router.back();

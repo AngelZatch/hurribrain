@@ -46,7 +46,7 @@ export default function ProfileScreen() {
         }}
       >
         <Link href="/settings">
-          <ThemedIconButton icon="gearshape.fill" title="Settings" />
+          <ThemedIconButton icon="gearshape.fill" />
         </Link>
       </View>
       <View

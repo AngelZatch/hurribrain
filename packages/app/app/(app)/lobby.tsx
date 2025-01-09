@@ -1,19 +1,33 @@
-import TopNavigation from "@/components/TopNavigation";
-import { ContainerView } from "@/components/ui/ContainerView";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { PageContainer } from "@/components/ui/PageContainer";
+import ThemedIconButton from "@/components/ui/ThemedIconButton";
 import ThemedText from "@/components/ui/ThemedText";
 import { Link, router } from "expo-router";
-import { Animated, Button, Pressable, View, StyleSheet } from "react-native";
+import { Pressable, View, StyleSheet } from "react-native";
 
 export default function Lobby() {
   const isPresented = router.canGoBack();
 
-  console.log(isPresented);
-
   return (
     <PageContainer>
-      {isPresented && <Link href="../">Dismiss</Link>}
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          height: 77,
+          paddingHorizontal: 10,
+          paddingVertical: 0,
+          alignItems: "center",
+          gap: 10,
+          alignSelf: "stretch",
+        }}
+      >
+        {isPresented && (
+          <Link href="../" asChild>
+            <ThemedIconButton icon="xmark" />
+          </Link>
+        )}
+      </View>
       <View
         style={{
           display: "flex",
@@ -36,7 +50,7 @@ export default function Lobby() {
             },
           ]}
         >
-          <IconSymbol name="star.fill" size={32} color="white" />
+          <IconSymbol name="play" size={32} color="white" />
           <View style={styles.playOptionDetailsContainer}>
             <ThemedText
               style={{
@@ -98,7 +112,7 @@ export default function Lobby() {
             },
           ]}
         >
-          <IconSymbol name="input" size={32} color="white" />
+          <IconSymbol name="arrow.forward.square" size={32} color="white" />
           <View style={styles.playOptionDetailsContainer}>
             <ThemedText style={styles.playOptionText}>
               Join Private Game

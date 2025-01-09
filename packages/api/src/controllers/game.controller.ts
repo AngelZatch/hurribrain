@@ -165,7 +165,7 @@ const GameController = async (fastify: FastifyInstance) => {
   )
 
   fastify.get("/:gameId/play", { websocket: true }, (socket) => {
-    socket.on("message", (message) => {
+    socket.on("message", (message: unknown) => {
       console.log(message)
       socket.send("pong")
     })

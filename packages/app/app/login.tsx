@@ -5,10 +5,8 @@ import TopNavigation from "@/components/TopNavigation";
 import { BodyContainer } from "@/components/ui/BodyContainer";
 import { useForm, Controller } from "react-hook-form";
 import ThemedTextInput from "@/components/ui/ThemedTextInput";
-import { View } from "react-native";
 import { InputContainer } from "@/components/ui/InputContainer";
-import { useContext } from "react";
-import { AuthContext, useAuth } from "@/contexts/auth.context";
+import { useAuth } from "@/contexts/auth.context";
 import { useLogin } from "@/api/auth.api";
 import { router } from "expo-router";
 

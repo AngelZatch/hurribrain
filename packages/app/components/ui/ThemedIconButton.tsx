@@ -2,7 +2,7 @@ import { ButtonProps, Pressable, useColorScheme } from "react-native";
 import { IconSymbol, IconSymbolName } from "./IconSymbol";
 import { Colors } from "@/constants/Colors";
 
-type ThemedIconButtonProps = ButtonProps & {
+type ThemedIconButtonProps = Omit<ButtonProps, "title"> & {
   icon: IconSymbolName;
 };
 
