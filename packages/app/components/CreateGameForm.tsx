@@ -2,7 +2,7 @@ import { GameCreationDTO, useCreateGame } from "@/api/games.api";
 import { useAuth } from "@/contexts/auth.context";
 import { Controller, useForm } from "react-hook-form";
 import { InputContainer } from "./ui/InputContainer";
-import React from "react";
+import React, { useState } from "react";
 import ThemedText from "./ui/ThemedText";
 import { Divider } from "./ui/Divider";
 import { View } from "react-native";
@@ -13,8 +13,9 @@ import ThemedIconButton from "./ui/ThemedIconButton";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
 import { Tag, useGetTags } from "@/api/tags.api";
-import TagChip from "./TagChip";
 import DifficultyChip from "./DifficultyChip";
+import SelectableTagChip from "./ui/SelectableTagChip";
+import MultiSelect from "./ui/MultiSelect";
 
 type FormData = {
   tags: Array<Tag>;
@@ -62,7 +63,6 @@ export default function CreateGameForm() {
     control,
     handleSubmit,
     formState: { errors },
-    getValues,
     watch,
   } = useForm<FormData>({
     defaultValues: {
@@ -100,8 +100,18 @@ export default function CreateGameForm() {
             Questions will be picked at random from the themes you choose.
           </ThemedText>
           {isLoading && <ThemedText>Loading...</ThemedText>}
-          {data &&
-            data?.map((tag) => <TagChip key={tag.uuid} label={tag.name} />)}
+          <Controller
+            control={control}
+            rules={{ required: true }}
+            name="tags"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <MultiSelect
+                items={data ?? []}
+                selectedItems={value}
+                onPress={onChange}
+              />
+            )}
+          />
         </InputContainer>
         <InputContainer>
           <ThemedText type="label">Choose your difficulty</ThemedText>

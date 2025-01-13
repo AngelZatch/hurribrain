@@ -1,11 +1,12 @@
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import ThemedText from "./ui/ThemedText";
 
 type TagChipProps = {
   text: string;
+  active?: boolean;
 };
 
-export default function TagChip({ text }: TagChipProps) {
+export default function TagChip({ text, active }: TagChipProps) {
   return (
     <View
       style={{
@@ -18,7 +19,9 @@ export default function TagChip({ text }: TagChipProps) {
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 13,
-        backgroundColor: "#0A99FF",
+        backgroundColor: active ? "#0A99FF" : "transparent",
+        borderWidth: 1,
+        borderColor: "#0A99FF",
       }}
     >
       <View
@@ -33,7 +36,7 @@ export default function TagChip({ text }: TagChipProps) {
             lineHeight: 16,
             fontFamily: "Exo_400Regular",
             textTransform: "capitalize",
-            color: "#FFFFFF",
+            color: active ? "#FFFFFF" : "#0A99FF",
           }}
         >
           {text}

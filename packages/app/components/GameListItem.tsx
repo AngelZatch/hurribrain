@@ -41,7 +41,7 @@ export default function GameListItem({ game }: GameListItemProps) {
         </ThemedText>
         <View style={{ display: "flex", alignItems: "flex-start", gap: 5 }}>
           {game.tags.map((tag) => (
-            <TagChip key={tag.uuid} text={tag.name} />
+            <TagChip key={tag.uuid} text={tag.name} active />
           ))}
         </View>
       </View>
