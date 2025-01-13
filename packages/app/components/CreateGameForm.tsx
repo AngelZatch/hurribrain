@@ -1,4 +1,4 @@
-import { GameCreationDTO, useCreateGame } from "@/api/games.api";
+import { GameCreationDTO, useCreateGame, useJoinGame } from "@/api/games.api";
 import { useAuth } from "@/contexts/auth.context";
 import { Controller, useForm } from "react-hook-form";
 import { InputContainer } from "./ui/InputContainer";
@@ -73,14 +73,20 @@ export default function CreateGameForm() {
   });
 
   const { mutateAsync: createGame, error } = useCreateGame(user);
+  const { mutateAsync: joinGame } = useJoinGame(user);
 
   const onSubmit = async (data: FormData) => {
     // Create the game and join it
-    await createGame({
+    const createdGame = await createGame({
       tags: data.tags,
       length: data.length,
       difficulty: difficultyMap[data.difficulty].text,
     });
+
+    console.log(createdGame);
+
+    // If successful, join the game and navigate to it
+    await joinGame(createdGame.code);
 
     // If successful, navigate to the game
   };

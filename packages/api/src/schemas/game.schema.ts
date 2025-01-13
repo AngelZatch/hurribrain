@@ -20,19 +20,24 @@ export const GameResponseSchema = Type.Object(
   }
 )
 
-export const GameParamsSchema = Type.Object({
+export const GameByIdParamsSchema = Type.Object({
   gameId: GameResponseSchema.properties.uuid,
 })
 
-export const SearchGameParamsSchema = Type.Object({
+export const GameByCodeParamsSchema = Type.Object({
+  gameCode: GameResponseSchema.properties.code,
+})
+
+export const GameByIdOrCodeParamsSchema = Type.Object({
   identifier: Type.Union([
     GameResponseSchema.properties.uuid,
     GameResponseSchema.properties.code,
   ]),
 })
 
-export type GameParams = Static<typeof GameParamsSchema>
-export type SearchGameParams = Static<typeof SearchGameParamsSchema>
+export type GameByIdParams = Static<typeof GameByIdParamsSchema>
+export type GameByCodeParams = Static<typeof GameByCodeParamsSchema>
+export type GameByIdOrCodeParams = Static<typeof GameByIdOrCodeParamsSchema>
 
 // GET
 

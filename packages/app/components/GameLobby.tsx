@@ -57,7 +57,7 @@ export default function GameLobby({ game }: GameLobbyChips) {
           <ThemedText>Themes</ThemedText>
           <View>
             {game.tags.map((tag) => (
-              <TagChip key={tag.uuid} text={tag.name} />
+              <TagChip key={tag.uuid} text={tag.name} active />
             ))}
           </View>
         </View>

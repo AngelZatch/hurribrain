@@ -4,12 +4,13 @@ import { Game } from "./../entities/game.entity.js"
 import { ErrorResponsesSchema } from "./../schemas/errors.schema.js"
 import {
   CreateGameSchema,
-  GameParams,
-  GameParamsSchema,
+  GameByCodeParamsSchema,
   GameResponseSchema,
   GetGamesReplySchema,
   PostGameBody,
-  SearchGameParams,
+  GameByIdOrCodeParams,
+  GameByIdOrCodeParamsSchema,
+  GameByCodeParams,
 } from "./../schemas/game.schema.js"
 import { Tag } from "./../entities/tag.entity.js"
 import { Participation } from "./../entities/participation.entity.js"
@@ -47,14 +48,14 @@ const GameController = async (fastify: FastifyInstance) => {
   )
 
   fastify.get<{
-    Params: SearchGameParams
+    Params: GameByIdOrCodeParams
   }>(
     "/:identifier",
     {
       schema: {
         tags: ["Games"],
         summary: "Returns a game by id or code",
-        params: GameParamsSchema,
+        params: GameByIdOrCodeParamsSchema,
         response: {
           200: GameResponseSchema,
           ...ErrorResponsesSchema,
@@ -127,24 +128,25 @@ const GameController = async (fastify: FastifyInstance) => {
   )
 
   fastify.post<{
-    Params: GameParams
+    Params: GameByCodeParams
   }>(
-    "/:gameId/join",
+    "/:gameCode/join",
     {
       schema: {
         tags: ["Games"],
         summary: "Joins a game",
+        params: GameByCodeParamsSchema,
       },
       preHandler: [fastify.auth([verifyJWT])],
     },
     async (request, reply) => {
       const em = request.em
-      const { gameId } = request.params
+      const { gameCode } = request.params
 
       const game = await em.findOneOrFail(
         Game,
         {
-          uuid: gameId,
+          code: gameCode,
           finishedAt: null,
         },
         {

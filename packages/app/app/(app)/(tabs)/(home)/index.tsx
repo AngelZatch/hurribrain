@@ -16,7 +16,7 @@ export default function HomeScreen() {
           flex: 1,
         }}
       />
-      <Link href="/lobby" style={{ width: "100%" }} asChild>
+      <Link href="/menu" style={{ width: "100%" }} asChild>
         <Pressable
           style={{
             width: "100%",
