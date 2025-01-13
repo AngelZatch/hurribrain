@@ -705,6 +705,162 @@
           "length": 255,
           "mappedType": "string"
         },
+        "position": {
+          "name": "position",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": null,
+          "mappedType": "integer"
+        },
+        "question_uuid": {
+          "name": "question_uuid",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "game_uuid": {
+          "name": "game_uuid",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "started_at": {
+          "name": "started_at",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": null,
+          "mappedType": "datetime"
+        },
+        "finished_at": {
+          "name": "finished_at",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": null,
+          "mappedType": "datetime"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": null,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": null,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "turn",
+      "indexes": [
+        {
+          "columnNames": [
+            "question_uuid"
+          ],
+          "composite": false,
+          "keyName": "turn_question_uuid_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "game_uuid"
+          ],
+          "composite": false,
+          "keyName": "turn_game_uuid_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "turn_game_uuid_question_uuid_unique",
+          "columnNames": [
+            "game_uuid",
+            "question_uuid"
+          ],
+          "composite": true,
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "PRIMARY",
+          "columnNames": [
+            "uuid"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "turn_question_uuid_foreign": {
+          "constraintName": "turn_question_uuid_foreign",
+          "columnNames": [
+            "question_uuid"
+          ],
+          "localTableName": "turn",
+          "referencedColumnNames": [
+            "uuid"
+          ],
+          "referencedTableName": "question",
+          "updateRule": "cascade"
+        },
+        "turn_game_uuid_foreign": {
+          "constraintName": "turn_game_uuid_foreign",
+          "columnNames": [
+            "game_uuid"
+          ],
+          "localTableName": "turn",
+          "referencedColumnNames": [
+            "uuid"
+          ],
+          "referencedTableName": "game",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "uuid": {
+          "name": "uuid",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
         "email": {
           "name": "email",
           "type": "varchar(255)",
@@ -845,6 +1001,340 @@
       ],
       "checks": [],
       "foreignKeys": {},
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "uuid": {
+          "name": "uuid",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "score": {
+          "name": "score",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": null,
+          "mappedType": "integer"
+        },
+        "previous_score": {
+          "name": "previous_score",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": null,
+          "mappedType": "integer"
+        },
+        "rank": {
+          "name": "rank",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": null,
+          "mappedType": "integer"
+        },
+        "previous_rank": {
+          "name": "previous_rank",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": null,
+          "mappedType": "integer"
+        },
+        "user_uuid": {
+          "name": "user_uuid",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "game_uuid": {
+          "name": "game_uuid",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": null,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": null,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "participation",
+      "indexes": [
+        {
+          "columnNames": [
+            "user_uuid"
+          ],
+          "composite": false,
+          "keyName": "participation_user_uuid_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "game_uuid"
+          ],
+          "composite": false,
+          "keyName": "participation_game_uuid_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "participation_user_uuid_game_uuid_unique",
+          "columnNames": [
+            "user_uuid",
+            "game_uuid"
+          ],
+          "composite": true,
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "PRIMARY",
+          "columnNames": [
+            "uuid"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "participation_user_uuid_foreign": {
+          "constraintName": "participation_user_uuid_foreign",
+          "columnNames": [
+            "user_uuid"
+          ],
+          "localTableName": "participation",
+          "referencedColumnNames": [
+            "uuid"
+          ],
+          "referencedTableName": "user",
+          "updateRule": "cascade"
+        },
+        "participation_game_uuid_foreign": {
+          "constraintName": "participation_game_uuid_foreign",
+          "columnNames": [
+            "game_uuid"
+          ],
+          "localTableName": "participation",
+          "referencedColumnNames": [
+            "uuid"
+          ],
+          "referencedTableName": "game",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "uuid": {
+          "name": "uuid",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "participation_uuid": {
+          "name": "participation_uuid",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "turn_uuid": {
+          "name": "turn_uuid",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "choice_uuid": {
+          "name": "choice_uuid",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "speed": {
+          "name": "speed",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": null,
+          "mappedType": "integer"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": null,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": null,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "answer",
+      "indexes": [
+        {
+          "columnNames": [
+            "participation_uuid"
+          ],
+          "composite": false,
+          "keyName": "answer_participation_uuid_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "turn_uuid"
+          ],
+          "composite": false,
+          "keyName": "answer_turn_uuid_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "choice_uuid"
+          ],
+          "composite": false,
+          "keyName": "answer_choice_uuid_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "answer_participation_uuid_turn_uuid_unique",
+          "columnNames": [
+            "participation_uuid",
+            "turn_uuid"
+          ],
+          "composite": true,
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "PRIMARY",
+          "columnNames": [
+            "uuid"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "answer_participation_uuid_foreign": {
+          "constraintName": "answer_participation_uuid_foreign",
+          "columnNames": [
+            "participation_uuid"
+          ],
+          "localTableName": "answer",
+          "referencedColumnNames": [
+            "uuid"
+          ],
+          "referencedTableName": "participation",
+          "updateRule": "cascade"
+        },
+        "answer_turn_uuid_foreign": {
+          "constraintName": "answer_turn_uuid_foreign",
+          "columnNames": [
+            "turn_uuid"
+          ],
+          "localTableName": "answer",
+          "referencedColumnNames": [
+            "uuid"
+          ],
+          "referencedTableName": "turn",
+          "updateRule": "cascade"
+        },
+        "answer_choice_uuid_foreign": {
+          "constraintName": "answer_choice_uuid_foreign",
+          "columnNames": [
+            "choice_uuid"
+          ],
+          "localTableName": "answer",
+          "referencedColumnNames": [
+            "uuid"
+          ],
+          "referencedTableName": "choice",
+          "updateRule": "cascade"
+        }
+      },
       "nativeEnums": {}
     },
     {
