@@ -1,11 +1,13 @@
+import React, { useState } from "react";
+import { Pressable, View, StyleSheet } from "react-native";
+import { Link, router } from "expo-router";
+
 import JoinGameForm from "@/components/JoinGameForm";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { PageContainer } from "@/components/ui/PageContainer";
 import ThemedIconButton from "@/components/ui/ThemedIconButton";
 import ThemedText from "@/components/ui/ThemedText";
-import { Link, router } from "expo-router";
-import { useState } from "react";
-import { Pressable, View, StyleSheet } from "react-native";
+import CreateGameForm from "@/components/CreateGameForm";
 
 export default function Lobby() {
   const isPresented = router.canGoBack();
@@ -141,7 +143,7 @@ export default function Lobby() {
           </>
         )}
         {lobbyState === "quick" && <View>Quick Play</View>}
-        {lobbyState === "create" && <View>Create Game</View>}
+        {lobbyState === "create" && <CreateGameForm />}
         {lobbyState === "join" && <JoinGameForm />}
       </View>
     </PageContainer>

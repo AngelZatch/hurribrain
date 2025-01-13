@@ -9,6 +9,12 @@ export type Game = {
   difficulty: "easy" | "medium" | "hard" | "expert" | "unknown";
 };
 
+export type GameCreationDTO = {
+  tags: Array<{ uuid: string; name: string; description?: string }>;
+  length: number;
+  difficulty: "easy" | "medium" | "hard" | "expert";
+};
+
 export const useGetGames = (token: string) => {
   return useQuery({
     queryKey: ["games"],
@@ -46,16 +52,45 @@ export const useGetGame = (token: string, gameId: string) => {
 export const useJoinGame = (token: string) => {
   return useMutation({
     mutationFn: async (gameId: string) => {
-      const response = await axios.post(
-        `http://localhost:8080/games/${gameId}/join`,
-        {},
-        {
+      try {
+        const response = await axios.post(
+          `http://localhost:8080/games/${gameId}/join`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          throw error.response?.data;
+        }
+        throw error;
+      }
+    },
+  });
+};
+
+export const useCreateGame = (token: string) => {
+  return useMutation({
+    mutationFn: async (data: GameCreationDTO) => {
+      try {
+        const response = await axios.post("http://localhost:8080/games", data, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+        });
+
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          throw error.response?.data;
         }
-      );
-      return response.data;
+        throw error;
+      }
     },
   });
 };

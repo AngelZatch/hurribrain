@@ -13,7 +13,8 @@ type ThemedTextProps = TextProps & {
     | "subtitle"
     | "link"
     | "smallTitle"
-    | "label";
+    | "label"
+    | "helper";
 };
 
 export default function ThemedText({
@@ -40,6 +41,7 @@ export default function ThemedText({
         type === "link" ? styles.link : undefined,
         type === "smallTitle" ? styles.smallTitle : undefined,
         type === "label" ? styles.label : undefined,
+        type === "helper" ? styles.helper : undefined,
         style,
       ]}
       {...rest}
@@ -81,5 +83,10 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontFamily: "Exo_600SemiBold",
+  },
+  helper: {
+    fontSize: 14,
+    lineHeight: 19,
+    fontFamily: "Exo_400Regular",
   },
 });

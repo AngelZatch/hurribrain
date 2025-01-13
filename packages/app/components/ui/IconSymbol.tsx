@@ -15,6 +15,7 @@ const MAPPING = {
   "chevron.right": "chevron-right",
   "chevron.left": "chevron-left",
   "gearshape.fill": "settings",
+  minus: "remove",
   plus: "add",
   "arrow.forward.square": "input",
   "star.fill": "grade",

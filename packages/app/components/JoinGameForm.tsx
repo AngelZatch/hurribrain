@@ -6,6 +6,7 @@ import { InputContainer } from "./ui/InputContainer";
 import ThemedButton from "./ui/ThemedButton";
 import { useAuth } from "@/contexts/auth.context";
 import { useJoinGame } from "@/api/games.api";
+import React from "react";
 
 type FormData = {
   code: string;
@@ -28,7 +29,7 @@ export default function JoinGameForm() {
     },
   });
 
-  const { mutateAsync: joinGame } = useJoinGame(user);
+  const { mutateAsync: joinGame, error } = useJoinGame(user);
 
   const onSubmit = async (data: FormData) => {
     // Join the game
@@ -58,6 +59,7 @@ export default function JoinGameForm() {
         />
       </InputContainer>
       {errors.code && <ThemedText>This field is required</ThemedText>}
+      {error && <ThemedText>{error.message}</ThemedText>}
       <View
         style={{
           display: "flex",
