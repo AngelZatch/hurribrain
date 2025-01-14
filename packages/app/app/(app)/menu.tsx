@@ -68,23 +68,12 @@ export default function Lobby() {
             >
               <IconSymbol name="play" size={32} color="white" />
               <View style={styles.playOptionDetailsContainer}>
-                <ThemedText
-                  style={{
-                    fontSize: 20,
-                    fontFamily: "Exo_700Bold",
-                    color: "white",
-                  }}
-                >
-                  Quick Play
+                <ThemedText style={styles.playOptionText}>
+                  Partie Rapide
                 </ThemedText>
-                <ThemedText
-                  style={{
-                    color: "white",
-                    fontSize: 14,
-                    fontFamily: "Exo_400Regular",
-                  }}
-                >
-                  Join or create a public game. 20 questions, up to 10 players.
+                <ThemedText style={styles.playOptionDescription}>
+                  Rejoins ou crée une partie publique. 20 questions, jusqu’à 10
+                  joueurs.
                 </ThemedText>
               </View>
             </Pressable>
@@ -100,23 +89,11 @@ export default function Lobby() {
             >
               <IconSymbol name="plus" size={32} color="white" />
               <View style={styles.playOptionDetailsContainer}>
-                <ThemedText
-                  style={{
-                    fontSize: 20,
-                    fontFamily: "Exo_700Bold",
-                    color: "white",
-                  }}
-                >
-                  Create Private Game
+                <ThemedText style={styles.playOptionText}>
+                  Créer une Partie Privée
                 </ThemedText>
-                <ThemedText
-                  style={{
-                    color: "white",
-                    fontSize: 14,
-                    fontFamily: "Exo_400Regular",
-                  }}
-                >
-                  Create a private game to play with your friends.
+                <ThemedText style={styles.playOptionDescription}>
+                  Crée une partie privée pour jouer avec tes amis.
                 </ThemedText>
               </View>
             </Pressable>
@@ -133,10 +110,10 @@ export default function Lobby() {
               <IconSymbol name="arrow.forward.square" size={32} color="white" />
               <View style={styles.playOptionDetailsContainer}>
                 <ThemedText style={styles.playOptionText}>
-                  Join Private Game
+                  Rejoindre une Partie Privée
                 </ThemedText>
                 <ThemedText style={styles.playOptionDescription}>
-                  Enter your game code and join your friends.
+                  Entre un code jeu et rejoins tes amis.
                 </ThemedText>
               </View>
             </Pressable>
@@ -172,8 +149,8 @@ const styles = StyleSheet.create({
     color: "white",
   },
   playOptionDescription: {
-    color: "white",
+    color: "#FFFFFFB2",
     fontSize: 14,
-    fontFamily: "Exo_400Regular",
+    fontFamily: "Exo_700Bold",
   },
 });

@@ -7,6 +7,7 @@ export type Game = {
   tags: Array<{ uuid: string; name: string; description?: string }>;
   length: number;
   difficulty: "easy" | "medium" | "hard" | "expert" | "unknown";
+  playerCount?: number;
 };
 
 export type GameCreationDTO = {

@@ -101,9 +101,10 @@ export default function CreateGameForm() {
         }}
       >
         <InputContainer>
-          <ThemedText type="label">Choose your themes</ThemedText>
+          <ThemedText type="label">Choisis tes thèmes</ThemedText>
           <ThemedText type="helper">
-            Questions will be picked at random from the themes you choose.
+            Les questions seront choisies au hasard parmi les thèmes
+            sélectionnés (jusqu’à 3 thèmes max.)
           </ThemedText>
           {isLoading && <ThemedText>Loading...</ThemedText>}
           <Controller
@@ -120,10 +121,10 @@ export default function CreateGameForm() {
           />
         </InputContainer>
         <InputContainer>
-          <ThemedText type="label">Choose your difficulty</ThemedText>
+          <ThemedText type="label">Choisis la difficulté</ThemedText>
           <ThemedText type="helper">
-            Adjust the challenge of your game by selecting the difficulty of the
-            questions you want to have.
+            Règle le degré de challenge de ta partie en choisissant la
+            difficulté des questions que tu veux avoir.
           </ThemedText>
           <Controller
             control={control}
@@ -189,9 +190,9 @@ export default function CreateGameForm() {
         </InputContainer>
         <Divider orientation="horizontal" />
         <InputContainer>
-          <ThemedText type="label">Adjust the length of your game</ThemedText>
+          <ThemedText type="label">Ajuste la durée de la partie</ThemedText>
           <ThemedText type="helper">
-            One turn takes roughly 30 seconds.
+            Un tour se déroule en environ 30 secondes.
           </ThemedText>
         </InputContainer>
         <Controller
@@ -249,7 +250,7 @@ export default function CreateGameForm() {
             fontStyle: "italic",
           }}
         >
-          {watch("length")} turns (roughly {Math.round(watch("length") * 0.5)}{" "}
+          {watch("length")} tours (environ {Math.round(watch("length") * 0.5)}{" "}
           minutes).
         </ThemedText>
       </ContainerView>
@@ -262,7 +263,7 @@ export default function CreateGameForm() {
         }}
       >
         <ThemedButton
-          title="Create"
+          title="Créer une partie"
           onPress={handleSubmit(onSubmit)}
           fullWidth
         />

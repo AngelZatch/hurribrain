@@ -42,7 +42,7 @@ export default function ExperienceBar({ current, level }: ExperienceBarProps) {
           flexBasis: "auto",
         }}
       >
-        Lv. {level}
+        Niv. {level}
       </ThemedText>
       <View
         style={{

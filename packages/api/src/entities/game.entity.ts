@@ -3,6 +3,7 @@ import {
   Entity,
   Enum,
   Filter,
+  Formula,
   ManyToMany,
   PrimaryKey,
   Property,
@@ -48,7 +49,18 @@ export class Game {
   @Property({ type: Date, nullable: true })
   finishedAt: Date | null = null
 
-  @Property({ type: "number", persist: false })
+  @Formula(
+    (alias) => `(
+    SELECT COUNT(*)
+    FROM participation
+    WHERE participation.game_uuid = ${alias}.uuid
+  )`,
+    {
+      type: "number",
+      persist: false,
+      lazy: true,
+    }
+  )
   playerCount: number = 0
 
   // Timestamps

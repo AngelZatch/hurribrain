@@ -49,7 +49,7 @@ export default function AppLayout() {
       <Tabs.Screen
         name="(home)"
         options={{
-          title: "Home",
+          title: "Accueil",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={20} name="house.fill" color={color} />
           ),
@@ -58,7 +58,7 @@ export default function AppLayout() {
       <Tabs.Screen
         name="(games)"
         options={{
-          title: "Games",
+          title: "Jeux",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={20} name="gamecontroller.fill" color={color} />
           ),
@@ -67,7 +67,7 @@ export default function AppLayout() {
       <Tabs.Screen
         name="(profile)"
         options={{
-          title: "Profile",
+          title: "Profil",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={20} name="person.fill" color={color} />
           ),

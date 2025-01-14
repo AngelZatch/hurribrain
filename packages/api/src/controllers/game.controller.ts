@@ -37,7 +37,7 @@ const GameController = async (fastify: FastifyInstance) => {
 
       const games = await em.findAll(Game, {
         refresh: true,
-        populate: ["tags"],
+        populate: ["tags", "playerCount"],
       })
 
       return reply.code(200).send({
@@ -69,7 +69,7 @@ const GameController = async (fastify: FastifyInstance) => {
       const game = await em.findOne(
         Game,
         { $or: [{ uuid: identifier }, { code: identifier }] },
-        { populate: ["tags"] }
+        { populate: ["tags", "playerCount"] }
       )
 
       if (!game) {

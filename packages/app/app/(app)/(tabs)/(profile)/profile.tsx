@@ -105,7 +105,7 @@ export default function ProfileScreen() {
               current={data!.stats.experiencePoints}
               level={data!.stats.level}
             />
-            <ThemedButton title="Edit Profile" size="medium" />
+            <ThemedButton title="Modifier le Profil" size="medium" />
           </View>
         </ContainerView>
         <ContainerView
@@ -113,36 +113,36 @@ export default function ProfileScreen() {
             flexDirection: "column",
           }}
         >
-          <Text style={styles.statSectionTitle}>Play Stats</Text>
+          <Text style={styles.statSectionTitle}>Statistiques de Jeu</Text>
           <View style={styles.statRow}>
             <ThemedText style={styles.statTitle} colorType="secondaryText">
-              Games played
+              Parties jouées
             </ThemedText>
             <Text style={styles.statValue}>{data?.stats.gamesPlayed}</Text>
           </View>
           <View style={styles.statRow}>
             <ThemedText style={styles.statTitle} colorType="secondaryText">
-              First game
+              Première partie
             </ThemedText>
             <Text style={styles.statValue}>{data?.stats.firstGamePlayed}</Text>
           </View>
           <Divider orientation="horizontal" size="100%" />
           <View style={styles.statRow}>
             <ThemedText style={styles.statTitle} colorType="secondaryText">
-              Games won
+              Parties gagnées
             </ThemedText>
             <Text style={styles.statValue}>{data?.stats.gamesWon}</Text>
           </View>
           <View style={styles.statRow}>
             <ThemedText style={styles.statTitle} colorType="secondaryText">
-              First victory
+              Première victoire
             </ThemedText>
             <Text style={styles.statValue}>{data?.stats.firstGameWon}</Text>
           </View>
           <Divider orientation="horizontal" size="100%" />
           <View style={styles.statRow}>
             <ThemedText style={styles.statTitle} colorType="secondaryText">
-              Win rate
+              Taux de victoire
             </ThemedText>
             <Text style={styles.statValue}>
               {computeWinRate(data!.stats.gamesWon, data!.stats.gamesPlayed)} %
@@ -173,10 +173,10 @@ export default function ProfileScreen() {
             flexDirection: "column",
           }}
         >
-          <Text style={styles.statSectionTitle}>Account Stats</Text>
+          <Text style={styles.statSectionTitle}>Statistiques de Compte</Text>
           <View style={styles.statRow}>
             <ThemedText style={styles.statTitle} colorType="secondaryText">
-              Arrived
+              Arrivée
             </ThemedText>
             <Text style={styles.statValue}>{data?.createdAt}</Text>
           </View>

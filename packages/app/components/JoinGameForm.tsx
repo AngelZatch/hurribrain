@@ -41,7 +41,7 @@ export default function JoinGameForm() {
   return (
     <>
       <InputContainer>
-        <ThemedText type="label">Put your game code here:</ThemedText>
+        <ThemedText type="label">ntrez votre code de jeu ici :</ThemedText>
         <Controller
           control={control}
           rules={{
@@ -49,7 +49,7 @@ export default function JoinGameForm() {
           }}
           render={({ field: { onChange, onBlur, value } }) => (
             <ThemedTextInput
-              placeholder="Type here..."
+              placeholder="ex : GDK29MED"
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
@@ -68,7 +68,7 @@ export default function JoinGameForm() {
           alignItems: "center",
         }}
       >
-        <ThemedButton title="Join" onPress={handleSubmit(onSubmit)} />
+        <ThemedButton title="Rejoindre" onPress={handleSubmit(onSubmit)} />
       </View>
     </>
   );

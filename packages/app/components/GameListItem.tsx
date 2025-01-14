@@ -1,19 +1,20 @@
-import { Pressable, Text, View } from "react-native";
+import { View } from "react-native";
 import ThemedText from "./ui/ThemedText";
 import TagChip from "./TagChip";
 import Avatar from "./Avatar";
+import DifficultyChip from "./DifficultyChip";
+import { Game } from "@/api/games.api";
+import { IconSymbol } from "./ui/IconSymbol";
+import { Colors } from "@/constants/Colors";
+import { useColorScheme } from "@/hooks/useColorScheme.web";
 
 interface GameListItemProps {
-  game: {
-    uuid: string;
-    code: string;
-    tags: Array<{ uuid: string; name: string; description?: string }>;
-    length: number;
-    difficulty: string;
-  };
+  game: Game;
 }
 
 export default function GameListItem({ game }: GameListItemProps) {
+  const colorScheme = useColorScheme();
+
   return (
     <View
       style={{
@@ -28,18 +29,90 @@ export default function GameListItem({ game }: GameListItemProps) {
         flexDirection: "row",
       }}
     >
-      <Avatar />
-      <View style={{ display: "flex", flexDirection: "column" }}>
-        <ThemedText
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Avatar />
+        <View
           style={{
-            fontSize: 16,
-            lineHeight: 21,
-            fontFamily: "Exo_600SemiBold",
+            display: "flex",
+            paddingHorizontal: 4,
+            paddingVertical: 8,
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "row",
+            gap: 4,
           }}
         >
-          {game.code}
-        </ThemedText>
-        <View style={{ display: "flex", alignItems: "flex-start", gap: 5 }}>
+          <ThemedText
+            style={{
+              fontSize: 14,
+            }}
+          >
+            {game.playerCount}
+          </ThemedText>
+          <IconSymbol
+            name="person.fill"
+            size={24}
+            color={Colors[colorScheme ?? "light"].secondaryText}
+          />
+        </View>
+      </View>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          gap: 5,
+          flexGrow: 1,
+          flexShrink: 0,
+          flexBasis: 0,
+        }}
+      >
+        <View
+          style={{
+            display: "flex",
+            paddingHorizontal: 0,
+            paddingVertical: 5,
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexDirection: "row",
+            width: "100%",
+          }}
+        >
+          <ThemedText
+            style={{
+              fontSize: 20,
+              lineHeight: 27,
+              fontFamily: "Exo_600SemiBold",
+            }}
+          >
+            {game.code}
+          </ThemedText>
+          <DifficultyChip difficulty={game.difficulty} fullSize />
+          <ThemedText
+            style={{
+              fontSize: 16,
+              lineHeight: 21,
+              fontFamily: "Exo_400Regular",
+            }}
+          >
+            {game.length} tours
+          </ThemedText>
+        </View>
+        <View
+          style={{
+            display: "flex",
+            alignItems: "flex-start",
+            gap: 5,
+            paddingVertical: 5,
+          }}
+        >
           {game.tags.map((tag) => (
             <TagChip key={tag.uuid} text={tag.name} active />
           ))}

@@ -30,7 +30,11 @@ export default function DifficultyChip({
     >
       {fullSize && (
         <ThemedText style={{ color: "#FFFFFF", textTransform: "capitalize" }}>
-          {difficulty}
+          {difficulty === "easy" && "Facile"}
+          {difficulty === "medium" && "Moyenne"}
+          {difficulty === "hard" && "Difficile"}
+          {difficulty === "expert" && "Experte"}
+          {difficulty === "unknown" && "Inconnue"}
         </ThemedText>
       )}
     </View>

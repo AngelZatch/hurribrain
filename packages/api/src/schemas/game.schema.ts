@@ -13,6 +13,7 @@ export const GameResponseSchema = Type.Object(
     tags: Type.Array(TagResponseSchema),
     length: Type.Integer(),
     difficulty: Type.Enum(GameDifficulty),
+    playerCount: Type.Optional(Type.Integer()),
   },
   {
     $id: "Game",

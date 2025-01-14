@@ -35,7 +35,7 @@ export default function HomeScreen() {
               fontFamily: "Exo_700Bold",
             }}
           >
-            Play
+            Jouer
           </Text>
         </Pressable>
       </Link>
