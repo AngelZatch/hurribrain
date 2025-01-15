@@ -39,7 +39,7 @@ const GameController = async (fastify: FastifyInstance) => {
 
       const games = await em.findAll(Game, {
         refresh: true,
-        populate: ["tags", "playerCount"],
+        populate: ["tags", "playerCount", "creator"],
       })
 
       return reply.code(200).send({
@@ -71,7 +71,7 @@ const GameController = async (fastify: FastifyInstance) => {
       const game = await em.findOne(
         Game,
         { $or: [{ uuid: identifier }, { code: identifier }] },
-        { populate: ["tags", "playerCount"] }
+        { populate: ["tags", "playerCount", "creator"] }
       )
 
       if (!game) {
@@ -137,14 +137,21 @@ const GameController = async (fastify: FastifyInstance) => {
           ...ErrorResponsesSchema,
         },
       },
+      preHandler: [fastify.auth([verifyJWT])],
     },
     async (request, reply) => {
       const em = request.em
+      const user = await em.findOneOrFail(User, { uuid: request.user })
 
-      const { length, difficulty, tags } = request.body
+      const { length, difficulty, tags, isPrivate = false } = request.body
 
       // Create the game
-      const game = new Game({ length, difficulty, isPrivate: false })
+      const game = new Game({
+        length,
+        difficulty,
+        isPrivate,
+        creator: user,
+      })
 
       em.persist(game)
 
@@ -161,7 +168,7 @@ const GameController = async (fastify: FastifyInstance) => {
       const createdGame = await em.findOne(
         Game,
         { uuid: game.uuid },
-        { populate: ["tags"] }
+        { populate: ["tags", "creator"] }
       )
 
       return reply.code(201).send(createdGame)
@@ -205,6 +212,46 @@ const GameController = async (fastify: FastifyInstance) => {
       await em.persistAndFlush(participation)
 
       return reply.code(201).send(participation)
+    }
+  )
+
+  fastify.put<{
+    Params: GameByIdParams
+  }>(
+    "/:gameId/start",
+    {
+      schema: {
+        tags: ["Games"],
+        summary: "Starts a game",
+        params: GameByIdParamsSchema,
+      },
+      preHandler: [fastify.auth([verifyJWT])],
+    },
+    async (request, reply) => {
+      const em = request.em
+      const { gameId } = request.params
+
+      const game = await em.findOneOrFail(
+        Game,
+        {
+          uuid: gameId,
+          creator: { uuid: request.user },
+          startedAt: null,
+          finishedAt: null,
+        },
+        {
+          failHandler: () => {
+            reply.statusCode = 404
+            return new Error("Game not found")
+          },
+        }
+      )
+
+      game.startedAt = new Date()
+
+      await em.flush()
+
+      return reply.code(200).send(game)
     }
   )
 

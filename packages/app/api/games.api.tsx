@@ -1,3 +1,4 @@
+import { User } from "@/contexts/auth.context";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -7,13 +8,16 @@ export type Game = {
   tags: Array<{ uuid: string; name: string; description?: string }>;
   length: number;
   difficulty: "easy" | "medium" | "hard" | "expert" | "unknown";
+  isPrivate: boolean;
   playerCount?: number;
+  creator?: Omit<User, "role">;
 };
 
 export type GameCreationDTO = {
   tags: Array<{ uuid: string; name: string; description?: string }>;
   length: number;
   difficulty: "easy" | "medium" | "hard" | "expert";
+  isPrivate: boolean;
 };
 
 export const useGetGames = (token: string) => {
@@ -84,6 +88,30 @@ export const useCreateGame = (token: string) => {
             Authorization: `Bearer ${token}`,
           },
         });
+
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          throw error.response?.data;
+        }
+        throw error;
+      }
+    },
+  });
+};
+
+export const useStartGame = (token: string) => {
+  return useMutation({
+    mutationFn: async (gameId: string) => {
+      try {
+        const response = await axios.post(
+          `http://localhost:8080/games/${gameId}/start`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         return response.data;
       } catch (error) {

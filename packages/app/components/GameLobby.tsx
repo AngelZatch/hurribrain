@@ -3,12 +3,25 @@ import ThemedText from "./ui/ThemedText";
 import DifficultyChip from "./DifficultyChip";
 import { Game } from "@/api/games.api";
 import TagChip from "./TagChip";
+import { useAuth } from "@/contexts/auth.context";
+import ThemedButton from "./ui/ThemedButton";
+import { useGetMe } from "@/api/auth.api";
 
-type GameLobbyChips = {
+type GameLobbyProps = {
   game: Game;
 };
 
-export default function GameLobby({ game }: GameLobbyChips) {
+export default function GameLobby({ game }: GameLobbyProps) {
+  const { user } = useAuth();
+
+  if (!user) {
+    return null;
+  }
+
+  const { data, isLoading, isError } = useGetMe(user);
+
+  const isCreator = user && game.creator?.uuid === data?.uuid;
+
   return (
     <View
       style={{
@@ -28,7 +41,9 @@ export default function GameLobby({ game }: GameLobbyChips) {
           textAlign: "center",
         }}
       >
-        The game will start soon
+        {isCreator
+          ? "En attente de joueurs..."
+          : "La partie va bientôt commencer"}
       </ThemedText>
       <View
         style={{
@@ -70,6 +85,7 @@ export default function GameLobby({ game }: GameLobbyChips) {
           <ThemedText>{game.length} questions</ThemedText>
         </View>
       </View>
+      {isCreator && <ThemedButton title="Démarrer la partie" />}
     </View>
   );
 }

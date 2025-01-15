@@ -2,6 +2,7 @@ import { Static, Type } from "@sinclair/typebox"
 
 import { TagResponseSchema } from "./tag.schema.js"
 import { GameDifficulty } from "./../entities/game.entity.js"
+import { UserResponseSchema } from "./user.schema.js"
 
 export const GameResponseSchema = Type.Object(
   {
@@ -14,6 +15,8 @@ export const GameResponseSchema = Type.Object(
     length: Type.Integer(),
     difficulty: Type.Enum(GameDifficulty),
     playerCount: Type.Optional(Type.Integer()),
+    creator: UserResponseSchema,
+    isPrivate: Type.Boolean(),
   },
   {
     $id: "Game",

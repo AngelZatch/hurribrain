@@ -81,6 +81,7 @@ export default function CreateGameForm() {
       tags: data.tags,
       length: data.length,
       difficulty: difficultyMap[data.difficulty].text,
+      isPrivate: true,
     });
 
     console.log(createdGame);

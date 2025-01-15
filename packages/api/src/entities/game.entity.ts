@@ -5,12 +5,15 @@ import {
   Filter,
   Formula,
   ManyToMany,
+  ManyToOne,
   PrimaryKey,
   Property,
   Unique,
+  type Rel,
 } from "@mikro-orm/core"
 import { v4 } from "uuid"
 import { Tag } from "./tag.entity.js"
+import { User } from "./user.entity.js"
 
 export enum GameDifficulty {
   EASY = "easy",
@@ -28,6 +31,9 @@ export class Game {
   @Property()
   @Unique()
   code: string = this.generateUniqueCode()
+
+  @ManyToOne({ entity: () => User })
+  creator: Rel<User>
 
   // Game options
   @ManyToMany({ entity: () => Tag, lazy: true })
@@ -70,10 +76,13 @@ export class Game {
   @Property({ onUpdate: () => new Date() })
   updatedAt: Date = new Date()
 
-  constructor(body: Pick<Game, "length" | "difficulty" | "isPrivate">) {
+  constructor(
+    body: Pick<Game, "length" | "difficulty" | "isPrivate" | "creator">
+  ) {
     this.length = body.length
     this.difficulty = body.difficulty
     this.isPrivate = body.isPrivate
+    this.creator = body.creator
   }
 
   private generateUniqueCode(): string {

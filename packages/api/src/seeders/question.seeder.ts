@@ -129,6 +129,99 @@ export class QuestionSeeder extends Seeder {
         ],
         tags: [createdTags[0]],
       },
+      {
+        title: "Comment s'appelle le frère de Mario ?",
+        choices: [
+          { value: "Luigi", isCorrect: true },
+          { value: "Wario", isCorrect: false },
+          { value: "Waluigi", isCorrect: false },
+          { value: "Yoshi", isCorrect: false },
+        ],
+        tags: [createdTags[0]],
+      },
+      {
+        title: "Comment s'appelle le frère de Luigi ?",
+        choices: [
+          { value: "Mario", isCorrect: true },
+          { value: "Wario", isCorrect: false },
+          { value: "Waluigi", isCorrect: false },
+          { value: "Yoshi", isCorrect: false },
+        ],
+        tags: [createdTags[0]],
+      },
+      {
+        title: "Qui veut toujours enlever la Princess Peach ?",
+        choices: [
+          { value: "Bowser", isCorrect: true },
+          { value: "Wario", isCorrect: false },
+          { value: "Waluigi", isCorrect: false },
+          { value: "Yoshi", isCorrect: false },
+        ],
+        tags: [createdTags[0]],
+      },
+      {
+        title:
+          "Quel est le nom du Monde accessible seulement par un glitch dans Super Mario Bros. ?",
+        choices: [
+          { value: "0", isCorrect: true },
+          { value: "-1", isCorrect: false },
+          { value: "X", isCorrect: false },
+          { value: "SECRET", isCorrect: false },
+        ],
+        tags: [createdTags[0]],
+      },
+      {
+        title: "En quelle année est sorti le premier Final Fantasy ?",
+        choices: [
+          { value: "1985", isCorrect: false },
+          { value: "1986", isCorrect: false },
+          { value: "1987", isCorrect: true },
+          { value: "1988", isCorrect: false },
+        ],
+        tags: [createdTags[0]],
+      },
+      {
+        title: "Qui est le compositeur phare de la série des Final Fantasy ?",
+        choices: [
+          { value: "Nobuo Uematsu", isCorrect: true },
+          { value: "Yoko Shimomura", isCorrect: false },
+          { value: "Koji Kondo", isCorrect: false },
+          { value: "Daiki Ishikawa", isCorrect: false },
+        ],
+        tags: [createdTags[0]],
+      },
+      {
+        title:
+          "Dans quel jeu sont apparus les Chocobos pour la première fois ?",
+        choices: [
+          { value: "Final Fantasy", isCorrect: false },
+          { value: "Final Fantasy II", isCorrect: true },
+          { value: "Final Fantasy III", isCorrect: false },
+          { value: "Final Fantasy IV", isCorrect: false },
+        ],
+        tags: [createdTags[0]],
+      },
+      {
+        title: "Dans quel jeu sont apparus les Mogs pour la première fois ?",
+        choices: [
+          { value: "Final Fantasy IV", isCorrect: false },
+          { value: "Final Fantasy II", isCorrect: false },
+          { value: "Final Fantasy V", isCorrect: false },
+          { value: "Final Fantasy III", isCorrect: true },
+        ],
+        tags: [createdTags[0]],
+      },
+      {
+        title:
+          "De quel Final Fantasy le Nuage des Ténèbres est-il le boss de fin ?",
+        choices: [
+          { value: "Final Fantasy I", isCorrect: false },
+          { value: "Final Fantasy II", isCorrect: false },
+          { value: "Final Fantasy III", isCorrect: true },
+          { value: "Final Fantasy IV", isCorrect: false },
+        ],
+        tags: [createdTags[0]],
+      },
     ]
 
     for (const question of questions) {

@@ -28,7 +28,10 @@ export default function PlayScreen() {
 
   return (
     <PageContainer>
-      <TopNavigation topLabel="Game code:" subLabel={data?.code} />
+      <TopNavigation
+        topLabel={data?.isPrivate ? "Partie Privée" : "Partie Rapide"}
+        subLabel={data?.code}
+      />
       <View
         style={{
           padding: 8,
