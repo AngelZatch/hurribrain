@@ -11,6 +11,8 @@ import {
   GameByIdOrCodeParams,
   GameByIdOrCodeParamsSchema,
   GameByCodeParams,
+  GameByIdParams,
+  GameByIdParamsSchema,
 } from "./../schemas/game.schema.js"
 import { Tag } from "./../entities/tag.entity.js"
 import { Participation } from "./../entities/participation.entity.js"
@@ -79,6 +81,45 @@ const GameController = async (fastify: FastifyInstance) => {
       }
 
       return reply.code(200).send(game)
+    }
+  )
+
+  fastify.get<{
+    Params: GameByIdParams
+  }>(
+    "/:gameId/leaderboard",
+    {
+      schema: {
+        tags: ["Games"],
+        summary: "Returns the leaderboard for a game",
+        params: GameByIdParamsSchema,
+      },
+    },
+    async (request, reply) => {
+      const em = request.em
+      const { gameId } = request.params
+
+      const game = await em.findOneOrFail(
+        Game,
+        { uuid: gameId },
+        {
+          failHandler: () => {
+            reply.statusCode = 404
+            return new Error("Game not found")
+          },
+        }
+      )
+
+      const leaderboard = await em.find(
+        Participation,
+        { game: game.uuid },
+        {
+          populate: ["user"],
+          orderBy: { score: "desc" },
+        }
+      )
+
+      return reply.code(200).send(leaderboard)
     }
   )
 

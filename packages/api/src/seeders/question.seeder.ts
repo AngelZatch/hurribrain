@@ -1,26 +1,142 @@
 import { EntityManager } from "@mikro-orm/mysql"
 import { Seeder } from "@mikro-orm/seeder"
 import { TagFactory } from "./../factories/tag.factory.js"
+import { QuestionFactory } from "./../factories/question.factory.js"
 
 export class QuestionSeeder extends Seeder {
   async run(em: EntityManager): Promise<void> {
     // Seed questions here
-
     const tags = [
-      "video games",
-      "80s",
-      "science",
-      "history",
-      "movies",
-      "music",
-      "sports",
-      "literature",
-      "geography",
-      "technology",
+      "Jeux vidéos",
+      "Années 80",
+      "Années 90",
+      "Années 2000",
+      "Années 2010",
+      "Science",
+      "Culture Générale",
+      "Cinéma",
+      "Musique",
+      "Télévision",
+      "Informatique",
+      "Mathématiques",
+      "Langues",
+      "Politique",
+      "Art",
+      "Religion",
+      "Histoire",
+      "Sports",
+      "Littérature",
+      "Géographie",
+      "Technologie",
     ]
 
+    const createdTags = []
+
     for (const tag of tags) {
-      await new TagFactory(em).createOne({ name: tag })
+      const newTag = await new TagFactory(em).createOne({ name: tag })
+      createdTags.push(newTag)
+    }
+
+    const questions: Array<{
+      title: string
+      choices: Array<{ value: string; isCorrect: boolean }>
+      tags: Array<{ uuid: string; name: string }>
+    }> = [
+      {
+        title: "Lequel de ces jeux n'est pas sorti sur Nintendo Wii ?",
+        choices: [
+          {
+            value: "Super Mario Galaxy",
+            isCorrect: false,
+          },
+          {
+            value: "The Legend of Zelda: Twilight Princess",
+            isCorrect: false,
+          },
+          {
+            value: "Super Mario Sunshine",
+            isCorrect: true,
+          },
+          {
+            value: "Super Smash Bros. Brawl",
+            isCorrect: false,
+          },
+        ],
+        tags: [createdTags[0]],
+      },
+      {
+        title:
+          "Quel est le nom de la princesse dans le jeu vidéo The Legend of Zelda ?",
+        choices: [
+          {
+            value: "Zelda",
+            isCorrect: true,
+          },
+          {
+            value: "Peach",
+            isCorrect: false,
+          },
+          {
+            value: "Daisy",
+            isCorrect: false,
+          },
+          {
+            value: "Link",
+            isCorrect: false,
+          },
+        ],
+        tags: [createdTags[0]],
+      },
+      {
+        title: "En quelle année est sorti Super Mario Sunshine ?",
+        choices: [
+          { value: "2001", isCorrect: false },
+          { value: "2002", isCorrect: true },
+          { value: "2003", isCorrect: false },
+          { value: "2004", isCorrect: false },
+        ],
+        tags: [createdTags[0]],
+      },
+      {
+        title: "Trouvez l'intrus",
+        choices: [
+          { value: "Super Mario Sunshine 2", isCorrect: true },
+          { value: "Super Mario Galaxy 2", isCorrect: false },
+          { value: "New Super Luigi U", isCorrect: false },
+          { value: "Super Mario Maker 2", isCorrect: false },
+        ],
+        tags: [createdTags[0]],
+      },
+      {
+        title:
+          "Quel est le nom du personnage principal dans le jeu vidéo The Legend of Zelda ?",
+        choices: [
+          { value: "Zelda", isCorrect: false },
+          { value: "Peach", isCorrect: false },
+          { value: "Daisy", isCorrect: false },
+          { value: "Link", isCorrect: true },
+        ],
+        tags: [createdTags[0]],
+      },
+      {
+        title:
+          "En quelle année est sorti The Legend of Zelda: Twilight Princess ?",
+        choices: [
+          { value: "2005", isCorrect: false },
+          { value: "2006", isCorrect: true },
+          { value: "2007", isCorrect: false },
+          { value: "2008", isCorrect: false },
+        ],
+        tags: [createdTags[0]],
+      },
+    ]
+
+    for (const question of questions) {
+      await new QuestionFactory(em).createOne({
+        title: question.title,
+        choices: question.choices,
+        tags: question.tags,
+      })
     }
   }
 }
