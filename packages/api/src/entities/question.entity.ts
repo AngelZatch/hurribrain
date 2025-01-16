@@ -7,6 +7,7 @@ import {
   OneToMany,
   ManyToOne,
   Filter,
+  FloatType,
 } from "@mikro-orm/core"
 import { Tag } from "./tag.entity.js"
 import { v4 } from "uuid"
@@ -41,19 +42,29 @@ export class Question {
   @Property()
   incorrectAnswers: number = 0
 
-  @Property({ persist: false })
-  get successRate(): number | null {
-    const totalAnswers = this.correctAnswers + this.incorrectAnswers
-    if (totalAnswers === 0) {
-      return null
-    }
-    return (this.correctAnswers / totalAnswers) * 100
-  }
+  @Property({
+    type: FloatType,
+    onCreate: (question: Question) => {
+      const totalAnswers = question.correctAnswers + question.incorrectAnswers
+      if (totalAnswers === 0) {
+        return null
+      }
+      return (question.correctAnswers / totalAnswers) * 100
+    },
+    onUpdate: (question: Question) => {
+      const totalAnswers = question.correctAnswers + question.incorrectAnswers
+      if (totalAnswers === 0) {
+        return null
+      }
+      return (question.correctAnswers / totalAnswers) * 100
+    },
+  })
+  successRate: number | null = null
 
   @Property({ persist: false })
   get difficulty(): string {
     const rate = this.successRate
-    if (!rate) {
+    if (rate === null) {
       return "unknown"
     }
     if (rate > 50) {

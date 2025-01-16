@@ -41,6 +41,8 @@ export class QuestionSeeder extends Seeder {
       title: string
       choices: Array<{ value: string; isCorrect: boolean }>
       tags: Array<{ uuid: string; name: string }>
+      correctAnswers: number
+      incorrectAnswers: number
     }> = [
       {
         title: "Lequel de ces jeux n'est pas sorti sur Nintendo Wii ?",
@@ -63,6 +65,8 @@ export class QuestionSeeder extends Seeder {
           },
         ],
         tags: [createdTags[0]],
+        correctAnswers: 12,
+        incorrectAnswers: 76,
       },
       {
         title:
@@ -86,6 +90,8 @@ export class QuestionSeeder extends Seeder {
           },
         ],
         tags: [createdTags[0]],
+        correctAnswers: 78,
+        incorrectAnswers: 1,
       },
       {
         title: "En quelle année est sorti Super Mario Sunshine ?",
@@ -96,6 +102,8 @@ export class QuestionSeeder extends Seeder {
           { value: "2004", isCorrect: false },
         ],
         tags: [createdTags[0]],
+        correctAnswers: 42,
+        incorrectAnswers: 56,
       },
       {
         title: "Trouvez l'intrus",
@@ -106,6 +114,8 @@ export class QuestionSeeder extends Seeder {
           { value: "Super Mario Maker 2", isCorrect: false },
         ],
         tags: [createdTags[0]],
+        correctAnswers: 87,
+        incorrectAnswers: 11,
       },
       {
         title:
@@ -117,6 +127,8 @@ export class QuestionSeeder extends Seeder {
           { value: "Link", isCorrect: true },
         ],
         tags: [createdTags[0]],
+        correctAnswers: 98,
+        incorrectAnswers: 0,
       },
       {
         title:
@@ -128,6 +140,8 @@ export class QuestionSeeder extends Seeder {
           { value: "2008", isCorrect: false },
         ],
         tags: [createdTags[0]],
+        correctAnswers: 47,
+        incorrectAnswers: 19,
       },
       {
         title: "Comment s'appelle le frère de Mario ?",
@@ -138,6 +152,8 @@ export class QuestionSeeder extends Seeder {
           { value: "Yoshi", isCorrect: false },
         ],
         tags: [createdTags[0]],
+        correctAnswers: 94,
+        incorrectAnswers: 4,
       },
       {
         title: "Comment s'appelle le frère de Luigi ?",
@@ -148,6 +164,8 @@ export class QuestionSeeder extends Seeder {
           { value: "Yoshi", isCorrect: false },
         ],
         tags: [createdTags[0]],
+        correctAnswers: 66,
+        incorrectAnswers: 0,
       },
       {
         title: "Qui veut toujours enlever la Princess Peach ?",
@@ -158,17 +176,21 @@ export class QuestionSeeder extends Seeder {
           { value: "Yoshi", isCorrect: false },
         ],
         tags: [createdTags[0]],
+        correctAnswers: 69,
+        incorrectAnswers: 29,
       },
       {
         title:
           "Quel est le nom du Monde accessible seulement par un glitch dans Super Mario Bros. ?",
         choices: [
-          { value: "0", isCorrect: true },
-          { value: "-1", isCorrect: false },
+          { value: "0", isCorrect: false },
+          { value: "-1", isCorrect: true },
           { value: "X", isCorrect: false },
           { value: "SECRET", isCorrect: false },
         ],
         tags: [createdTags[0]],
+        correctAnswers: 14,
+        incorrectAnswers: 9101,
       },
       {
         title: "En quelle année est sorti le premier Final Fantasy ?",
@@ -179,6 +201,8 @@ export class QuestionSeeder extends Seeder {
           { value: "1988", isCorrect: false },
         ],
         tags: [createdTags[0]],
+        correctAnswers: 38,
+        incorrectAnswers: 291,
       },
       {
         title: "Qui est le compositeur phare de la série des Final Fantasy ?",
@@ -189,6 +213,8 @@ export class QuestionSeeder extends Seeder {
           { value: "Daiki Ishikawa", isCorrect: false },
         ],
         tags: [createdTags[0]],
+        correctAnswers: 84,
+        incorrectAnswers: 14,
       },
       {
         title:
@@ -200,6 +226,8 @@ export class QuestionSeeder extends Seeder {
           { value: "Final Fantasy IV", isCorrect: false },
         ],
         tags: [createdTags[0]],
+        correctAnswers: 119,
+        incorrectAnswers: 34,
       },
       {
         title: "Dans quel jeu sont apparus les Mogs pour la première fois ?",
@@ -210,6 +238,8 @@ export class QuestionSeeder extends Seeder {
           { value: "Final Fantasy III", isCorrect: true },
         ],
         tags: [createdTags[0]],
+        correctAnswers: 1,
+        incorrectAnswers: 118,
       },
       {
         title:
@@ -221,6 +251,32 @@ export class QuestionSeeder extends Seeder {
           { value: "Final Fantasy IV", isCorrect: false },
         ],
         tags: [createdTags[0]],
+        correctAnswers: 43,
+        incorrectAnswers: 223,
+      },
+      {
+        title: "De quel Final Fantasy Kefka est-il le boss de fin ?",
+        choices: [
+          { value: "Final Fantasy VI", isCorrect: true },
+          { value: "Final Fantasy VII", isCorrect: false },
+          { value: "Final Fantasy VIII", isCorrect: false },
+          { value: "Final Fantasy IX", isCorrect: false },
+        ],
+        tags: [createdTags[0]],
+        correctAnswers: 98,
+        incorrectAnswers: 1,
+      },
+      {
+        title: "Quel est le nom du boss de fin de Final Fantasy XIII ?",
+        choices: [
+          { value: "Orphan", isCorrect: true },
+          { value: "Bartandelus", isCorrect: false },
+          { value: "Cid Raines", isCorrect: false },
+          { value: "Orphanus", isCorrect: false },
+        ],
+        tags: [createdTags[0]],
+        correctAnswers: 0,
+        incorrectAnswers: 0,
       },
     ]
 
@@ -229,6 +285,8 @@ export class QuestionSeeder extends Seeder {
         title: question.title,
         choices: question.choices,
         tags: question.tags,
+        correctAnswers: question.correctAnswers,
+        incorrectAnswers: question.incorrectAnswers,
       })
     }
   }

@@ -22,6 +22,15 @@ export enum GameDifficulty {
   EXPERT = "expert",
 }
 
+export const difficultyMap: {
+  [key: string]: { min: number; max: number }
+} = {
+  easy: { min: 0, max: 50 },
+  medium: { min: 50, max: 80 },
+  hard: { min: 80, max: 100 },
+  expert: { min: 100, max: 100 },
+}
+
 @Entity()
 @Filter({ name: "notDeleted", cond: { deletedAt: null } })
 export class Game {

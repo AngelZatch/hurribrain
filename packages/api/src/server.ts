@@ -9,7 +9,6 @@ import { getEntityManager } from "./middlewares/entityManager.middleware.js"
 import AuthController from "./controllers/auth.controller.js"
 import fastifyAuth from "@fastify/auth"
 import GameController from "./controllers/game.controller.js"
-import fastifyWebsocket from "@fastify/websocket"
 
 export const server = Fastify()
 
@@ -50,7 +49,7 @@ export const initializeServer = async () => {
   })
 
   // Websockets
-  await server.register(fastifyWebsocket)
+  // Fastify Socket IO does not support Fastify v5 yet
 
   // Authentication
   await server.register(fastifyAuth)

@@ -1,30 +1,42 @@
 import { useGetGame } from "@/api/games.api";
 import { useAuth } from "@/contexts/auth.context";
 import { useLocalSearchParams } from "expo-router";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { View, Text } from "react-native";
 import { PageContainer } from "@/components/ui/PageContainer";
 import TopNavigation from "@/components/TopNavigation";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import GameLobby from "@/components/GameLobby";
+import { socket } from "@/api/socket";
 
 export default function PlayScreen() {
   const colorScheme = useColorScheme();
   const { user } = useAuth();
   const { id: gameId } = useLocalSearchParams<{ id: string }>();
 
-  if (!user || !gameId) {
+  const { data, isLoading, error } = useGetGame(user!, gameId);
+
+  useEffect(() => {
+    if (!data?.uuid) {
+      return;
+    }
+
+    socket.on("connect", () => {
+      console.log("connected");
+      socket.send("game:join", data.uuid);
+    });
+
+    // Clean up
+    return () => {
+      socket.off("connect");
+      socket.disconnect();
+    };
+  }, [data?.uuid]);
+
+  if (!data) {
     return null;
   }
-
-  const { data, isLoading, error } = useGetGame(user, gameId);
-
-  if (isLoading) {
-    return <Text>Loading...</Text>;
-  }
-
-  console.log(data);
 
   return (
     <PageContainer>

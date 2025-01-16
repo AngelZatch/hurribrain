@@ -33,7 +33,13 @@ const QuestionController = async (fastify: FastifyInstance) => {
       const em = request.em
 
       const questions = await em.findAll(Question, {
-        populate: ["choices", "tags"],
+        populate: [
+          "choices",
+          "tags",
+          "successRate",
+          "correctAnswers",
+          "incorrectAnswers",
+        ],
         filters: { notDeleted: true },
         refresh: true,
       })

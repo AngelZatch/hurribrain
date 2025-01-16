@@ -18,6 +18,7 @@ import { Tag } from "./../entities/tag.entity.js"
 import { Participation } from "./../entities/participation.entity.js"
 import { User } from "./../entities/user.entity.js"
 import { verifyJWT } from "./../utils/authChecker.js"
+import { Question } from "./../entities/question.entity.js"
 
 const GameController = async (fastify: FastifyInstance) => {
   fastify.addSchema(GameResponseSchema)
@@ -249,17 +250,57 @@ const GameController = async (fastify: FastifyInstance) => {
 
       game.startedAt = new Date()
 
+      // Create all turns
+
       await em.flush()
 
       return reply.code(200).send(game)
     }
   )
 
-  fastify.get("/:gameId/play", { websocket: true }, (socket) => {
-    socket.on("message", (message: unknown) => {
-      console.log(message)
-      socket.send("pong")
-    })
+  fastify.get<{
+    Params: GameByIdParams
+  }>("/:gameId/questions", async (request, reply) => {
+    const em = request.em
+    const { gameId } = request.params
+
+    const game = await em.findOneOrFail(
+      Game,
+      {
+        uuid: gameId,
+        // creator: { uuid: request.user },
+        startedAt: null,
+        finishedAt: null,
+      },
+      {
+        populate: ["tags"],
+        failHandler: () => {
+          reply.statusCode = 404
+          return new Error("Game not found")
+        },
+      }
+    )
+
+    // Get n questions from the database based on the game length, the tags and the difficulty
+    const questions = await em.find(
+      Question,
+      {
+        tags: { $in: game.tags.getItems() },
+        $or: [
+          {
+            successRate: null,
+          },
+          {
+            successRate: { $lt: 50 },
+          },
+        ],
+      },
+      {
+        populate: ["tags", "choices", "difficulty"],
+      }
+    )
+
+    return reply.code(200).send(questions)
   })
 }
 

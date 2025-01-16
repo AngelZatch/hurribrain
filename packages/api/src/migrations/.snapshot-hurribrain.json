@@ -133,6 +133,16 @@
           "length": null,
           "mappedType": "integer"
         },
+        "success_rate": {
+          "name": "success_rate",
+          "type": "float",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": null,
+          "mappedType": "float"
+        },
         "created_at": {
           "name": "created_at",
           "type": "datetime",
