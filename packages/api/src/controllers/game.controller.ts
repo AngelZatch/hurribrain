@@ -19,6 +19,7 @@ import { Participation } from "./../entities/participation.entity.js"
 import { User } from "./../entities/user.entity.js"
 import { verifyJWT } from "./../utils/authChecker.js"
 import { Question } from "./../entities/question.entity.js"
+import { Turn } from "./../entities/turn.entity.js"
 
 const GameController = async (fastify: FastifyInstance) => {
   fastify.addSchema(GameResponseSchema)
@@ -251,10 +252,51 @@ const GameController = async (fastify: FastifyInstance) => {
       game.startedAt = new Date()
 
       // Create all turns
+      const difficultyFilter = {
+        easy: 50,
+        medium: 20,
+        hard: 1,
+        expert: 0,
+      }
 
-      await em.flush()
+      // Get game.length questions from the database based on the tags and the difficulty
+      const pickedQuestions = (
+        await em.find(
+          Question,
+          {
+            tags: { $in: game.tags.getItems() },
+            $or: [
+              {
+                successRate: null,
+              },
+              {
+                successRate: { $gte: difficultyFilter[game.difficulty!] },
+              },
+            ],
+          },
+          {
+            fields: ["uuid"],
+          }
+        )
+      )
+        .map((question) => question.uuid)
+        .sort(() => Math.random() - 0.5)
+        .slice(0, game.length)
 
-      return reply.code(200).send(game)
+      const turns: Array<Turn> = []
+      pickedQuestions.forEach(async (question, index) => {
+        turns.push(
+          new Turn({
+            question: { uuid: question } as Question,
+            game: { uuid: gameId } as Game,
+            position: index + 1,
+          })
+        )
+      })
+
+      await em.persistAndFlush(turns)
+
+      return reply.code(200).send(true)
     }
   )
 
@@ -281,26 +323,51 @@ const GameController = async (fastify: FastifyInstance) => {
       }
     )
 
-    // Get n questions from the database based on the game length, the tags and the difficulty
-    const questions = await em.find(
-      Question,
-      {
-        tags: { $in: game.tags.getItems() },
-        $or: [
-          {
-            successRate: null,
-          },
-          {
-            successRate: { $lt: 50 },
-          },
-        ],
-      },
-      {
-        populate: ["tags", "choices", "difficulty"],
-      }
-    )
+    const difficultyFilter = {
+      easy: 50,
+      medium: 20,
+      hard: 1,
+      expert: 0,
+    }
 
-    return reply.code(200).send(questions)
+    // Get n questions from the database based on the game length, the tags and the difficulty
+    const pickedQuestions = (
+      await em.find(
+        Question,
+        {
+          tags: { $in: game.tags.getItems() },
+          $or: [
+            {
+              successRate: null,
+            },
+            {
+              successRate: { $gte: difficultyFilter[game.difficulty!] },
+            },
+          ],
+        },
+        {
+          fields: ["uuid"],
+        }
+      )
+    )
+      .map((question) => question.uuid)
+      .sort(() => Math.random() - 0.5)
+      .slice(0, game.length)
+
+    const turns: Array<Turn> = []
+    pickedQuestions.forEach(async (question, index) => {
+      turns.push(
+        new Turn({
+          question: { uuid: question } as Question,
+          game: { uuid: gameId } as Game,
+          position: index + 1,
+        })
+      )
+    })
+
+    await em.persistAndFlush(turns)
+
+    return reply.code(200).send(turns)
   })
 }
 
