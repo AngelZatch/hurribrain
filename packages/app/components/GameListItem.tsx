@@ -7,6 +7,7 @@ import { Game } from "@/api/games.api";
 import { IconSymbol } from "./ui/IconSymbol";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme.web";
+import PlayerCount from "./PlayerCount";
 
 interface GameListItemProps {
   game: Game;
@@ -38,30 +39,7 @@ export default function GameListItem({ game }: GameListItemProps) {
         }}
       >
         <Avatar />
-        <View
-          style={{
-            display: "flex",
-            paddingHorizontal: 4,
-            paddingVertical: 8,
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "row",
-            gap: 4,
-          }}
-        >
-          <ThemedText
-            style={{
-              fontSize: 14,
-            }}
-          >
-            {game.playerCount}
-          </ThemedText>
-          <IconSymbol
-            name="person.fill"
-            size={24}
-            color={Colors[colorScheme ?? "light"].secondaryText}
-          />
-        </View>
+        <PlayerCount count={game.playerCount!} />
       </View>
       <View
         style={{

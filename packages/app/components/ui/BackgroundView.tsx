@@ -1,10 +1,11 @@
 import { ImageBackground, View, type ViewProps } from "react-native";
 
-import { useThemeColor } from "@/hooks/useThemeColor";
 import backgroundPicture from "@/assets/images/background_waves.png";
+import { useColorScheme } from "@/hooks/useColorScheme";
+import { Colors } from "@/constants/Colors";
 
 export function BackgroundView({ style, ...otherProps }: ViewProps) {
-  const backgroundGradient = useThemeColor({}, "backgroundGradient");
+  const backgroundColor = useColorScheme() ?? "light";
 
   return (
     <ImageBackground
@@ -12,7 +13,7 @@ export function BackgroundView({ style, ...otherProps }: ViewProps) {
       resizeMode="cover"
       style={[
         {
-          backgroundImage: backgroundGradient,
+          backgroundImage: Colors[backgroundColor].backgroundGradient,
           width: "100%",
           height: "100%",
         },

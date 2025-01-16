@@ -113,40 +113,50 @@ export default function ProfileScreen() {
             flexDirection: "column",
           }}
         >
-          <Text style={styles.statSectionTitle}>Statistiques de Jeu</Text>
+          <ThemedText style={styles.statSectionTitle} colorType="main">
+            Statistiques de Jeu
+          </ThemedText>
           <View style={styles.statRow}>
             <ThemedText style={styles.statTitle} colorType="secondaryText">
               Parties jouées
             </ThemedText>
-            <Text style={styles.statValue}>{data?.stats.gamesPlayed}</Text>
+            <ThemedText style={styles.statValue} colorType="main">
+              {data?.stats.gamesPlayed}
+            </ThemedText>
           </View>
           <View style={styles.statRow}>
             <ThemedText style={styles.statTitle} colorType="secondaryText">
               Première partie
             </ThemedText>
-            <Text style={styles.statValue}>{data?.stats.firstGamePlayed}</Text>
+            <ThemedText style={styles.statValue} colorType="main">
+              {data?.stats.firstGamePlayed}
+            </ThemedText>
           </View>
           <Divider orientation="horizontal" size="100%" />
           <View style={styles.statRow}>
             <ThemedText style={styles.statTitle} colorType="secondaryText">
               Parties gagnées
             </ThemedText>
-            <Text style={styles.statValue}>{data?.stats.gamesWon}</Text>
+            <ThemedText style={styles.statValue} colorType="main">
+              {data?.stats.gamesWon}
+            </ThemedText>
           </View>
           <View style={styles.statRow}>
             <ThemedText style={styles.statTitle} colorType="secondaryText">
               Première victoire
             </ThemedText>
-            <Text style={styles.statValue}>{data?.stats.firstGameWon}</Text>
+            <ThemedText style={styles.statValue} colorType="main">
+              {data?.stats.firstGameWon}
+            </ThemedText>
           </View>
           <Divider orientation="horizontal" size="100%" />
           <View style={styles.statRow}>
             <ThemedText style={styles.statTitle} colorType="secondaryText">
               Taux de victoire
             </ThemedText>
-            <Text style={styles.statValue}>
+            <ThemedText style={styles.statValue} colorType="main">
               {computeWinRate(data!.stats.gamesWon, data!.stats.gamesPlayed)} %
-            </Text>
+            </ThemedText>
           </View>
           {/* 
           <View style={styles.statRow}>
@@ -173,12 +183,16 @@ export default function ProfileScreen() {
             flexDirection: "column",
           }}
         >
-          <Text style={styles.statSectionTitle}>Statistiques de Compte</Text>
+          <ThemedText style={styles.statSectionTitle} colorType="main">
+            Statistiques de Compte
+          </ThemedText>
           <View style={styles.statRow}>
             <ThemedText style={styles.statTitle} colorType="secondaryText">
               Arrivée
             </ThemedText>
-            <Text style={styles.statValue}>{data?.createdAt}</Text>
+            <ThemedText style={styles.statValue} colorType="main">
+              {data?.createdAt}
+            </ThemedText>
           </View>
         </ContainerView>
       </View>
@@ -190,7 +204,6 @@ const styles = StyleSheet.create({
   statSectionTitle: {
     fontSize: 24,
     fontFamily: "Exo_600Semibold",
-    color: "#0A99FF",
     alignSelf: "center",
   },
   statRow: {
@@ -207,6 +220,5 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 20,
     fontFamily: "Exo_600Semibold",
-    color: "#0A99FF",
   },
 });

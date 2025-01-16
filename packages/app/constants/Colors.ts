@@ -32,7 +32,7 @@ export const Colors = {
     icon: '#9BA1A6',
     tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColorDark,
-    backgroundGradient: "linear-gradient(#1C2727, #466263)",
+    backgroundGradient: "linear-gradient(#201C27, #063E7F)",
     containerBackground: "#00000033",
     secondaryText: "#FFFFFF",
     disabled: "#C6C6C6",

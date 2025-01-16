@@ -14,8 +14,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
 import { Tag, useGetTags } from "@/api/tags.api";
 import DifficultyChip from "./DifficultyChip";
-import SelectableTagChip from "./ui/SelectableTagChip";
-import MultiSelect from "./ui/MultiSelect";
+import MultiSelect from "./MultiSelect";
 
 type FormData = {
   tags: Array<Tag>;

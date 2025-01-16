@@ -6,6 +6,7 @@ import TagChip from "./TagChip";
 import { useAuth } from "@/contexts/auth.context";
 import ThemedButton from "./ui/ThemedButton";
 import { useGetMe } from "@/api/auth.api";
+import PlayerCount from "./PlayerCount";
 
 type GameLobbyProps = {
   game: Game;
@@ -45,6 +46,7 @@ export default function GameLobby({ game }: GameLobbyProps) {
           ? "En attente de joueurs..."
           : "La partie va bientôt commencer"}
       </ThemedText>
+      {game.playerCount && <PlayerCount count={game.playerCount} />}
       <View
         style={{
           padding: 10,
@@ -66,10 +68,10 @@ export default function GameLobby({ game }: GameLobbyProps) {
             color: "#EC9D27",
           }}
         >
-          Game Rules
+          Règles de la partie
         </ThemedText>
         <View style={styles.ruleContainer}>
-          <ThemedText>Themes</ThemedText>
+          <ThemedText>Thèmes</ThemedText>
           <View>
             {game.tags.map((tag) => (
               <TagChip key={tag.uuid} text={tag.name} active />
@@ -77,11 +79,11 @@ export default function GameLobby({ game }: GameLobbyProps) {
           </View>
         </View>
         <View style={styles.ruleContainer}>
-          <ThemedText>Difficulty</ThemedText>
+          <ThemedText>Difficulté</ThemedText>
           <DifficultyChip difficulty={game.difficulty} fullSize />
         </View>
         <View style={styles.ruleContainer}>
-          <ThemedText>Length</ThemedText>
+          <ThemedText>Durée</ThemedText>
           <ThemedText>{game.length} questions</ThemedText>
         </View>
       </View>

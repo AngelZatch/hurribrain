@@ -5,7 +5,7 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 type ThemedTextProps = TextProps & {
   lightColor?: string;
   darkColor?: string;
-  colorType?: "text" | "secondaryText";
+  colorType?: "text" | "secondaryText" | "inheritText" | "main";
   type?:
     | "default"
     | "title"

@@ -1,6 +1,6 @@
 import { Tag } from "@/api/tags.api";
 import { Pressable } from "react-native";
-import TagChip from "../TagChip";
+import TagChip from "./TagChip";
 
 type SelectableTagChipProps = {
   tag: Tag;

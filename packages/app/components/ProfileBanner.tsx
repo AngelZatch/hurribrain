@@ -63,8 +63,8 @@ export default function ProfileBanner() {
             current={data!.stats.experiencePoints}
             level={data!.stats.level}
           />
-          <Divider orientation="vertical" size={15} />
-          <CoinCount count={138} />
+          {/* <Divider orientation="vertical" size={15} />
+          <CoinCount count={138} /> */}
         </View>
       </View>
     </View>

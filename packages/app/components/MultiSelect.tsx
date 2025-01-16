@@ -1,6 +1,6 @@
 import { Tag } from "@/api/tags.api";
 import { View } from "react-native";
-import SelectableTagChip from "./SelectableTagChip";
+import SelectableTagChip from "./../components/SelectableTagChip";
 import { useEffect, useState } from "react";
 
 type MultiSelectProps = {
