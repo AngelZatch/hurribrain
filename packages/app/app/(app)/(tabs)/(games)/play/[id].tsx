@@ -1,36 +1,56 @@
-import { useGetGame } from "@/api/games.api";
+import { Turn, useGetGame } from "@/api/games.api";
 import { useAuth } from "@/contexts/auth.context";
 import { useLocalSearchParams } from "expo-router";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { View, Text } from "react-native";
 import { PageContainer } from "@/components/ui/PageContainer";
 import TopNavigation from "@/components/TopNavigation";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import GameLobby from "@/components/GameLobby";
-import { socket } from "@/api/socket";
+import { io, Socket } from "socket.io-client";
 
 export default function PlayScreen() {
   const colorScheme = useColorScheme();
   const { user } = useAuth();
   const { id: gameId } = useLocalSearchParams<{ id: string }>();
+  const socket = useRef<Socket>();
 
   const { data, isLoading, error } = useGetGame(user!, gameId);
+  const [currentTurn, setCurrentTurn] = useState<Turn | null>(null);
 
   useEffect(() => {
     if (!data?.uuid) {
       return;
     }
 
-    socket.on("connect", () => {
-      console.log("connected");
-      socket.send("game:join", data.uuid);
-    });
+    socket.current = io("http://localhost:8080", {
+      transports: ["websocket"],
+      reconnection: true,
+      reconnectionDelay: 400,
+      reconnectionAttempts: 10,
+    })
+      .on("connect", () => {
+        console.log("connected");
+        socket.current?.emit("game:join", data.uuid);
+      })
+      .on("game:joined", () => {
+        console.log("game:joined");
+        socket.current?.emit("sync:request", data.uuid);
+      })
+      .on("game:updated", () => {
+        console.log("game:updated");
+      })
+      .on("turn:current", (turn: Turn) => {
+        console.log("TURN RECEIVED", turn);
+        setCurrentTurn(turn);
+      });
 
     // Clean up
     return () => {
-      socket.off("connect");
-      socket.disconnect();
+      socket.current?.off("connect");
+      socket.current?.off("turn:change");
+      socket.current?.disconnect();
     };
   }, [data?.uuid]);
 
@@ -58,7 +78,7 @@ export default function PlayScreen() {
             "linear-gradient(45deg, rgba(255, 255, 255, 1) 0%, rgba(218, 191, 224, 0.1) 33%, rgba(176, 130, 193, 0.3) 67%, rgba(176, 130, 193, 0.5) 100%)",
         }}
       >
-        <GameLobby game={data!} />
+        {!data.startedAt && <GameLobby game={data!} />}
       </View>
     </PageContainer>
   );

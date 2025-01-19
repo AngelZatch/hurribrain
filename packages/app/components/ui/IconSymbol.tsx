@@ -1,4 +1,6 @@
 // This file is a fallback for using MaterialIcons on Android and web.
+import { Colors } from "@/constants/Colors";
+import { useColorScheme } from "@/hooks/useColorScheme.web";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { SymbolWeight } from "expo-symbols";
 import React from "react";
@@ -41,13 +43,14 @@ export function IconSymbol({
 }: {
   name: IconSymbolName;
   size?: number;
-  color: string | OpaqueColorValue;
+  color?: string | OpaqueColorValue;
   style?: StyleProp<TextStyle>;
   weight?: SymbolWeight;
 }) {
+  const colorScheme = useColorScheme();
   return (
     <MaterialIcons
-      color={color}
+      color={color ?? Colors[colorScheme ?? "light"].text}
       size={size}
       name={MAPPING[name]}
       style={style}

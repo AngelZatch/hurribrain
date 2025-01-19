@@ -11,6 +11,8 @@ export type Game = {
   isPrivate: boolean;
   playerCount?: number;
   creator?: Omit<User, "role">;
+  startedAt: Date | null;
+  finishedAt: Date | null;
 };
 
 export type GameCreationDTO = {
@@ -18,6 +20,26 @@ export type GameCreationDTO = {
   length: number;
   difficulty: "easy" | "medium" | "hard" | "expert";
   isPrivate: boolean;
+};
+
+export type Turn = {
+  uuid: string;
+  position: number;
+  question: {
+    uuid: string;
+    text: string;
+    choices: Array<Choice>;
+  };
+  game: Game | Game["uuid"];
+  startedAt: Date | null;
+  finishedAt: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type Choice = {
+  uuid: string;
+  text: string;
 };
 
 export const useGetGames = (token: string) => {

@@ -19,7 +19,7 @@ export default function PlayerCount({ count }: PlayerCountProps) {
       }}
     >
       <ThemedText style={{ fontSize: 18 }}>{count}</ThemedText>
-      <IconSymbol name="person.fill" size={24} color="#FFFFFF" />
+      <IconSymbol name="person.fill" size={24} />
     </View>
   );
 }

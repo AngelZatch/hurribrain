@@ -3,6 +3,7 @@ import { Static, Type } from "@sinclair/typebox"
 import { TagResponseSchema } from "./tag.schema.js"
 import { GameDifficulty } from "./../entities/game.entity.js"
 import { UserResponseSchema } from "./user.schema.js"
+import { Nullable } from "./common.schema.js"
 
 export const GameResponseSchema = Type.Object(
   {
@@ -17,6 +18,8 @@ export const GameResponseSchema = Type.Object(
     playerCount: Type.Optional(Type.Integer()),
     creator: UserResponseSchema,
     isPrivate: Type.Boolean(),
+    startedAt: Type.Optional(Nullable(Type.String({ format: "date-time" }))),
+    finishedAt: Type.Optional(Nullable(Type.String({ format: "date-time" }))),
   },
   {
     $id: "Game",

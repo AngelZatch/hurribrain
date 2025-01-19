@@ -1,4 +1,10 @@
-import Fastify, { FastifyRequest } from "fastify"
+import Fastify, {
+  FastifyBaseLogger,
+  FastifyPluginCallback,
+  FastifyRequest,
+  FastifyTypeProvider,
+  RawServerDefault,
+} from "fastify"
 import fastifyCors from "@fastify/cors"
 import fastifySwagger from "@fastify/swagger"
 import fastifySwaggerUi from "@fastify/swagger-ui"
@@ -9,6 +15,9 @@ import { getEntityManager } from "./middlewares/entityManager.middleware.js"
 import AuthController from "./controllers/auth.controller.js"
 import fastifyAuth from "@fastify/auth"
 import GameController from "./controllers/game.controller.js"
+import fastifySocketIo from "fastify-socket.io"
+import { Socket } from "socket.io"
+import GameService from "./services/game.service.js"
 
 export const server = Fastify()
 
@@ -50,6 +59,15 @@ export const initializeServer = async () => {
 
   // Websockets
   // Fastify Socket IO does not support Fastify v5 yet
+  await server.register(
+    fastifySocketIo as unknown as FastifyPluginCallback<
+      object,
+      RawServerDefault,
+      FastifyTypeProvider,
+      FastifyBaseLogger
+    >,
+    {}
+  )
 
   // Authentication
   await server.register(fastifyAuth)
@@ -70,5 +88,23 @@ export const initializeServer = async () => {
     await instance.register(GameController, { prefix: "/games" })
   })
 
-  await server.ready()
+  server.ready((err) => {
+    if (err) throw err
+
+    const gameService = new GameService()
+
+    server.io.on("connect", (socket: Socket) => {
+      socket.on("game:join", async (gameId: string) => {
+        // Confirm that there is a participation before joining
+        await socket.join(`game:${gameId}`)
+        socket.emit("game:joined")
+      })
+
+      socket.on("sync:request", async (gameId: string) => {
+        // Send the current game state
+        const currentTurn = await gameService.syncGame(gameId)
+        socket.emit("turn:current", currentTurn)
+      })
+    })
+  })
 }
