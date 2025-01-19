@@ -79,6 +79,12 @@ export default function PlayScreen() {
         }}
       >
         {!data.startedAt && <GameLobby game={data!} />}
+        {data.startedAt && currentTurn && (
+          <View>
+            <Text>Current turn: {currentTurn.position}</Text>
+            <Text>{currentTurn.question.text}</Text>
+          </View>
+        )}
       </View>
     </PageContainer>
   );

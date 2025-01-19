@@ -242,6 +242,7 @@ const GameController = async (fastify: FastifyInstance) => {
           finishedAt: null,
         },
         {
+          populate: ["tags"],
           failHandler: () => {
             reply.statusCode = 404
             return new Error("Game not found")
@@ -249,7 +250,10 @@ const GameController = async (fastify: FastifyInstance) => {
         }
       )
 
+      // Update game
       game.startedAt = new Date()
+
+      em.persist(game)
 
       // Create all turns
       const difficultyFilter = {
@@ -283,18 +287,33 @@ const GameController = async (fastify: FastifyInstance) => {
         .sort(() => Math.random() - 0.5)
         .slice(0, game.length)
 
-      const turns: Array<Turn> = []
+      console.log(pickedQuestions)
+
+      // Create all turns
       pickedQuestions.forEach(async (question, index) => {
-        turns.push(
-          new Turn({
-            question: { uuid: question } as Question,
-            game: { uuid: gameId } as Game,
-            position: index + 1,
-          })
-        )
+        const turn = new Turn({
+          question: { uuid: question } as Question,
+          game,
+          position: index + 1,
+        })
+        if (index === 0) {
+          turn.startedAt = new Date()
+        }
+        em.persist(turn)
       })
 
-      await em.persistAndFlush(turns)
+      await em.flush()
+
+      console.log("FLUSHED")
+
+      const firstTurn = await em.findOneOrFail(
+        Turn,
+        { game: game.uuid, position: 1 },
+        { populate: ["question"] }
+      )
+
+      fastify.io.to(`game:${game.uuid}`).emit("game:updated", game)
+      fastify.io.to(`game:${game.uuid}`).emit("turn:current", firstTurn)
 
       return reply.code(200).send(true)
     }

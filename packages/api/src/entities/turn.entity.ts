@@ -8,12 +8,13 @@ import {
 } from "@mikro-orm/core"
 import { Question } from "./question.entity.js"
 import { Game } from "./game.entity.js"
+import { v4 } from "uuid"
 
 @Entity()
 @Unique({ properties: ["game", "question"] })
 export class Turn {
   @PrimaryKey()
-  uuid!: string
+  uuid: string = v4()
 
   // The position of the turn in the game
   @Property()

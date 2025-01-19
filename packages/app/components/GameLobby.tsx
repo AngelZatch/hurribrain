@@ -1,7 +1,7 @@
 import { View, StyleSheet } from "react-native";
 import ThemedText from "./ui/ThemedText";
 import DifficultyChip from "./DifficultyChip";
-import { Game } from "@/api/games.api";
+import { Game, useStartGame } from "@/api/games.api";
 import TagChip from "./TagChip";
 import { useAuth } from "@/contexts/auth.context";
 import ThemedButton from "./ui/ThemedButton";
@@ -20,6 +20,7 @@ export default function GameLobby({ game }: GameLobbyProps) {
   }
 
   const { data, isLoading, isError } = useGetMe(user);
+  const { mutateAsync: startGame } = useStartGame(user);
 
   const isCreator = user && game.creator?.uuid === data?.uuid;
 
@@ -87,7 +88,12 @@ export default function GameLobby({ game }: GameLobbyProps) {
           <ThemedText>{game.length} questions</ThemedText>
         </View>
       </View>
-      {isCreator && <ThemedButton title="Démarrer la partie" />}
+      {isCreator && (
+        <ThemedButton
+          title="Démarrer la partie"
+          onPress={() => startGame(game.uuid)}
+        />
+      )}
     </View>
   );
 }

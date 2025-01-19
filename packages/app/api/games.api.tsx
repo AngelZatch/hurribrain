@@ -126,8 +126,9 @@ export const useStartGame = (token: string) => {
   return useMutation({
     mutationFn: async (gameId: string) => {
       try {
-        const response = await axios.post(
+        const response = await axios.put(
           `http://localhost:8080/games/${gameId}/start`,
+          {},
           {
             headers: {
               Authorization: `Bearer ${token}`,
