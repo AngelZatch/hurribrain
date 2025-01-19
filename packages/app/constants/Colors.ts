@@ -22,6 +22,8 @@ export const Colors = {
     containerBackground: "white",
     secondaryText: "#0F2969",
     disabled: "#5F5F5F",
+    fadedWhite: "#00000066"
+
   },
   dark: {
     main: "#0A99FF",
@@ -36,6 +38,7 @@ export const Colors = {
     containerBackground: "#00000033",
     secondaryText: "#FFFFFF",
     disabled: "#C6C6C6",
+    fadedWhite: "#FFFFFF66"
   },
 };
 

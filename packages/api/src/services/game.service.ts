@@ -26,6 +26,7 @@ export default class GameService {
           "question.difficulty",
           "question.choices.uuid",
           "question.choices.value",
+          "game",
         ],
       }
     )
@@ -55,10 +56,26 @@ export default class GameService {
     currentTurn.finishedAt = new Date()
     await em.persistAndFlush(currentTurn)
 
-    const nextTurn = await em.findOne(Turn, {
-      game: gameId,
-      position: currentTurn.position + 1,
-    })
+    const nextTurn = await em.findOne(
+      Turn,
+      {
+        game: gameId,
+        position: currentTurn.position + 1,
+      },
+      {
+        fields: [
+          "uuid",
+          "position",
+          "startedAt",
+          "finishedAt",
+          "question.title",
+          "question.difficulty",
+          "question.choices.uuid",
+          "question.choices.value",
+          "game",
+        ],
+      }
+    )
 
     return nextTurn
   }

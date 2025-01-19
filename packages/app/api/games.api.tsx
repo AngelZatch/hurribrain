@@ -26,7 +26,7 @@ export type Turn = {
   uuid: string;
   position: number;
   question: Question;
-  game: Game | Game["uuid"];
+  game: Game["uuid"];
   startedAt: Date | null;
   finishedAt: Date | null;
   createdAt: Date;
@@ -147,6 +147,23 @@ export const useStartGame = (token: string) => {
         }
         throw error;
       }
+    },
+  });
+};
+
+export const useGetMyParticipation = (token: string, gameId: string) => {
+  return useQuery({
+    queryKey: ["my-participation"],
+    queryFn: async () => {
+      const response = await axios.get(
+        `http://localhost:8080/games/${gameId}/leaderboard/me`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
     },
   });
 };

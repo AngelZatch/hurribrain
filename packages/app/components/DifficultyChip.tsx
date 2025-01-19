@@ -1,13 +1,14 @@
 import { View } from "react-native";
 import ThemedText from "./ui/ThemedText";
+import { Question } from "@/api/games.api";
 
 type DifficultyChipProps = {
-  difficulty: "easy" | "medium" | "hard" | "expert" | "unknown";
+  difficulty: Question["difficulty"];
   fullSize?: boolean;
 };
 
 export default function DifficultyChip({
-  difficulty,
+  difficulty = "unknown",
   fullSize = false,
 }: DifficultyChipProps) {
   return (

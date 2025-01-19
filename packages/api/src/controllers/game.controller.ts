@@ -20,6 +20,7 @@ import { User } from "./../entities/user.entity.js"
 import { verifyJWT } from "./../utils/authChecker.js"
 import { Question } from "./../entities/question.entity.js"
 import { Turn } from "./../entities/turn.entity.js"
+import PlayerController from "./player.controller.js"
 
 const GameController = async (fastify: FastifyInstance) => {
   fastify.addSchema(GameResponseSchema)
@@ -83,45 +84,6 @@ const GameController = async (fastify: FastifyInstance) => {
       }
 
       return reply.code(200).send(game)
-    }
-  )
-
-  fastify.get<{
-    Params: GameByIdParams
-  }>(
-    "/:gameId/leaderboard",
-    {
-      schema: {
-        tags: ["Games"],
-        summary: "Returns the leaderboard for a game",
-        params: GameByIdParamsSchema,
-      },
-    },
-    async (request, reply) => {
-      const em = request.em
-      const { gameId } = request.params
-
-      const game = await em.findOneOrFail(
-        Game,
-        { uuid: gameId },
-        {
-          failHandler: () => {
-            reply.statusCode = 404
-            return new Error("Game not found")
-          },
-        }
-      )
-
-      const leaderboard = await em.find(
-        Participation,
-        { game: game.uuid },
-        {
-          populate: ["user"],
-          orderBy: { score: "desc" },
-        }
-      )
-
-      return reply.code(200).send(leaderboard)
     }
   )
 
@@ -318,6 +280,8 @@ const GameController = async (fastify: FastifyInstance) => {
       return reply.code(200).send(true)
     }
   )
+
+  fastify.register(PlayerController, { prefix: "/:gameId/leaderboard" })
 }
 
 export default GameController
