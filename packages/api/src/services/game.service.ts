@@ -9,11 +9,26 @@ export default class GameService {
   syncGame = async (gameId: string) => {
     const em = getEntityManager()
 
-    const currentTurn = await em.findOne(Turn, {
-      game: gameId,
-      startedAt: { $ne: null },
-      finishedAt: null,
-    })
+    const currentTurn = await em.findOne(
+      Turn,
+      {
+        game: gameId,
+        startedAt: { $ne: null },
+        finishedAt: null,
+      },
+      {
+        fields: [
+          "uuid",
+          "position",
+          "startedAt",
+          "finishedAt",
+          "question.title",
+          "question.difficulty",
+          "question.choices.uuid",
+          "question.choices.value",
+        ],
+      }
+    )
 
     return currentTurn
   }

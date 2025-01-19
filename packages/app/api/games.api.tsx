@@ -25,11 +25,7 @@ export type GameCreationDTO = {
 export type Turn = {
   uuid: string;
   position: number;
-  question: {
-    uuid: string;
-    text: string;
-    choices: Array<Choice>;
-  };
+  question: Question;
   game: Game | Game["uuid"];
   startedAt: Date | null;
   finishedAt: Date | null;
@@ -37,9 +33,17 @@ export type Turn = {
   updatedAt: Date;
 };
 
+export type Question = {
+  uuid: string;
+  title: string;
+  choices: Array<Choice>;
+  successRate: number | null;
+  difficulty?: "easy" | "medium" | "hard" | "expert" | "unknown";
+};
+
 export type Choice = {
   uuid: string;
-  text: string;
+  value: string;
 };
 
 export const useGetGames = (token: string) => {

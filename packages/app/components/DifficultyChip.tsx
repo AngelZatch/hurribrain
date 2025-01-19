@@ -16,7 +16,8 @@ export default function DifficultyChip({
         {
           paddingHorizontal: 12,
           paddingVertical: 4,
-          width: 82,
+          width: fullSize ? 82 : 27,
+          height: 27,
           borderRadius: 9999,
           justifyContent: "center",
           alignItems: "center",
@@ -28,13 +29,27 @@ export default function DifficultyChip({
         difficulty === "unknown" && { backgroundColor: "#5F5F5F" },
       ]}
     >
-      {fullSize && (
-        <ThemedText style={{ color: "#FFFFFF", textTransform: "capitalize" }}>
+      {fullSize ? (
+        <ThemedText
+          style={{
+            color: "#FFFFFF",
+            textTransform: "capitalize",
+            fontSize: 14,
+          }}
+        >
           {difficulty === "easy" && "Facile"}
           {difficulty === "medium" && "Moyenne"}
           {difficulty === "hard" && "Difficile"}
           {difficulty === "expert" && "Experte"}
           {difficulty === "unknown" && "Inconnue"}
+        </ThemedText>
+      ) : (
+        <ThemedText style={{ color: "#FFFFFF", fontSize: 14 }}>
+          {difficulty === "easy" && "^^"}
+          {difficulty === "medium" && "^^'"}
+          {difficulty === "hard" && ">.<"}
+          {difficulty === "expert" && "X.x"}
+          {difficulty === "unknown" && "?"}
         </ThemedText>
       )}
     </View>
