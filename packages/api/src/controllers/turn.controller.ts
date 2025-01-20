@@ -6,6 +6,8 @@ import { Turn } from "./../entities/turn.entity.js"
 import { verifyJWT } from "./../utils/authChecker.js"
 import { Game } from "./../entities/game.entity.js"
 import { User } from "./../entities/user.entity.js"
+import { ErrorResponsesSchema } from "./../schemas/errors.schema.js"
+import { MyAnswerSchema } from "./../schemas/answer.schema.js"
 
 const TurnController = async (fastify: FastifyInstance) => {
   fastify.post<{
@@ -113,6 +115,11 @@ const TurnController = async (fastify: FastifyInstance) => {
     {
       schema: {
         tags: ["Turns", "Answers", "Gameplay Loop"],
+        summary: "Get the answer of the current user for the current turn",
+        response: {
+          200: MyAnswerSchema,
+          ...ErrorResponsesSchema,
+        },
       },
       preHandler: [fastify.auth([verifyJWT])],
     },

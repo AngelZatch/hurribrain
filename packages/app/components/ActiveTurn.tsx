@@ -21,6 +21,7 @@ type ActiveTurnProps = {
 
 export const ActiveTurn = ({ turn }: ActiveTurnProps) => {
   const [selectedChoice, setSelectedChoice] = useState<Choice | null>(null);
+  const [sentChoice, setSentChoice] = useState<Choice | null>(null);
   const { user } = useAuth();
   const { mutate: answerQuestion } = useAnswerQuestion(user!, turn.game);
 
@@ -36,19 +37,21 @@ export const ActiveTurn = ({ turn }: ActiveTurnProps) => {
   const { data: myAnswer } = useGetMyAnswer(user!, turn.game, turn.uuid);
   useEffect(() => {
     if (myAnswer) {
-      setSelectedChoice(myAnswer.choice);
+      setSentChoice(myAnswer.choice);
     }
   }, [myAnswer]);
 
-  const handleSendAnswer = () => {
+  const handleSendAnswer = async () => {
     if (!selectedChoice) {
       return;
     }
 
-    answerQuestion({
+    await answerQuestion({
       turnId: turn.uuid,
       choiceId: selectedChoice.uuid,
     });
+
+    setSentChoice(selectedChoice);
   };
 
   return (
@@ -98,11 +101,15 @@ export const ActiveTurn = ({ turn }: ActiveTurnProps) => {
             key={choice.uuid}
             onPress={() => setSelectedChoice(choice)}
             choice={choice}
-            isSelected={selectedChoice === choice}
+            isSelected={selectedChoice?.uuid === choice.uuid}
+            isSent={sentChoice?.uuid === choice.uuid}
           />
         ))}
       </View>
-      <ThemedButton title="Envoyer" onPress={handleSendAnswer} />
+      <ThemedButton
+        title={myAnswer ? "Modifier" : "Répondre"}
+        onPress={handleSendAnswer}
+      />
     </View>
   );
 };
