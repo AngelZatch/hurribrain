@@ -10,9 +10,11 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import GameLobby from "@/components/GameLobby";
 import { io, Socket } from "socket.io-client";
 import ActiveGame from "@/components/ActiveGame";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function PlayScreen() {
   const colorScheme = useColorScheme();
+  const queryClient = useQueryClient();
   const { user } = useAuth();
   const { id: gameId } = useLocalSearchParams<{ id: string }>();
   const socket = useRef<Socket>();
@@ -46,6 +48,9 @@ export default function PlayScreen() {
       })
       .on("turn:current", (turn: PlayableTurn | PlayedTurn | null) => {
         console.log("TURN RECEIVED", turn);
+        queryClient.refetchQueries({
+          queryKey: ["my-participation", gameId],
+        });
         setCurrentTurn(turn);
       });
 

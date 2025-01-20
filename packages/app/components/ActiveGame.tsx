@@ -1,17 +1,10 @@
 import {
-  Choice,
   PlayableTurn,
   PlayedTurn,
-  Turn,
-  useAnswerQuestion,
-  useGetMyAnswer,
   useGetMyParticipation,
 } from "@/api/games.api";
 import { View } from "react-native";
 import ThemedText from "./ui/ThemedText";
-import ThemedButton from "./ui/ThemedButton";
-import { useEffect, useState } from "react";
-import ChoiceOption from "./ChoiceOption";
 import { useAuth } from "@/contexts/auth.context";
 import PlayerRanking from "./PlayerRanking";
 import CurrentQuestionIndicator from "./CurrentQuestionIndicator";

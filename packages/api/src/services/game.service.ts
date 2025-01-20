@@ -33,6 +33,7 @@ export default class GameService {
           "startedAt",
           "finishedAt",
           "question.title",
+          "question.successRate",
           "question.difficulty",
           "question.choices.uuid",
           "question.choices.value",
@@ -48,15 +49,17 @@ export default class GameService {
         {
           game: gameId,
           startedAt: { $ne: null },
+          finishedAt: { $ne: null },
         },
         {
-          orderBy: { position: "ASC" },
+          orderBy: { position: "DESC" },
           fields: [
             "uuid",
             "position",
             "startedAt",
             "finishedAt",
             "question.title",
+            "question.successRate",
             "question.difficulty",
             "question.choices.uuid",
             "question.choices.value",
@@ -87,6 +90,7 @@ export default class GameService {
           "startedAt",
           "finishedAt",
           "question.title",
+          "question.successRate",
           "question.difficulty",
           "question.choices.uuid",
           "question.choices.value",
@@ -153,6 +157,8 @@ export default class GameService {
       }
     })
 
+    console.log(targetTurn.question)
+
     targetTurn.question.correctAnswers += correctAnswers.length
     targetTurn.question.incorrectAnswers += incorrectAnswers.length
 
@@ -200,6 +206,7 @@ export default class GameService {
       if (incorrectAnswersByParticipationId[participation.uuid]) {
         participation.score -= 1
       }
+      em.persist(participation)
     })
 
     // Refresh ranks of all participants
@@ -232,6 +239,7 @@ export default class GameService {
           "startedAt",
           "finishedAt",
           "question.title",
+          "question.successRate",
           "question.difficulty",
           "question.choices.uuid",
           "question.choices.value",

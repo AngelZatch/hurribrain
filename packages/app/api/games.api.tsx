@@ -191,7 +191,7 @@ export const useStartGame = (token: string) => {
 
 export const useGetMyParticipation = (token: string, gameId: string) => {
   return useQuery({
-    queryKey: ["my-participation"],
+    queryKey: ["my-participation", gameId],
     queryFn: async () => {
       const response = await axios.get(
         `http://localhost:8080/games/${gameId}/leaderboard/me`,

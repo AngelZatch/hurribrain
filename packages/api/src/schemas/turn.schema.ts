@@ -10,6 +10,7 @@ export type PlayableTurn = Loaded<
   | "uuid"
   | "position"
   | "question.title"
+  | "question.successRate"
   | "question.difficulty"
   | "question.choices.uuid"
   | "question.choices.value",

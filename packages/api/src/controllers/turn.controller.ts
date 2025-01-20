@@ -60,6 +60,7 @@ const TurnController = async (fastify: FastifyInstance) => {
         finishedAt: null,
       },
       {
+        populate: ["question", "question.choices"],
         failHandler: () => {
           reply.statusCode = 404
           return new Error("This turn is not available.")
