@@ -70,35 +70,17 @@ export default class GameService {
     return currentTurn
   }
 
-  nextTurn = async (gameId: string): Promise<PlayableTurn | null> => {
+  startNextTurn = async (gameId: string): Promise<PlayableTurn | null> => {
     const em = getEntityManager()
-
-    const currentTurn = await em.findOne(
-      Turn,
-      {
-        game: gameId,
-        startedAt: { $ne: null },
-        finishedAt: null,
-      },
-      {
-        orderBy: { position: "ASC" },
-      }
-    )
-
-    if (!currentTurn) {
-      return null
-    }
-
-    currentTurn.finishedAt = new Date()
-    await em.persistAndFlush(currentTurn)
 
     const nextTurn: PlayableTurn | null = await em.findOne(
       Turn,
       {
         game: gameId,
-        position: currentTurn.position + 1,
+        startedAt: null,
       },
       {
+        orderBy: { position: "ASC" },
         fields: [
           "uuid",
           "position",
@@ -113,10 +95,17 @@ export default class GameService {
       }
     )
 
+    if (!nextTurn) {
+      return null
+    }
+
+    nextTurn.startedAt = new Date()
+    await em.persistAndFlush(nextTurn)
+
     return nextTurn
   }
 
-  finishTurn = async (targetTurn: Turn): Promise<PlayedTurn> => {
+  finishCurrentTurn = async (targetTurn: Turn): Promise<PlayedTurn> => {
     const em = getEntityManager()
 
     targetTurn.finishedAt = new Date()

@@ -303,10 +303,10 @@ const GameController = async (fastify: FastifyInstance) => {
     )
 
     let updatedTurn: PlayableTurn | null
-    if (currentTurn.finishedAt !== null) {
-      updatedTurn = await gameService.finishTurn(currentTurn)
+    if (currentTurn.finishedAt === null) {
+      updatedTurn = await gameService.finishCurrentTurn(currentTurn)
     } else {
-      updatedTurn = await gameService.nextTurn(gameId)
+      updatedTurn = await gameService.startNextTurn(gameId)
     }
 
     // If there's a turn, send it back

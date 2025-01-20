@@ -8,8 +8,85 @@ import { Game } from "./../entities/game.entity.js"
 import { User } from "./../entities/user.entity.js"
 import { ErrorResponsesSchema } from "./../schemas/errors.schema.js"
 import { MyAnswerSchema } from "./../schemas/answer.schema.js"
+import { GameByIdParams } from "./../schemas/game.schema.js"
+import GameService from "./../services/game.service.js"
 
 const TurnController = async (fastify: FastifyInstance) => {
+  fastify.get<{
+    Params: GameByIdParams
+  }>("/", async (request) => {
+    const em = request.em
+
+    return em.find(
+      Turn,
+      {
+        game: { uuid: request.params.gameId } as Game,
+      },
+      { orderBy: { position: "ASC" }, populate: ["question"] }
+    )
+  })
+
+  fastify.get<{
+    Params: GameByIdParams
+  }>("/current", async (request) => {
+    const em = request.em
+
+    return em.findOne(
+      Turn,
+      {
+        game: { uuid: request.params.gameId } as Game,
+        startedAt: { $ne: null },
+        finishedAt: null,
+      },
+      {
+        orderBy: { position: "ASC" },
+        populate: ["question"],
+      }
+    )
+  })
+
+  fastify.put<{
+    Params: { gameId: string; turnId: string }
+  }>("/:turnId/finish", async (request, reply) => {
+    const em = request.em
+    const { turnId, gameId } = request.params
+    const gameService = new GameService()
+
+    const turn = await em.findOneOrFail(
+      Turn,
+      {
+        uuid: turnId,
+        startedAt: { $ne: null },
+        finishedAt: null,
+      },
+      {
+        failHandler: () => {
+          reply.statusCode = 404
+          return new Error("This turn is not available.")
+        },
+      }
+    )
+
+    const updatedTurn = await gameService.finishCurrentTurn(turn)
+
+    fastify.io.to(`game:${gameId}`).emit("turn:current", updatedTurn)
+
+    return updatedTurn
+  })
+
+  fastify.put<{
+    Params: GameByIdParams
+  }>("/next", async (request) => {
+    const { gameId } = request.params
+    const gameService = new GameService()
+
+    const currentTurn = await gameService.startNextTurn(gameId)
+
+    fastify.io.to(`game:${gameId}`).emit("turn:current", currentTurn)
+
+    return currentTurn
+  })
+
   fastify.post<{
     Params: { gameId: string; turnId: string }
     Body: { choiceId: string | null }
