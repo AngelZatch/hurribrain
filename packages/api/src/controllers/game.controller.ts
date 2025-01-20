@@ -22,6 +22,8 @@ import { Question } from "./../entities/question.entity.js"
 import { Turn } from "./../entities/turn.entity.js"
 import PlayerController from "./player.controller.js"
 import TurnController from "./turn.controller.js"
+import GameService from "./../services/game.service.js"
+import { PlayableTurn } from "@src/schemas/turn.schema.js"
 
 const GameController = async (fastify: FastifyInstance) => {
   fastify.addSchema(GameResponseSchema)
@@ -281,6 +283,42 @@ const GameController = async (fastify: FastifyInstance) => {
       return reply.code(200).send(true)
     }
   )
+
+  fastify.put<{
+    Params: GameByIdParams
+  }>("/:gameId/next", async (request) => {
+    const em = request.em
+    const { gameId } = request.params
+    const gameService = new GameService()
+
+    const currentTurn = await em.findOneOrFail(
+      Turn,
+      {
+        game: { uuid: gameId } as Game,
+        startedAt: { $ne: null },
+      },
+      {
+        orderBy: { position: "ASC" },
+      }
+    )
+
+    let updatedTurn: PlayableTurn | null
+    if (currentTurn.finishedAt !== null) {
+      updatedTurn = await gameService.finishTurn(currentTurn)
+    } else {
+      updatedTurn = await gameService.nextTurn(gameId)
+    }
+
+    // If there's a turn, send it back
+    if (updatedTurn) {
+      fastify.io.to(`game:${gameId}`).emit("turn:current", updatedTurn)
+      return updatedTurn
+    }
+
+    // Else that means the game is over
+    fastify.io.to(`game:${gameId}`).emit("game:finished", gameId)
+    return true
+  })
 
   fastify.register(TurnController, { prefix: "/:gameId/turns" })
   fastify.register(PlayerController, { prefix: "/:gameId/leaderboard" })

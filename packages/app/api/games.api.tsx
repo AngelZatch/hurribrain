@@ -33,6 +33,43 @@ export type Turn = {
   updatedAt: Date;
 };
 
+export type PlayableTurn = {
+  uuid: Turn["uuid"];
+  position: Turn["position"];
+  question: {
+    title: Question["title"];
+    difficulty: Question["difficulty"];
+    choices: [
+      {
+        uuid: Choice["uuid"];
+        value: Choice["value"];
+      },
+    ];
+  };
+  game: Turn["game"];
+  startedAt: Date;
+  finishedAt: null;
+};
+
+export type PlayedTurn = {
+  uuid: Turn["uuid"];
+  position: Turn["position"];
+  question: {
+    title: Question["title"];
+    difficulty: Question["difficulty"];
+    choices: [
+      {
+        uuid: Choice["uuid"];
+        value: Choice["value"];
+        isCorrect: boolean;
+      },
+    ];
+  };
+  game: Turn["game"];
+  startedAt: Date;
+  finishedAt: Date;
+};
+
 export type Question = {
   uuid: string;
   title: string;
@@ -44,6 +81,7 @@ export type Question = {
 export type Choice = {
   uuid: string;
   value: string;
+  isCorrect?: boolean;
 };
 
 export const useGetGames = (token: string) => {

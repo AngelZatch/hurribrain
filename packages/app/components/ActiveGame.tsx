@@ -1,5 +1,7 @@
 import {
   Choice,
+  PlayableTurn,
+  PlayedTurn,
   Turn,
   useAnswerQuestion,
   useGetMyAnswer,
@@ -14,52 +16,22 @@ import { useAuth } from "@/contexts/auth.context";
 import PlayerRanking from "./PlayerRanking";
 import CurrentQuestionIndicator from "./CurrentQuestionIndicator";
 import ActiveTurnTimer from "./ActiveTurnTimer";
+import React from "react";
+import ActivePlayableTurn from "./ActivePlayableTurn";
+import ActivePlayedTurn from "./ActivePlayedTurn";
 
 type ActiveTurnProps = {
-  currentTurn: Turn;
+  currentTurn: PlayableTurn | PlayedTurn;
 };
 
 export default function ActiveGame({ currentTurn }: ActiveTurnProps) {
-  const [selectedChoice, setSelectedChoice] = useState<Choice | null>(null);
-  const [sentChoice, setSentChoice] = useState<Choice | null>(null);
   const { user } = useAuth();
-  const { mutate: answerQuestion } = useAnswerQuestion(user!, currentTurn.game);
-
-  // By default, set the selected choice to null
-  useEffect(() => {
-    setSelectedChoice(null);
-  }, []);
 
   // Get the participant's data
   const { data: me, isLoading } = useGetMyParticipation(
     user!,
     currentTurn.game
   );
-
-  // Set my answer if I already answered
-  const { data: myAnswer } = useGetMyAnswer(
-    user!,
-    currentTurn.game,
-    currentTurn.uuid
-  );
-  useEffect(() => {
-    if (myAnswer) {
-      setSentChoice(myAnswer.choice);
-    }
-  }, [myAnswer]);
-
-  const handleSendAnswer = async () => {
-    if (!selectedChoice) {
-      return;
-    }
-
-    await answerQuestion({
-      turnId: currentTurn.uuid,
-      choiceId: selectedChoice.uuid,
-    });
-
-    setSentChoice(selectedChoice);
-  };
 
   return (
     <View
@@ -106,25 +78,11 @@ export default function ActiveGame({ currentTurn }: ActiveTurnProps) {
           {currentTurn.question.title}
         </ThemedText>
       </View>
-      <View
-        style={{
-          gap: 24,
-        }}
-      >
-        {currentTurn.question.choices.map((choice) => (
-          <ChoiceOption
-            key={choice.uuid}
-            onPress={() => setSelectedChoice(choice)}
-            choice={choice}
-            isSelected={selectedChoice?.uuid === choice.uuid}
-            isSent={sentChoice?.uuid === choice.uuid}
-          />
-        ))}
-      </View>
-      <ThemedButton
-        title={myAnswer ? "Modifier" : "Répondre"}
-        onPress={handleSendAnswer}
-      />
+      {!currentTurn.finishedAt ? (
+        <ActivePlayableTurn currentTurn={currentTurn as PlayableTurn} />
+      ) : (
+        <ActivePlayedTurn currentTurn={currentTurn as PlayedTurn} />
+      )}
     </View>
   );
 }

@@ -1,4 +1,4 @@
-import { Turn, useGetGame } from "@/api/games.api";
+import { PlayableTurn, PlayedTurn, Turn, useGetGame } from "@/api/games.api";
 import { useAuth } from "@/contexts/auth.context";
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
@@ -18,7 +18,9 @@ export default function PlayScreen() {
   const socket = useRef<Socket>();
 
   const { data, isLoading, error } = useGetGame(user!, gameId);
-  const [currentTurn, setCurrentTurn] = useState<Turn | null>(null);
+  const [currentTurn, setCurrentTurn] = useState<
+    PlayableTurn | PlayedTurn | null
+  >(null);
 
   useEffect(() => {
     if (!data?.uuid) {
@@ -42,7 +44,7 @@ export default function PlayScreen() {
       .on("game:updated", () => {
         console.log("game:updated");
       })
-      .on("turn:current", (turn: Turn) => {
+      .on("turn:current", (turn: PlayableTurn | PlayedTurn | null) => {
         console.log("TURN RECEIVED", turn);
         setCurrentTurn(turn);
       });
