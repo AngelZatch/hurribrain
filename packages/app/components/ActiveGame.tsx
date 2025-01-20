@@ -5,25 +5,25 @@ import {
   useGetMyAnswer,
   useGetMyParticipation,
 } from "@/api/games.api";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 import ThemedText from "./ui/ThemedText";
-import DifficultyChip from "./DifficultyChip";
 import ThemedButton from "./ui/ThemedButton";
 import { useEffect, useState } from "react";
 import ChoiceOption from "./ChoiceOption";
 import { useAuth } from "@/contexts/auth.context";
 import PlayerRanking from "./PlayerRanking";
 import CurrentQuestionIndicator from "./CurrentQuestionIndicator";
+import ActiveTurnTimer from "./ActiveTurnTimer";
 
 type ActiveTurnProps = {
-  turn: Turn;
+  currentTurn: Turn;
 };
 
-export const ActiveTurn = ({ turn }: ActiveTurnProps) => {
+export default function ActiveGame({ currentTurn }: ActiveTurnProps) {
   const [selectedChoice, setSelectedChoice] = useState<Choice | null>(null);
   const [sentChoice, setSentChoice] = useState<Choice | null>(null);
   const { user } = useAuth();
-  const { mutate: answerQuestion } = useAnswerQuestion(user!, turn.game);
+  const { mutate: answerQuestion } = useAnswerQuestion(user!, currentTurn.game);
 
   // By default, set the selected choice to null
   useEffect(() => {
@@ -31,10 +31,17 @@ export const ActiveTurn = ({ turn }: ActiveTurnProps) => {
   }, []);
 
   // Get the participant's data
-  const { data: me, isLoading } = useGetMyParticipation(user!, turn.game);
+  const { data: me, isLoading } = useGetMyParticipation(
+    user!,
+    currentTurn.game
+  );
 
   // Set my answer if I already answered
-  const { data: myAnswer } = useGetMyAnswer(user!, turn.game, turn.uuid);
+  const { data: myAnswer } = useGetMyAnswer(
+    user!,
+    currentTurn.game,
+    currentTurn.uuid
+  );
   useEffect(() => {
     if (myAnswer) {
       setSentChoice(myAnswer.choice);
@@ -47,7 +54,7 @@ export const ActiveTurn = ({ turn }: ActiveTurnProps) => {
     }
 
     await answerQuestion({
-      turnId: turn.uuid,
+      turnId: currentTurn.uuid,
       choiceId: selectedChoice.uuid,
     });
 
@@ -68,13 +75,21 @@ export const ActiveTurn = ({ turn }: ActiveTurnProps) => {
           justifyContent: "space-between",
           alignContent: "center",
           flexDirection: "row",
+          alignItems: "center",
         }}
       >
-        <CurrentQuestionIndicator
-          difficulty={turn.question.difficulty!}
-          position={turn.position}
-        />
-        {!isLoading && <PlayerRanking player={me} />}
+        <View style={{ flex: 1 }}>
+          <CurrentQuestionIndicator
+            difficulty={currentTurn.question.difficulty!}
+            position={currentTurn.position}
+          />
+        </View>
+        <View style={{ flex: 1, alignItems: "center" }}>
+          {!currentTurn.finishedAt && <ActiveTurnTimer />}
+        </View>
+        <View style={{ flex: 1 }}>
+          {!isLoading && <PlayerRanking player={me} />}
+        </View>
       </View>
       <View
         style={{
@@ -88,7 +103,7 @@ export const ActiveTurn = ({ turn }: ActiveTurnProps) => {
             textAlign: "center",
           }}
         >
-          {turn.question.title}
+          {currentTurn.question.title}
         </ThemedText>
       </View>
       <View
@@ -96,7 +111,7 @@ export const ActiveTurn = ({ turn }: ActiveTurnProps) => {
           gap: 24,
         }}
       >
-        {turn.question.choices.map((choice) => (
+        {currentTurn.question.choices.map((choice) => (
           <ChoiceOption
             key={choice.uuid}
             onPress={() => setSelectedChoice(choice)}
@@ -112,4 +127,4 @@ export const ActiveTurn = ({ turn }: ActiveTurnProps) => {
       />
     </View>
   );
-};
+}

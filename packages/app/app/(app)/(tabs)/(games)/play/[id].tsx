@@ -9,7 +9,7 @@ import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import GameLobby from "@/components/GameLobby";
 import { io, Socket } from "socket.io-client";
-import { ActiveTurn } from "@/components/ActiveTurn";
+import ActiveGame from "@/components/ActiveGame";
 
 export default function PlayScreen() {
   const colorScheme = useColorScheme();
@@ -80,7 +80,9 @@ export default function PlayScreen() {
         }}
       >
         {!data.startedAt && <GameLobby game={data!} />}
-        {data.startedAt && currentTurn && <ActiveTurn turn={currentTurn} />}
+        {data.startedAt && currentTurn && (
+          <ActiveGame currentTurn={currentTurn} />
+        )}
       </View>
     </PageContainer>
   );

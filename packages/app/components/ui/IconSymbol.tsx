@@ -23,6 +23,7 @@ const MAPPING = {
   "star.fill": "grade",
   play: "play-arrow",
   xmark: "close",
+  hourglass: "hourglass-bottom",
 } as Partial<
   Record<
     import("expo-symbols").SymbolViewProps["name"],

@@ -15,6 +15,7 @@ export default function PlayerRanking({ player }: PlayerRankingProps) {
   return (
     <View
       style={{
+        justifyContent: "flex-end",
         flexDirection: "row",
         alignItems: "center",
         gap: 5,
