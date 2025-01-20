@@ -9,12 +9,13 @@ import {
 import { Turn } from "./turn.entity.js"
 import { Choice } from "./choice.entity.js"
 import { Participation } from "./participation.entity.js"
+import { v4 } from "uuid"
 
 @Entity()
 @Unique({ properties: ["participation", "turn"] })
 export class Answer {
   @PrimaryKey()
-  uuid!: string
+  uuid: string = v4()
 
   // The player who gave the answer
   @ManyToOne({ entity: () => Participation })

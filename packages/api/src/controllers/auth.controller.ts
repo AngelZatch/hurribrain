@@ -140,6 +140,10 @@ const AuthController = async (fastify: FastifyInstance) => {
     "/me",
     {
       preHandler: [fastify.auth([verifyJWT])],
+      schema: {
+        tags: ["Authentication"],
+        summary: "Get active session user details",
+      },
     },
     async (request) => {
       const em = request.em

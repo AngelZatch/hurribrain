@@ -1,4 +1,10 @@
-import { Choice, Turn, useGetMyParticipation } from "@/api/games.api";
+import {
+  Choice,
+  Turn,
+  useAnswerQuestion,
+  useGetMyAnswer,
+  useGetMyParticipation,
+} from "@/api/games.api";
 import { Pressable, View } from "react-native";
 import ThemedText from "./ui/ThemedText";
 import DifficultyChip from "./DifficultyChip";
@@ -16,12 +22,34 @@ type ActiveTurnProps = {
 export const ActiveTurn = ({ turn }: ActiveTurnProps) => {
   const [selectedChoice, setSelectedChoice] = useState<Choice | null>(null);
   const { user } = useAuth();
+  const { mutate: answerQuestion } = useAnswerQuestion(user!, turn.game);
 
+  // By default, set the selected choice to null
   useEffect(() => {
     setSelectedChoice(null);
   }, []);
 
+  // Get the participant's data
   const { data: me, isLoading } = useGetMyParticipation(user!, turn.game);
+
+  // Set my answer if I already answered
+  const { data: myAnswer } = useGetMyAnswer(user!, turn.game, turn.uuid);
+  useEffect(() => {
+    if (myAnswer) {
+      setSelectedChoice(myAnswer.choice);
+    }
+  }, [myAnswer]);
+
+  const handleSendAnswer = () => {
+    if (!selectedChoice) {
+      return;
+    }
+
+    answerQuestion({
+      turnId: turn.uuid,
+      choiceId: selectedChoice.uuid,
+    });
+  };
 
   return (
     <View
@@ -74,7 +102,7 @@ export const ActiveTurn = ({ turn }: ActiveTurnProps) => {
           />
         ))}
       </View>
-      <ThemedButton title="Envoyer" />
+      <ThemedButton title="Envoyer" onPress={handleSendAnswer} />
     </View>
   );
 };

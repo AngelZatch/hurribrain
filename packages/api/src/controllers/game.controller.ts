@@ -21,6 +21,7 @@ import { verifyJWT } from "./../utils/authChecker.js"
 import { Question } from "./../entities/question.entity.js"
 import { Turn } from "./../entities/turn.entity.js"
 import PlayerController from "./player.controller.js"
+import TurnController from "./turn.controller.js"
 
 const GameController = async (fastify: FastifyInstance) => {
   fastify.addSchema(GameResponseSchema)
@@ -281,6 +282,7 @@ const GameController = async (fastify: FastifyInstance) => {
     }
   )
 
+  fastify.register(TurnController, { prefix: "/:gameId/turns" })
   fastify.register(PlayerController, { prefix: "/:gameId/leaderboard" })
 }
 

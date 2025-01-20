@@ -167,3 +167,55 @@ export const useGetMyParticipation = (token: string, gameId: string) => {
     },
   });
 };
+
+export const useAnswerQuestion = (token: string, gameId: string) => {
+  return useMutation({
+    mutationFn: async ({
+      turnId,
+      choiceId,
+    }: {
+      turnId: string;
+      choiceId: string | null;
+    }) => {
+      try {
+        const response = await axios.post(
+          `http://localhost:8080/games/${gameId}/turns/${turnId}/answers`,
+          { choiceId },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          throw error.response?.data;
+        }
+        throw error;
+      }
+    },
+  });
+};
+
+export const useGetMyAnswer = (
+  token: string,
+  gameId: string,
+  turnId: string
+) => {
+  return useQuery({
+    queryKey: ["my-answer", gameId, turnId],
+    queryFn: async () => {
+      const response = await axios.get(
+        `http://localhost:8080/games/${gameId}/turns/${turnId}/myanswer`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    },
+  });
+};

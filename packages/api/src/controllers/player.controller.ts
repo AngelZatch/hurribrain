@@ -15,7 +15,7 @@ const PlayerController = async (fastify: FastifyInstance) => {
     "/",
     {
       schema: {
-        tags: ["Games"],
+        tags: ["Games", "Leaderboard", "Players"],
         summary: "Returns the leaderboard for a game",
         params: GameByIdParamsSchema,
       },

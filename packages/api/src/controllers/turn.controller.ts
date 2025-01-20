@@ -1,97 +1,143 @@
-import { Answer } from "@src/entities/answer.entity.js"
-import { Choice } from "@src/entities/choice.entity.js"
-import { Participation } from "@src/entities/participation.entity.js"
-import { Turn } from "@src/entities/turn.entity.js"
 import { FastifyInstance } from "fastify"
+import { Answer } from "./../entities/answer.entity.js"
+import { Choice } from "./../entities/choice.entity.js"
+import { Participation } from "./../entities/participation.entity.js"
+import { Turn } from "./../entities/turn.entity.js"
+import { verifyJWT } from "./../utils/authChecker.js"
+import { Game } from "./../entities/game.entity.js"
+import { User } from "./../entities/user.entity.js"
 
 const TurnController = async (fastify: FastifyInstance) => {
   fastify.post<{
-    Params: { turnId: string }
+    Params: { gameId: string; turnId: string }
     Body: { choiceId: string | null }
-  }>("/:turnId/answers", async (request, reply) => {
-    const em = request.em
-    const { turnId } = request.params
-    const { choiceId } = request.body
-
-    const turn = await em.findOneOrFail(
-      Turn,
-      {
-        uuid: turnId,
-        startedAt: { $ne: null },
-        finishedAt: null,
+  }>(
+    "/:turnId/answers",
+    {
+      schema: {
+        tags: ["Turns", "Answers"],
       },
-      {
-        failHandler: () => {
-          reply.statusCode = 404
-          return new Error("This turn is not available.")
+      preHandler: [fastify.auth([verifyJWT])],
+    },
+    async (request, reply) => {
+      const em = request.em
+      const { gameId, turnId } = request.params
+      const user = request.user
+      const { choiceId } = request.body
+
+      const turn = await em.findOneOrFail(
+        Turn,
+        {
+          uuid: turnId,
+          startedAt: { $ne: null },
+          finishedAt: null,
         },
-      }
-    )
+        {
+          failHandler: () => {
+            reply.statusCode = 404
+            return new Error("This turn is not available.")
+          },
+        }
+      )
 
-    // Putting the speed of answer as early as possible
-    const speedOfAnswer = Math.round(
-      Date.now() - Date.parse(turn.startedAt!.toString())
-    )
+      // Putting the speed of answer as early as possible
+      const speedOfAnswer = Math.round(
+        Date.now() - Date.parse(turn.startedAt!.toString())
+      )
 
-    const participation = await em.findOneOrFail(
-      Participation,
-      {
-        user: { uuid: request.user },
-        game: { uuid: turn.game.uuid },
-      },
-      {
-        failHandler: () => {
-          reply.statusCode = 404
-          return new Error("You are not participating in this game.")
+      const participation = await em.findOneOrFail(
+        Participation,
+        {
+          user: { uuid: user } as User,
+          game: { uuid: gameId } as Game,
         },
-      }
-    )
+        {
+          failHandler: () => {
+            reply.statusCode = 404
+            return new Error("You are not participating in this game.")
+          },
+        }
+      )
 
-    if (!choiceId) {
-      await em.nativeDelete(Answer, {
-        participation: participation.uuid,
-        turn: turn.uuid,
+      if (!choiceId) {
+        await em.nativeDelete(Answer, {
+          participation: participation.uuid,
+          turn: turn.uuid,
+        })
+        return true
+      }
+
+      const choice = await em.findOneOrFail(
+        Choice,
+        {
+          uuid: choiceId,
+          question: turn.question,
+        },
+        {
+          failHandler: () => {
+            reply.statusCode = 404
+            return new Error(
+              "The selected option does not belong to this question. Please refresh your game to get the correct question."
+            )
+          },
+        }
+      )
+
+      let playerAnswer = await em.findOne(Answer, {
+        participation: { uuid: participation.uuid } as Participation,
+        turn: { uuid: turn.uuid } as Turn,
       })
+
+      if (!playerAnswer) {
+        playerAnswer = new Answer({
+          participation,
+          turn,
+          choice,
+          speed: speedOfAnswer,
+        })
+      } else {
+        playerAnswer.choice = choice
+        playerAnswer.speed = speedOfAnswer
+      }
+
+      await em.persistAndFlush(playerAnswer)
+
       return true
     }
+  )
 
-    const choice = await em.findOneOrFail(
-      Choice,
-      {
-        uuid: choiceId,
-        question: turn.question,
+  fastify.get<{
+    Params: { gameId: string; turnId: string }
+  }>(
+    "/:turnId/myanswer",
+    {
+      schema: {
+        tags: ["Turns", "Answers", "Gameplay Loop"],
       },
-      {
-        failHandler: () => {
-          reply.statusCode = 404
-          return new Error(
-            "The selected option does not belong to this question. Please refresh your game to get the correct question."
-          )
-        },
-      }
-    )
+      preHandler: [fastify.auth([verifyJWT])],
+    },
+    async (request) => {
+      const em = request.em
+      const { gameId, turnId } = request.params
+      const user = request.user
 
-    let playerAnswer = await em.findOne(Answer, {
-      participation: participation.uuid,
-      turn: turn.uuid,
-    })
-
-    if (!playerAnswer) {
-      playerAnswer = new Answer({
-        participation,
-        turn,
-        choice,
-        speed: speedOfAnswer,
+      const participant = await em.findOneOrFail(Participation, {
+        user: { uuid: user } as User,
+        game: { uuid: gameId } as Game,
       })
-    } else {
-      playerAnswer.choice = choice
-      playerAnswer.speed = speedOfAnswer
+
+      return em.findOne(
+        Answer,
+        {
+          participation: { uuid: participant.uuid } as Participation,
+          turn: { uuid: turnId } as Turn,
+        },
+        {
+          populate: ["choice"],
+        }
+      )
     }
-
-    await em.persistAndFlush(playerAnswer)
-
-    return true
-  })
+  )
 }
 
 export default TurnController
