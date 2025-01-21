@@ -53,7 +53,7 @@ export default function ActivePlayableTurn({
   };
 
   return (
-    <View>
+    <>
       <View
         style={{
           gap: 24,
@@ -70,9 +70,9 @@ export default function ActivePlayableTurn({
         ))}
       </View>
       <ThemedButton
-        title={myAnswer ? "Modifier" : "Répondre"}
+        title={sentChoice ? "Modifier" : "Répondre"}
         onPress={handleSendAnswer}
       />
-    </View>
+    </>
   );
 }

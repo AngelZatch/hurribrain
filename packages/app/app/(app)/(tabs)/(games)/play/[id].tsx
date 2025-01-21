@@ -1,8 +1,8 @@
 import { PlayableTurn, PlayedTurn, Turn, useGetGame } from "@/api/games.api";
 import { useAuth } from "@/contexts/auth.context";
-import { useLocalSearchParams } from "expo-router";
+import { Link, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import { PageContainer } from "@/components/ui/PageContainer";
 import TopNavigation from "@/components/TopNavigation";
 import { Colors } from "@/constants/Colors";
@@ -11,6 +11,7 @@ import GameLobby from "@/components/GameLobby";
 import { io, Socket } from "socket.io-client";
 import ActiveGame from "@/components/ActiveGame";
 import { useQueryClient } from "@tanstack/react-query";
+import ThemedIconButton from "@/components/ui/ThemedIconButton";
 
 export default function PlayScreen() {
   const colorScheme = useColorScheme();
@@ -71,6 +72,22 @@ export default function PlayScreen() {
       <TopNavigation
         topLabel={data?.isPrivate ? "Partie Privée" : "Partie Rapide"}
         subLabel={data?.code}
+        rightElement={
+          <Link
+            href={{
+              pathname: "/(app)/(tabs)/(games)/play/leaderboard",
+              params: { id: gameId },
+            }}
+            asChild
+          >
+            <ThemedIconButton
+              onPress={() => {
+                console.log("PRESSED");
+              }}
+              icon="person.fill"
+            />
+          </Link>
+        }
       />
       <View
         style={{

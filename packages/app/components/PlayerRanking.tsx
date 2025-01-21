@@ -2,12 +2,10 @@ import { View } from "react-native";
 import ThemedText from "./ui/ThemedText";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
+import { Participation } from "@/api/games.api";
 
 type PlayerRankingProps = {
-  player: {
-    score: number;
-    rank: number;
-  };
+  player: Participation;
 };
 
 export default function PlayerRanking({ player }: PlayerRankingProps) {

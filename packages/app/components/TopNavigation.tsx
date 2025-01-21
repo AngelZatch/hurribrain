@@ -9,12 +9,16 @@ type TopNavigationProps = {
   topLabel?: string;
   subLabel?: string;
   onPress?: () => void;
+  leftElement?: React.ReactNode;
+  rightElement?: React.ReactNode;
 };
 
 export default function TopNavigation({
   topLabel,
   subLabel,
   onPress,
+  leftElement,
+  rightElement,
 }: TopNavigationProps) {
   const router = useRouter();
   const colorScheme = useColorScheme();
@@ -32,12 +36,14 @@ export default function TopNavigation({
         alignSelf: "stretch",
       }}
     >
-      <ThemedIconButton
-        icon={"chevron.left"}
-        onPress={() => {
-          onPress ?? router.back();
-        }}
-      />
+      {leftElement ?? (
+        <ThemedIconButton
+          icon={"chevron.left"}
+          onPress={() => {
+            onPress ?? router.back();
+          }}
+        />
+      )}
       <View
         style={{
           display: "flex",
@@ -75,7 +81,7 @@ export default function TopNavigation({
           </ThemedText>
         )}
       </View>
-      <View style={{ minWidth: 40 }} />
+      <View style={{ minWidth: 40 }}>{rightElement}</View>
     </View>
   );
 }

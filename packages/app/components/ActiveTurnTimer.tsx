@@ -1,8 +1,21 @@
 import { View } from "react-native";
 import ThemedText from "./ui/ThemedText";
 import { IconSymbol } from "./ui/IconSymbol";
+import { useEffect, useState } from "react";
 
 export default function ActiveTurnTimer() {
+  const [timeLeft, setTimeLeft] = useState(15);
+
+  useEffect(() => {
+    if (timeLeft > 0) {
+      const timerId = setInterval(() => {
+        setTimeLeft((prevTime) => prevTime - 1);
+      }, 1000);
+
+      return () => clearInterval(timerId);
+    }
+  }, [timeLeft]);
+
   return (
     <View
       style={{
@@ -38,7 +51,7 @@ export default function ActiveTurnTimer() {
           backgroundClip: "text",
         }}
       >
-        0:15
+        0:{timeLeft.toString().padStart(2, "0")}
       </ThemedText>
     </View>
   );

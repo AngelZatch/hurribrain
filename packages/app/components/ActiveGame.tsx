@@ -53,7 +53,7 @@ export default function ActiveGame({ currentTurn }: ActiveTurnProps) {
           {!currentTurn.finishedAt && <ActiveTurnTimer />}
         </View>
         <View style={{ flex: 1 }}>
-          {!isLoading && <PlayerRanking player={me} />}
+          {!isLoading && <PlayerRanking player={me!} />}
         </View>
       </View>
       <View
