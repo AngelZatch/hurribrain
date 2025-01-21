@@ -1,9 +1,7 @@
 import { useGetLeaderboard } from "@/api/games.api";
 import LeaderboardItem from "@/components/LeaderboardItem";
 import TopNavigation from "@/components/TopNavigation";
-import { BodyContainer } from "@/components/ui/BodyContainer";
 import { ContainerView } from "@/components/ui/ContainerView";
-import { IconSymbol } from "@/components/ui/IconSymbol";
 import { PageContainer } from "@/components/ui/PageContainer";
 import ThemedIconButton from "@/components/ui/ThemedIconButton";
 import ThemedText from "@/components/ui/ThemedText";
@@ -32,13 +30,9 @@ export default function Leaderboard() {
           </ThemedText>
         }
         rightElement={
-          isPresented ? (
-            <Link href={isPresented ? "../" : "/"} asChild>
-              <ThemedIconButton icon="xmark" />
-            </Link>
-          ) : (
-            <ThemedText>Accueil</ThemedText>
-          )
+          <Link href={isPresented ? "../" : "/"} asChild>
+            <ThemedIconButton icon="xmark" />
+          </Link>
         }
       />
       <ContainerView>
