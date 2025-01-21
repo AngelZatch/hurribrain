@@ -1,9 +1,9 @@
-import { Question, Turn } from "@/api/games.api";
 import { View } from "react-native";
 import DifficultyChip from "./DifficultyChip";
 import ThemedText from "./ui/ThemedText";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
+import { Question } from "@/api/play.api";
 
 type CurrentQuestionIndicatorProps = {
   difficulty: Question["difficulty"];

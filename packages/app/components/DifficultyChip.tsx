@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import ThemedText from "./ui/ThemedText";
-import { Question } from "@/api/games.api";
+import { Question } from "@/api/play.api";
 
 type DifficultyChipProps = {
   difficulty: Question["difficulty"];

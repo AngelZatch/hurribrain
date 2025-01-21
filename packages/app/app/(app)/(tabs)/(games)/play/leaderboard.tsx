@@ -1,4 +1,4 @@
-import { useGetLeaderboard } from "@/api/games.api";
+import { useGetLeaderboard } from "@/api/play.api";
 import LeaderboardItem from "@/components/LeaderboardItem";
 import TopNavigation from "@/components/TopNavigation";
 import { ContainerView } from "@/components/ui/ContainerView";

@@ -1,4 +1,4 @@
-import { GameCreationDTO, useCreateGame, useJoinGame } from "@/api/games.api";
+import { useCreateGame, useJoinGame } from "@/api/games.api";
 import { useAuth } from "@/contexts/auth.context";
 import { Controller, useForm } from "react-hook-form";
 import { InputContainer } from "./ui/InputContainer";

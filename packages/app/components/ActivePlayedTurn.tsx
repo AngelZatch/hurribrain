@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import ThemedText from "./ui/ThemedText";
-import { Choice, PlayedTurn } from "@/api/games.api";
 import { useEffect, useState } from "react";
+import { PlayedTurn, Choice } from "@/api/play.api";
 
 type ActivePlayedTurnProps = {
   currentTurn: PlayedTurn;

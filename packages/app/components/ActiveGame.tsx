@@ -1,8 +1,3 @@
-import {
-  PlayableTurn,
-  PlayedTurn,
-  useGetMyParticipation,
-} from "@/api/games.api";
 import { View } from "react-native";
 import ThemedText from "./ui/ThemedText";
 import { useAuth } from "@/contexts/auth.context";
@@ -12,6 +7,11 @@ import ActiveTurnTimer from "./ActiveTurnTimer";
 import React from "react";
 import ActivePlayableTurn from "./ActivePlayableTurn";
 import ActivePlayedTurn from "./ActivePlayedTurn";
+import {
+  PlayableTurn,
+  PlayedTurn,
+  useGetMyParticipation,
+} from "@/api/play.api";
 
 type ActiveTurnProps = {
   currentTurn: PlayableTurn | PlayedTurn;

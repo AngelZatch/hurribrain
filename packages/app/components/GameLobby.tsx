@@ -1,12 +1,13 @@
 import { View, StyleSheet } from "react-native";
 import ThemedText from "./ui/ThemedText";
 import DifficultyChip from "./DifficultyChip";
-import { Game, useStartGame } from "@/api/games.api";
+import { Game } from "@/api/games.api";
 import TagChip from "./TagChip";
 import { useAuth } from "@/contexts/auth.context";
 import ThemedButton from "./ui/ThemedButton";
 import { useGetMe } from "@/api/auth.api";
 import PlayerCount from "./PlayerCount";
+import { useStartGame } from "@/api/play.api";
 
 type GameLobbyProps = {
   game: Game;

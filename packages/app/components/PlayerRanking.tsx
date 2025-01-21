@@ -2,7 +2,7 @@ import { View } from "react-native";
 import ThemedText from "./ui/ThemedText";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
-import { Participation } from "@/api/games.api";
+import { Participation } from "@/api/play.api";
 
 type PlayerRankingProps = {
   player: Participation;

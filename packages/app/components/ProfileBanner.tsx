@@ -3,8 +3,6 @@ import ExperienceBar from "./ExperienceBar";
 import Avatar from "./Avatar";
 
 import ThemedText from "./ui/ThemedText";
-import CoinCount from "./CoinCount";
-import { Divider } from "./ui/Divider";
 import { useAuth } from "@/contexts/auth.context";
 import { useGetMeWithStats } from "@/api/auth.api";
 

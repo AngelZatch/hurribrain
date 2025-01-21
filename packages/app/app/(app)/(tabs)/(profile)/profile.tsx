@@ -4,7 +4,7 @@ import { ContainerView } from "@/components/ui/ContainerView";
 import { Divider } from "@/components/ui/Divider";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { Link } from "expo-router";
-import { View, Text, Image, Button, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet } from "react-native";
 import { useAuth } from "@/contexts/auth.context";
 import ThemedIconButton from "@/components/ui/ThemedIconButton";
 import ThemedButton from "@/components/ui/ThemedButton";

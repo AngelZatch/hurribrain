@@ -1,14 +1,14 @@
-import {
-  Choice,
-  PlayableTurn,
-  useAnswerQuestion,
-  useGetMyAnswer,
-} from "@/api/games.api";
 import { View } from "react-native";
 import ChoiceOption from "./ChoiceOption";
 import { useEffect, useState } from "react";
 import ThemedButton from "./ui/ThemedButton";
 import { useAuth } from "@/contexts/auth.context";
+import {
+  PlayableTurn,
+  Choice,
+  useAnswerQuestion,
+  useGetMyAnswer,
+} from "@/api/play.api";
 
 type ActivePlayableTurnProps = {
   currentTurn: PlayableTurn;

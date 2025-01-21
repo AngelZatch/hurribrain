@@ -4,8 +4,6 @@ import TagChip from "./TagChip";
 import Avatar from "./Avatar";
 import DifficultyChip from "./DifficultyChip";
 import { Game } from "@/api/games.api";
-import { IconSymbol } from "./ui/IconSymbol";
-import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme.web";
 import PlayerCount from "./PlayerCount";
 

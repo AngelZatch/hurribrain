@@ -1,6 +1,6 @@
-import { Choice } from "@/api/games.api";
 import { Pressable, View } from "react-native";
 import ThemedText from "./ui/ThemedText";
+import { Choice } from "@/api/play.api";
 
 type ChoiceOptionProps = {
   choice: Choice;

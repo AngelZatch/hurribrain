@@ -1,4 +1,3 @@
-import { PlayableTurn, PlayedTurn, Turn, useGetGame } from "@/api/games.api";
 import { useAuth } from "@/contexts/auth.context";
 import { Link, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
@@ -12,6 +11,8 @@ import { io, Socket } from "socket.io-client";
 import ActiveGame from "@/components/ActiveGame";
 import { useQueryClient } from "@tanstack/react-query";
 import ThemedIconButton from "@/components/ui/ThemedIconButton";
+import { useGetGame } from "@/api/games.api";
+import { PlayableTurn, PlayedTurn } from "@/api/play.api";
 
 export default function PlayScreen() {
   const colorScheme = useColorScheme();

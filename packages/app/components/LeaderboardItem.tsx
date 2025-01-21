@@ -1,7 +1,7 @@
-import { Participation } from "@/api/games.api";
 import { View } from "react-native";
 import ThemedText from "./ui/ThemedText";
 import Avatar from "./Avatar";
+import { Participation } from "@/api/play.api";
 
 type LeaderboardItemProps = {
   participation: Participation;
