@@ -204,7 +204,7 @@ export default class GameService {
 
       // Incorrect answer
       if (incorrectAnswersByParticipationId[participation.uuid]) {
-        participation.score -= 1
+        participation.score = Math.max(participation.score - 1, 0)
       }
       em.persist(participation)
     })
