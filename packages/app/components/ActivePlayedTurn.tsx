@@ -15,7 +15,10 @@ export default function ActivePlayedTurn({
 }: ActivePlayedTurnProps) {
   const [correctChoice, setCorrectChoice] = useState<Choice | null>(null);
   const { user } = useAuth();
-  const [isCorrect, setIsCorrect] = useState<boolean | null>(false);
+  const [isCorrect, setIsCorrect] = useState<boolean>(false);
+  const [answerStatus, setAnswerStatus] = useState<
+    "correct" | "wrong" | "none"
+  >("none");
 
   useEffect(() => {
     setCorrectChoice(
@@ -31,8 +34,15 @@ export default function ActivePlayedTurn({
   );
 
   useEffect(() => {
-    if (myAnswer) {
+    if (myAnswer.choice) {
+      if (myAnswer.choice.uuid === correctChoice?.uuid) {
+        setAnswerStatus("correct");
+      } else {
+        setAnswerStatus("wrong");
+      }
       setIsCorrect(myAnswer.choice.uuid === correctChoice?.uuid);
+    } else {
+      setAnswerStatus("none");
     }
   }, [myAnswer, correctChoice]);
 
@@ -59,27 +69,48 @@ export default function ActivePlayedTurn({
             borderStyle: "solid",
             borderWidth: 1,
             borderRadius: 10,
-            borderColor: isCorrect ? "#3DC96C" : "#F1425F",
             padding: 20,
             gap: 10,
             alignItems: "center",
             justifyContent: "space-between",
           },
+          answerStatus === "correct" && {
+            borderColor: "#3DC96C",
+          },
+          answerStatus === "wrong" && {
+            borderColor: "#F1425F",
+          },
+          answerStatus === "none" && {
+            borderColor: "#919191",
+          },
         ]}
       >
         <ThemedText
-          style={{
-            textAlign: "center",
-            fontSize: 24,
-            fontFamily: "Exo_700Bold",
-            backgroundImage: isCorrect
-              ? "linear-gradient(180deg, #2AD89A 100%, #27EC47 100%, #17BB81 100%)"
-              : "linear-gradient(180deg, #F1425F 0%, #F1425F 0.01%, #E30026 100%)",
-            color: "transparent",
-            backgroundClip: "text",
-          }}
+          style={[
+            {
+              textAlign: "center",
+              fontSize: 24,
+              fontFamily: "Exo_700Bold",
+              color: "transparent",
+              backgroundClip: "text",
+            },
+            answerStatus === "correct" && {
+              backgroundImage:
+                "linear-gradient(180deg, #2AD89A 100%, #27EC47 100%, #17BB81 100%)",
+            },
+            answerStatus === "wrong" && {
+              backgroundImage:
+                "linear-gradient(180deg, #F1425F 0%, #F1425F 0.01%, #E30026 100%)",
+            },
+            answerStatus === "none" && {
+              backgroundImage:
+                "linear-gradient(0deg, #919191 0%, #3C3C3C 100%)",
+            },
+          ]}
         >
-          {isCorrect ? "Bien joué !" : "Oh non..."}
+          {answerStatus === "correct" && "Bien joué !"}
+          {answerStatus === "wrong" && "Oh non..."}
+          {answerStatus === "none" && "Pas de réponse."}
         </ThemedText>
         <View
           style={{
@@ -93,7 +124,7 @@ export default function ActivePlayedTurn({
           <ScoreMedal
             medalType={{
               type: "base",
-              value: isCorrect ? "correct" : "wrong",
+              value: answerStatus,
             }}
           />
         </View>
