@@ -3,6 +3,8 @@ import ThemedText from "./ui/ThemedText";
 import { useEffect, useState } from "react";
 import { PlayedTurn, Choice, useGetMyAnswer } from "@/api/play.api";
 import { useAuth } from "@/contexts/auth.context";
+import ScoreMedal from "./ScoreMedal";
+import { Divider } from "./ui/Divider";
 
 type ActivePlayedTurnProps = {
   currentTurn: PlayedTurn;
@@ -13,8 +15,7 @@ export default function ActivePlayedTurn({
 }: ActivePlayedTurnProps) {
   const [correctChoice, setCorrectChoice] = useState<Choice | null>(null);
   const { user } = useAuth();
-  const [sentChoice, setSentChoice] = useState<Choice | null>(null);
-  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(false);
 
   useEffect(() => {
     setCorrectChoice(
@@ -31,10 +32,9 @@ export default function ActivePlayedTurn({
 
   useEffect(() => {
     if (myAnswer) {
-      setSentChoice(myAnswer.choice);
-      setIsCorrect(myAnswer.choice === correctChoice);
+      setIsCorrect(myAnswer.choice.uuid === correctChoice?.uuid);
     }
-  }, [myAnswer]);
+  }, [myAnswer, correctChoice]);
 
   return (
     <View>
@@ -72,18 +72,37 @@ export default function ActivePlayedTurn({
             textAlign: "center",
             fontSize: 24,
             fontFamily: "Exo_700Bold",
-            backgroundImage:
-              "linear-gradient(180deg, #F1425F 0%, #F1425F 0.01%, #E30026 100%)",
+            backgroundImage: isCorrect
+              ? "linear-gradient(180deg, #2AD89A 100%, #27EC47 100%, #17BB81 100%)"
+              : "linear-gradient(180deg, #F1425F 0%, #F1425F 0.01%, #E30026 100%)",
             color: "transparent",
             backgroundClip: "text",
           }}
         >
           {isCorrect ? "Bien joué !" : "Oh non..."}
         </ThemedText>
+        <View
+          style={{
+            flexDirection: "column",
+            gap: 10,
+            flex: 1,
+            width: "100%",
+            alignItems: "flex-start",
+          }}
+        >
+          <ScoreMedal
+            medalType={{
+              type: "base",
+              value: isCorrect ? "correct" : "wrong",
+            }}
+          />
+        </View>
+        <Divider orientation="horizontal" size="100%" />
         <ThemedText
           style={{
             textAlign: "center",
             fontSize: 32,
+            lineHeight: 48,
             fontFamily: "Exo_700Bold",
             textShadowColor: isCorrect ? "#3DC96C" : "#D36F6F",
             textShadowOffset: { width: 0, height: 0 },

@@ -255,7 +255,7 @@ export default class GameService {
   private getQuestionScore = (difficulty: Question["difficulty"]) => {
     switch (difficulty) {
       case "expert":
-        return 5
+        return 4
       case "hard":
         return 3
       case "medium":
