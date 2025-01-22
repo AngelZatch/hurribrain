@@ -85,6 +85,11 @@ const TurnController = async (fastify: FastifyInstance) => {
 
     fastify.io.to(`game:${gameId}`).emit("turn:current", currentTurn)
 
+    if (currentTurn === null) {
+      const finishedGame = await gameService.finishGame(gameId)
+      fastify.io.to(`game:${gameId}`).emit("game:updated", finishedGame)
+    }
+
     return currentTurn
   })
 

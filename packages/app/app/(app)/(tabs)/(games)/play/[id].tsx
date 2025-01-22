@@ -21,13 +21,13 @@ export default function PlayScreen() {
   const { id: gameId } = useLocalSearchParams<{ id: string }>();
   const socket = useRef<Socket>();
 
-  const { data, isLoading, error } = useGetGame(user!, gameId);
+  const { data: game, isLoading, error } = useGetGame(user!, gameId);
   const [currentTurn, setCurrentTurn] = useState<
     PlayableTurn | PlayedTurn | null
   >(null);
 
   useEffect(() => {
-    if (!data?.uuid) {
+    if (!game?.uuid) {
       return;
     }
 
@@ -39,18 +39,21 @@ export default function PlayScreen() {
     })
       .on("connect", () => {
         console.log("connected");
-        socket.current?.emit("game:join", data.uuid);
+        socket.current?.emit("game:join", game.uuid);
       })
       .on("game:joined", () => {
         console.log("game:joined");
-        socket.current?.emit("sync:request", data.uuid);
+        socket.current?.emit("sync:request", game.uuid);
       })
       .on("game:updated", () => {
         console.log("game:updated");
+        queryClient.invalidateQueries({
+          queryKey: ["games", gameId],
+        });
       })
       .on("turn:current", (turn: PlayableTurn | PlayedTurn | null) => {
         console.log("TURN RECEIVED", turn);
-        queryClient.refetchQueries({
+        queryClient.invalidateQueries({
           queryKey: ["my-participation", gameId],
         });
         setCurrentTurn(turn);
@@ -62,17 +65,17 @@ export default function PlayScreen() {
       socket.current?.off("turn:change");
       socket.current?.disconnect();
     };
-  }, [data?.uuid]);
+  }, [game?.uuid]);
 
-  if (!data) {
+  if (!game) {
     return null;
   }
 
   return (
     <PageContainer>
       <TopNavigation
-        topLabel={data?.isPrivate ? "Partie Privée" : "Partie Rapide"}
-        subLabel={data?.code}
+        topLabel={game?.isPrivate ? "Partie Privée" : "Partie Rapide"}
+        subLabel={game?.code}
         rightElement={
           <Link
             href={{
@@ -104,10 +107,11 @@ export default function PlayScreen() {
             "linear-gradient(45deg, rgba(255, 255, 255, 1) 0%, rgba(218, 191, 224, 0.1) 33%, rgba(176, 130, 193, 0.3) 67%, rgba(176, 130, 193, 0.5) 100%)",
         }}
       >
-        {!data.startedAt && <GameLobby game={data!} />}
-        {data.startedAt && currentTurn && (
+        {!game.startedAt && <GameLobby game={game!} />}
+        {game.startedAt && !game.finishedAt && currentTurn && (
           <ActiveGame currentTurn={currentTurn} />
         )}
+        {game.finishedAt && <View>C'est fini</View>}
       </View>
     </PageContainer>
   );

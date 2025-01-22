@@ -252,6 +252,22 @@ export default class GameService {
     return updatedTurn
   }
 
+  finishGame = async (gameId: string) => { 
+    const em = getEntityManager()
+
+    const game = await em.findOneOrFail(Game,
+      { uuid: gameId, startedAt: { $ne: null } },
+    )
+
+    game.finishedAt ||= new Date()
+
+    await em.persistAndFlush(game)
+
+    // Give EXP to all participants based on their rank
+
+    return game;
+  }
+
   private getQuestionScore = (difficulty: Question["difficulty"]) => {
     switch (difficulty) {
       case "expert":
