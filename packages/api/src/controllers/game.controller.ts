@@ -41,10 +41,16 @@ const GameController = async (fastify: FastifyInstance) => {
     async (request, reply) => {
       const em = request.em
 
-      const games = await em.findAll(Game, {
-        refresh: true,
-        populate: ["tags", "playerCount", "creator"],
-      })
+      const games = await em.find(
+        Game,
+        {
+          finishedAt: null,
+        },
+        {
+          refresh: true,
+          populate: ["tags", "playerCount", "creator"],
+        }
+      )
 
       return reply.code(200).send({
         data: games,
