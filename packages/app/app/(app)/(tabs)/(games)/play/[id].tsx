@@ -13,6 +13,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import ThemedIconButton from "@/components/ui/ThemedIconButton";
 import { useGetGame } from "@/api/games.api";
 import { PlayableTurn, PlayedTurn } from "@/api/play.api";
+import GameRecap from "@/components/GameRecap";
 
 export default function PlayScreen() {
   const colorScheme = useColorScheme();
@@ -111,7 +112,7 @@ export default function PlayScreen() {
         {game.startedAt && !game.finishedAt && currentTurn && (
           <ActiveGame currentTurn={currentTurn} />
         )}
-        {game.finishedAt && <View>C'est fini</View>}
+        {game.finishedAt && <GameRecap />}
       </View>
     </PageContainer>
   );
