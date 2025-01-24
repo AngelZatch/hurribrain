@@ -10,6 +10,8 @@
   ],
   "scripts": {
     "api:start": "yarn workspace api start",
+    "api:test": "yarn workspace api test",
+    "api:coverage": "yarn workspace api coverage",
     "admin:start": "yarn workspace admin dev",
     "app:start:web": "yarn workspace app web"
   },

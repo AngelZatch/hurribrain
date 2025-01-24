@@ -12,7 +12,8 @@
     "database:migrate": "yarn mikro-orm migration:up",
     "database:seed": "yarn mikro-orm seeder:run",
     "database:rebuild": "yarn mikro-orm migration:fresh --seed",
-    "test": "ts-mocha -p tsconfig.json --file src/utils/setupTests.ts src/**/*.test.ts --exit"
+    "test": "ts-mocha -p tsconfig.json --file src/utils/setupTests.ts src/**/*.test.ts --exit",
+    "coverage": "c8 --include=src --clean=true yarn run test"
   },
   "mikro-orm": {
     "useTsNode": true,
@@ -26,6 +27,7 @@
     "@faker-js/faker": "^9.0.3",
     "@mikro-orm/cli": "^6.3.13",
     "@types/bcrypt": "^5.0.2",
+    "@types/bull": "^4.10.4",
     "@types/eslint__js": "^8.42.3",
     "@types/expect.js": "^0.3.32",
     "@types/jsonwebtoken": "^9.0.7",
@@ -59,6 +61,7 @@
     "@mikro-orm/seeder": "^6.3.13",
     "@sinclair/typebox": "^0.33.15",
     "bcrypt": "^5.1.1",
+    "bull": "^4.16.5",
     "dotenv": "^16.4.5",
     "fastify": "^5.0.0",
     "fastify-socket.io": "^5.1.0",

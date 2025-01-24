@@ -47,30 +47,11 @@ const TurnController = async (fastify: FastifyInstance) => {
 
   fastify.put<{
     Params: { gameId: string; turnId: string }
-  }>("/:turnId/finish", async (request, reply) => {
-    const em = request.em
-    const { turnId, gameId } = request.params
+  }>("/:turnId/finish", async (request) => {
+    const { gameId, turnId } = request.params
     const gameService = new GameService()
 
-    const turn = await em.findOneOrFail(
-      Turn,
-      {
-        uuid: turnId,
-        startedAt: { $ne: null },
-        finishedAt: null,
-      },
-      {
-        populate: ["question", "question.choices"],
-        failHandler: () => {
-          reply.statusCode = 404
-          return new Error("This turn is not available.")
-        },
-      }
-    )
-
-    const updatedTurn = await gameService.finishCurrentTurn(turn)
-
-    fastify.io.to(`game:${gameId}`).emit("turn:current", updatedTurn)
+    const updatedTurn = await gameService.finishCurrentTurn(gameId, turnId)
 
     return updatedTurn
   })
@@ -82,13 +63,6 @@ const TurnController = async (fastify: FastifyInstance) => {
     const gameService = new GameService()
 
     const currentTurn = await gameService.startNextTurn(gameId)
-
-    fastify.io.to(`game:${gameId}`).emit("turn:current", currentTurn)
-
-    if (currentTurn === null) {
-      const finishedGame = await gameService.finishGame(gameId)
-      fastify.io.to(`game:${gameId}`).emit("game:updated", finishedGame)
-    }
 
     return currentTurn
   })

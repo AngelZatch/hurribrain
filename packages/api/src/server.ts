@@ -93,6 +93,7 @@ export const initializeServer = async () => {
 
     const gameService = new GameService()
 
+    // Start the sync service
     server.io.on("connect", (socket: Socket) => {
       socket.on("game:join", async (gameId: string) => {
         // Confirm that there is a participation before joining

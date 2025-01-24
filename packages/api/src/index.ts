@@ -1,6 +1,7 @@
 import { initializeDatabase } from "./database.js"
 import { getOrmConfig } from "./mikro-orm.config.js"
 import { server, initializeServer } from "./server.js"
+import SyncService from "./services/sync.service.js"
 const PORT = 8080
 
 server.get("/", async () => {
@@ -13,6 +14,11 @@ server.get("/", async () => {
     // If dev, migrate and seed database
 
     await initializeServer()
+
+    // Init game worker
+    const syncService = new SyncService()
+    syncService.listen()
+
     await server.listen({ port: PORT })
     console.log(`Server is running at http://localhost:${PORT}`)
   } catch (err) {

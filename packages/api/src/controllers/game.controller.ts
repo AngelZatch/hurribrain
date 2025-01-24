@@ -18,10 +18,9 @@ import { Tag } from "./../entities/tag.entity.js"
 import { Participation } from "./../entities/participation.entity.js"
 import { User } from "./../entities/user.entity.js"
 import { verifyJWT } from "./../utils/authChecker.js"
-import { Question } from "./../entities/question.entity.js"
-import { Turn } from "./../entities/turn.entity.js"
 import PlayerController from "./player.controller.js"
 import TurnController from "./turn.controller.js"
+import GameService from "./../services/game.service.js"
 
 const GameController = async (fastify: FastifyInstance) => {
   fastify.addSchema(GameResponseSchema)
@@ -199,90 +198,11 @@ const GameController = async (fastify: FastifyInstance) => {
       preHandler: [fastify.auth([verifyJWT])],
     },
     async (request, reply) => {
-      const em = request.em
       const { gameId } = request.params
+      const gameService = new GameService()
 
-      const game = await em.findOneOrFail(
-        Game,
-        {
-          uuid: gameId,
-          creator: { uuid: request.user },
-          startedAt: null,
-          finishedAt: null,
-        },
-        {
-          populate: ["tags"],
-          failHandler: () => {
-            reply.statusCode = 404
-            return new Error("Game not found")
-          },
-        }
-      )
-
-      // Update game
-      game.startedAt = new Date()
-
-      em.persist(game)
-
-      // Create all turns
-      const difficultyFilter = {
-        easy: 50,
-        medium: 20,
-        hard: 1,
-        expert: 0,
-      }
-
-      // Get game.length questions from the database based on the tags and the difficulty
-      const pickedQuestions = (
-        await em.find(
-          Question,
-          {
-            tags: { $in: game.tags.getItems() },
-            $or: [
-              {
-                successRate: null,
-              },
-              {
-                successRate: { $gte: difficultyFilter[game.difficulty!] },
-              },
-            ],
-          },
-          {
-            fields: ["uuid"],
-          }
-        )
-      )
-        .map((question) => question.uuid)
-        .sort(() => Math.random() - 0.5)
-        .slice(0, game.length)
-
-      console.log(pickedQuestions)
-
-      // Create all turns
-      pickedQuestions.forEach(async (question, index) => {
-        const turn = new Turn({
-          question: { uuid: question } as Question,
-          game,
-          position: index + 1,
-        })
-        if (index === 0) {
-          turn.startedAt = new Date()
-        }
-        em.persist(turn)
-      })
-
-      await em.flush()
-
-      console.log("FLUSHED")
-
-      const firstTurn = await em.findOneOrFail(
-        Turn,
-        { game: game.uuid, position: 1 },
-        { populate: ["question"] }
-      )
-
-      fastify.io.to(`game:${game.uuid}`).emit("game:updated", game)
-      fastify.io.to(`game:${game.uuid}`).emit("turn:current", firstTurn)
+      await gameService.startGame(gameId, request.user)
+      await gameService.startNextTurn(gameId)
 
       return reply.code(200).send(true)
     }

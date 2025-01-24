@@ -40,6 +40,7 @@ export default function GamesScreen() {
         {data &&
           data.data.map((game) => (
             <Link
+              push
               href={{
                 pathname: "/play/[id]",
                 params: { id: game.uuid },

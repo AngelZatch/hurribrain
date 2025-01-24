@@ -7,12 +7,12 @@ import { Question } from "./../entities/question.entity.js"
 import { PlayableTurn, PlayedTurn } from "./../schemas/turn.schema.js"
 import { Choice } from "./../entities/choice.entity.js"
 import { UserStats } from "./../entities/userStats.entity.js"
+import { server } from "./../server.js"
+
+import Queue from "bull"
+const gameQueue = new Queue("games")
 
 export default class GameService {
-  startGame = async (gameId: string) => {
-    console.log(gameId)
-  }
-
   syncGame = async (
     gameId: string
   ): Promise<PlayableTurn | PlayedTurn | null> => {
@@ -74,6 +74,79 @@ export default class GameService {
     return currentTurn
   }
 
+  startGame = async (gameId: string, userId: string) => {
+    const em = getEntityManager()
+
+    const game = await em.findOneOrFail(
+      Game,
+      {
+        uuid: gameId,
+        creator: { uuid: userId },
+        startedAt: null,
+        finishedAt: null,
+      },
+      {
+        populate: ["tags"],
+      }
+    )
+
+    // Update game
+    game.startedAt = new Date()
+
+    em.persist(game)
+
+    // Create all turns
+    const difficultyFilter = {
+      easy: 50,
+      medium: 20,
+      hard: 1,
+      expert: 0,
+    }
+
+    // Get game.length questions from the database based on the tags and the difficulty
+    const pickedQuestions = (
+      await em.find(
+        Question,
+        {
+          tags: { $in: game.tags.getItems() },
+          $or: [
+            {
+              successRate: null,
+            },
+            {
+              successRate: { $gte: difficultyFilter[game.difficulty!] },
+            },
+          ],
+        },
+        {
+          fields: ["uuid"],
+        }
+      )
+    )
+      .map((question) => question.uuid)
+      .sort(() => Math.random() - 0.5)
+      .slice(0, game.length)
+
+    // Create all turns
+    pickedQuestions.forEach(async (question, index) => {
+      const turn = new Turn({
+        question: { uuid: question } as Question,
+        game,
+        position: index + 1,
+      })
+      if (index === 0) {
+        turn.startedAt = new Date()
+      }
+      em.persist(turn)
+    })
+
+    await em.flush()
+
+    server.io.to(`game:${game.uuid}`).emit("game:updated", game)
+
+    return game
+  }
+
   startNextTurn = async (gameId: string): Promise<PlayableTurn | null> => {
     const em = getEntityManager()
 
@@ -101,17 +174,50 @@ export default class GameService {
     )
 
     if (!nextTurn) {
+      this.finishGame(gameId)
       return null
     }
 
     nextTurn.startedAt = new Date()
     await em.persistAndFlush(nextTurn)
 
+    // Update sockets
+    server.io.to(`game:${gameId}`).emit("turn:current", nextTurn)
+
+    // 15s timer to play the turn
+    gameQueue.add(
+      {
+        gameId,
+        turnId: nextTurn.uuid,
+        order: "finish",
+      },
+      {
+        delay: 15000,
+        attempts: 3,
+        removeOnComplete: true,
+      }
+    )
     return nextTurn
   }
 
-  finishCurrentTurn = async (targetTurn: Turn): Promise<PlayedTurn> => {
+  finishCurrentTurn = async (
+    gameId: string,
+    turnId: string
+  ): Promise<PlayedTurn> => {
     const em = getEntityManager()
+
+    const targetTurn = await em.findOneOrFail(
+      Turn,
+      {
+        uuid: turnId,
+        game: { uuid: gameId } as Game,
+        startedAt: { $ne: null },
+        finishedAt: null,
+      },
+      {
+        populate: ["question", "question.choices"],
+      }
+    )
 
     targetTurn.finishedAt = new Date()
 
@@ -157,8 +263,6 @@ export default class GameService {
         incorrectAnswers.push(answer)
       }
     })
-
-    console.log(targetTurn.question)
 
     targetTurn.question.correctAnswers += correctAnswers.length
     targetTurn.question.incorrectAnswers += incorrectAnswers.length
@@ -250,6 +354,21 @@ export default class GameService {
       }
     )
 
+    console.log("UPDATED FINISHED TURN: ", updatedTurn)
+
+    // Update sockets
+    server.io.to(`game:${gameId}`).emit("turn:current", updatedTurn)
+
+    // Job for the next turn in 15s
+    gameQueue.add(
+      {
+        gameId,
+        turnId: null,
+        order: "next",
+      },
+      { delay: 15000, attempts: 3, removeOnComplete: true }
+    )
+
     return updatedTurn
   }
 
@@ -313,6 +432,8 @@ export default class GameService {
     })
 
     await em.flush()
+
+    server.io.to(`game:${gameId}`).emit("game:updated", game)
 
     return game
   }

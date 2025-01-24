@@ -75,6 +75,11 @@ export default function PlayScreen() {
   return (
     <PageContainer>
       <TopNavigation
+        leftElement={
+          <Link replace href="/games" asChild>
+            <ThemedIconButton icon="chevron.left" />
+          </Link>
+        }
         topLabel={game?.isPrivate ? "Partie Privée" : "Partie Rapide"}
         subLabel={game?.code}
         rightElement={

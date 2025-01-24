@@ -23,7 +23,7 @@ export default function GameRecap() {
         La partie est terminée !
       </ThemedText>
       <View></View>
-      <Link href="/" asChild>
+      <Link replace href="/" asChild>
         <ThemedButton title="Retourner à l'accueil" />
       </Link>
     </View>
