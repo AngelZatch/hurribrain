@@ -34,7 +34,7 @@ export default function ActivePlayedTurn({
   );
 
   useEffect(() => {
-    if (myAnswer.choice) {
+    if (myAnswer && myAnswer.choice) {
       if (myAnswer.choice.uuid === correctChoice?.uuid) {
         setAnswerStatus("correct");
       } else {

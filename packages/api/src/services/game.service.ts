@@ -134,9 +134,6 @@ export default class GameService {
         game,
         position: index + 1,
       })
-      if (index === 0) {
-        turn.startedAt = new Date()
-      }
       em.persist(turn)
     })
 
