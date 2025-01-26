@@ -5,18 +5,25 @@ import Avatar from "./Avatar";
 import ThemedText from "./ui/ThemedText";
 import { useAuth } from "@/contexts/auth.context";
 import { useGetMeWithStats } from "@/api/auth.api";
+import { Redirect } from "expo-router";
 
 export default function ProfileBanner() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   if (!user) {
-    return null;
+    return <Redirect href="/welcome" />;
   }
+
+  console.log(user);
 
   const { data, isLoading, isError } = useGetMeWithStats(user);
 
   if (isLoading) {
     return <Text>Loading...</Text>;
+  }
+
+  if (isError) {
+    logout();
   }
 
   return (
@@ -57,10 +64,13 @@ export default function ProfileBanner() {
             alignItems: "center",
           }}
         >
-          <ExperienceBar
-            current={data!.stats.experiencePoints}
-            level={data!.stats.level}
-          />
+          {data && (
+            <ExperienceBar
+              current={data!.stats.experiencePoints}
+              level={data!.stats.level}
+            />
+          )}
+
           {/* <Divider orientation="vertical" size={15} />
           <CoinCount count={138} /> */}
         </View>
