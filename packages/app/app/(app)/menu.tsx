@@ -8,6 +8,7 @@ import { PageContainer } from "@/components/ui/PageContainer";
 import ThemedIconButton from "@/components/ui/ThemedIconButton";
 import ThemedText from "@/components/ui/ThemedText";
 import CreateGameForm from "@/components/CreateGameForm";
+import TopNavigation from "@/components/TopNavigation";
 
 export default function Lobby() {
   const isPresented = router.canGoBack();
@@ -18,29 +19,20 @@ export default function Lobby() {
 
   return (
     <PageContainer>
-      <View
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          height: 77,
-          paddingHorizontal: 10,
-          paddingVertical: 0,
-          alignItems: "center",
-          gap: 10,
-          alignSelf: "stretch",
-        }}
-      >
-        {lobbyState === null ? (
-          <Link href={isPresented ? "../" : "/"} asChild>
-            <ThemedIconButton icon="xmark" />
-          </Link>
-        ) : (
-          <ThemedIconButton
-            icon="chevron.left"
-            onPress={() => setLobbyState(null)}
-          />
-        )}
-      </View>
+      <TopNavigation
+        leftElement={
+          lobbyState === null ? (
+            <Link href={isPresented ? "../" : "/"} asChild>
+              <ThemedIconButton icon="xmark" />
+            </Link>
+          ) : (
+            <ThemedIconButton
+              icon="chevron.left"
+              onPress={() => setLobbyState(null)}
+            />
+          )
+        }
+      />
       <View
         style={{
           display: "flex",

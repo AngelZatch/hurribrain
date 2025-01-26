@@ -41,7 +41,7 @@ export default function JoinGameForm() {
   return (
     <>
       <InputContainer>
-        <ThemedText type="label">ntrez votre code de jeu ici :</ThemedText>
+        <ThemedText type="label">Entre ton code de jeu ici :</ThemedText>
         <Controller
           control={control}
           rules={{

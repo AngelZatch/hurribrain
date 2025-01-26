@@ -15,6 +15,7 @@ import { Colors } from "@/constants/Colors";
 import { Tag, useGetTags } from "@/api/tags.api";
 import DifficultyChip from "./DifficultyChip";
 import MultiSelect from "./MultiSelect";
+import { router } from "expo-router";
 
 type FormData = {
   tags: Array<Tag>;
@@ -83,12 +84,11 @@ export default function CreateGameForm() {
       isPrivate: true,
     });
 
-    console.log(createdGame);
-
     // If successful, join the game and navigate to it
     await joinGame(createdGame.code);
 
     // If successful, navigate to the game
+    router.replace(`/play/${createdGame.uuid}`);
   };
 
   return (
@@ -96,8 +96,10 @@ export default function CreateGameForm() {
       <ContainerView
         style={{
           flexGrow: 1,
+          flexShrink: 1,
           flexDirection: "column",
           gap: 16,
+          overflow: "scroll",
         }}
       >
         <InputContainer>
