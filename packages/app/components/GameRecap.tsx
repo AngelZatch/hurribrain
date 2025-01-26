@@ -1,9 +1,14 @@
 import { View } from "react-native";
 import ThemedText from "./ui/ThemedText";
-import { Link } from "expo-router";
+import { router } from "expo-router";
 import ThemedButton from "./ui/ThemedButton";
 
 export default function GameRecap() {
+  const navigateToHome = () => {
+    router.dismissAll();
+    router.replace("/");
+  };
+
   return (
     <View
       style={{
@@ -23,9 +28,7 @@ export default function GameRecap() {
         La partie est terminée !
       </ThemedText>
       <View></View>
-      <Link replace href="/" asChild>
-        <ThemedButton title="Retourner à l'accueil" />
-      </Link>
+      <ThemedButton title="Retourner à l'accueil" onPress={navigateToHome} />
     </View>
   );
 }
