@@ -3,7 +3,7 @@ import ThemedText from "./ui/ThemedText";
 import { useEffect, useState } from "react";
 import { PlayedTurn, Choice, useGetMyAnswer } from "@/api/play.api";
 import { useAuth } from "@/contexts/auth.context";
-import ScoreMedal from "./ScoreMedal";
+import ScoreMedal, { DifficultyMedal } from "./ScoreMedal";
 import { Divider } from "./ui/Divider";
 
 type ActivePlayedTurnProps = {
@@ -15,10 +15,12 @@ export default function ActivePlayedTurn({
 }: ActivePlayedTurnProps) {
   const [correctChoice, setCorrectChoice] = useState<Choice | null>(null);
   const { user } = useAuth();
-  const [isCorrect, setIsCorrect] = useState<boolean>(false);
   const [answerStatus, setAnswerStatus] = useState<
     "correct" | "wrong" | "none"
   >("none");
+  const [difficultyMedalAwarded, setDifficultyMedalAwarded] =
+    useState<boolean>(false);
+  const [pointsGained, setPointsGained] = useState<number>(0);
 
   useEffect(() => {
     setCorrectChoice(
@@ -37,14 +39,32 @@ export default function ActivePlayedTurn({
     if (myAnswer && myAnswer.choice) {
       if (myAnswer.choice.uuid === correctChoice?.uuid) {
         setAnswerStatus("correct");
+        setPointsGained((value) => value + 1);
       } else {
         setAnswerStatus("wrong");
+        setPointsGained(-1);
       }
-      setIsCorrect(myAnswer.choice.uuid === correctChoice?.uuid);
     } else {
       setAnswerStatus("none");
+      setPointsGained(0);
     }
   }, [myAnswer, correctChoice]);
+
+  useEffect(() => {
+    setDifficultyMedalAwarded(false);
+    if (answerStatus === "correct") {
+      if (currentTurn.question.difficulty === "medium") {
+        setDifficultyMedalAwarded(true);
+        setPointsGained((value) => value + 1);
+      } else if (currentTurn.question.difficulty === "hard") {
+        setDifficultyMedalAwarded(true);
+        setPointsGained((value) => value + 2);
+      } else if (currentTurn.question.difficulty === "expert") {
+        setDifficultyMedalAwarded(true);
+        setPointsGained((value) => value + 3);
+      }
+    }
+  }, [answerStatus, currentTurn.question.difficulty]);
 
   return (
     <View>
@@ -127,6 +147,14 @@ export default function ActivePlayedTurn({
               value: answerStatus,
             }}
           />
+          {difficultyMedalAwarded && (
+            <ScoreMedal
+              medalType={{
+                type: "difficulty",
+                value: currentTurn.question.difficulty as DifficultyMedal,
+              }}
+            />
+          )}
         </View>
         <Divider orientation="horizontal" size="100%" />
         <ThemedText
@@ -135,12 +163,12 @@ export default function ActivePlayedTurn({
             fontSize: 32,
             lineHeight: 48,
             fontFamily: "Exo_700Bold",
-            textShadowColor: isCorrect ? "#3DC96C" : "#D36F6F",
+            textShadowColor: answerStatus === "correct" ? "#3DC96C" : "#D36F6F",
             textShadowOffset: { width: 0, height: 0 },
             textShadowRadius: 10,
           }}
         >
-          {isCorrect ? "+1" : "-1"} pt
+          {pointsGained} pt
         </ThemedText>
       </View>
     </View>

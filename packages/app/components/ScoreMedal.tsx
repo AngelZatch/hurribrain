@@ -1,7 +1,7 @@
 import { View, StyleSheet, Image } from "react-native";
 import ThemedText from "./ui/ThemedText";
-type BaseMedal = "wrong" | "correct" | "none";
-type DifficultyMedal = "medium" | "hard" | "expert";
+export type BaseMedal = "wrong" | "correct" | "none";
+export type DifficultyMedal = "medium" | "hard" | "expert";
 
 const BaseCorrectMedal = require("@/assets/images/medals/base_correct.png");
 
