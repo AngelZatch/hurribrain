@@ -7,6 +7,7 @@ import ThemedButton from "./ui/ThemedButton";
 import { useAuth } from "@/contexts/auth.context";
 import { useJoinGame } from "@/api/games.api";
 import React from "react";
+import { router } from "expo-router";
 
 type FormData = {
   code: string;
@@ -33,9 +34,10 @@ export default function JoinGameForm() {
 
   const onSubmit = async (data: FormData) => {
     // Join the game
-    await joinGame(data.code);
+    const game = await joinGame(data.code);
 
     // If successful, navigate to the game
+    router.replace(`/play/${game.uuid}`);
   };
 
   return (

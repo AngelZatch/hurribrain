@@ -4,7 +4,7 @@ export const UserResponseSchema = Type.Object(
   {
     uuid: Type.String({ format: "uuid" }),
     email: Type.String({ format: "email" }),
-    name: Type.String(),
+    name: Type.String({ examples: ["Archibald"] }),
   },
   {
     $id: "User",

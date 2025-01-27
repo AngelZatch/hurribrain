@@ -3,13 +3,13 @@ import { FastifyInstance } from "fastify"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import {
+  AuthErrorResponsesSchema,
   AuthResponseSchema,
   LoginRequestBody,
   LoginRequestSchema,
   RegistrationRequestBody,
   RegistrationRequestSchema,
 } from "./../schemas/auth.schema.js"
-import { AuthErrorResponsesSchema } from "./../schemas/errors.schema.js"
 import { verifyJWT } from "../utils/authChecker.js"
 import { UserStats } from "../entities/userStats.entity.js"
 

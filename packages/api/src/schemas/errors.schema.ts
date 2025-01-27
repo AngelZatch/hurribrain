@@ -32,17 +32,31 @@ export const BadRequestErrorResponseSchema = {
 }
 
 export const UnauthorizedErrorResponseSchema = {
-  401: Type.Ref(ErrorResponseTemplateSchema, { description: "Unauthorized" }),
-}
-
-export const InvalidCredentialsErrorResponseSchema = {
   401: Type.Ref(ErrorResponseTemplateSchema, {
-    description: "Invalid credentials",
+    description: "Unauthorized",
+    examples: [
+      {
+        statusCode: 401,
+        error: "Unauthorized",
+        message: "You are not logged in. Please log in and try again.",
+        timestamp: "2021-07-06T16:00:00.000Z",
+      },
+    ],
   }),
 }
 
 export const ForbiddenErrorResponseSchema = {
-  403: Type.Ref(ErrorResponseTemplateSchema, { description: "Forbidden" }),
+  403: Type.Ref(ErrorResponseTemplateSchema, {
+    description: "Forbidden",
+    examples: [
+      {
+        statusCode: 403,
+        error: "Forbidden",
+        message: "You do not have permission to access this resource",
+        timestamp: "2021-07-06T16:00:00.000Z",
+      },
+    ],
+  }),
 }
 
 export const NotFoundErrorResponseSchema = {
@@ -78,13 +92,5 @@ export const ErrorResponsesSchema = {
   ...NotFoundErrorResponseSchema,
   ...AuthenticationTimeoutErrorResponseSchema,
   ...UnprocessableEntityErrorResponseSchema,
-  ...InternalServerErrorResponseSchema,
-}
-
-export const AuthErrorResponsesSchema = {
-  ...BadRequestErrorResponseSchema,
-  ...InvalidCredentialsErrorResponseSchema,
-  ...ConflictErrorResponseSchema,
-  ...AuthenticationTimeoutErrorResponseSchema,
   ...InternalServerErrorResponseSchema,
 }

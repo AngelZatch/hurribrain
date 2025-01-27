@@ -4,6 +4,7 @@ import { TagResponseSchema } from "./tag.schema.js"
 import { GameDifficulty } from "./../entities/game.entity.js"
 import { UserResponseSchema } from "./user.schema.js"
 import { Nullable } from "./common.schema.js"
+import { ErrorResponseTemplateSchema } from "./errors.schema.js"
 
 export const GameResponseSchema = Type.Object(
   {
@@ -13,7 +14,11 @@ export const GameResponseSchema = Type.Object(
       examples: ["GDK29MED"],
     }),
     tags: Type.Array(TagResponseSchema),
-    length: Type.Integer(),
+    length: Type.Integer({
+      minimum: 10,
+      maximum: 50,
+      examples: [20],
+    }),
     difficulty: Type.Enum(GameDifficulty),
     playerCount: Type.Optional(Type.Integer()),
     creator: UserResponseSchema,
@@ -74,3 +79,20 @@ export const CreateGameSchema = Type.Object({
 
 export type PostGameBody = Static<typeof CreateGameSchema>
 export type PostGameReply = Static<typeof GameResponseSchema>
+
+export const CannotStartGameErrorResponseSchema = {
+  400: Type.Ref(ErrorResponseTemplateSchema, {
+    description:
+      "The game is already started and cannot be started again, preventing duplicate logical actions.",
+    title: "This game is already ongoing or finished and cannot be started.",
+    examples: [
+      {
+        statusCode: 400,
+        error: "Bad Request",
+        message:
+          "This game is already ongoing or finished and cannot be started.",
+        timestamp: "2021-07-06T16:00:00.000Z",
+      },
+    ],
+  }),
+}

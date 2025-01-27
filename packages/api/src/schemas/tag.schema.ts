@@ -4,8 +4,16 @@ import { Static, Type } from "@sinclair/typebox"
 export const TagResponseSchema = Type.Object(
   {
     uuid: Type.String({ format: "uuid" }),
-    name: Type.String(),
-    description: Type.Optional(Type.String()),
+    name: Type.String({ examples: ["Jeux Vidéo", "Musique", "Cinéma"] }),
+    description: Type.Optional(
+      Type.String({
+        examples: [
+          "Testez vos connaissances sur Mario, Pokémon et plein d'autres licences connues.",
+          "Arriverez-vous à reconnaître les artistes derrière vos chansons préférées ?",
+          "Scorsese, Spielberg, Nolan... Quel réalisateur se cache derrière ces films cultes ?",
+        ],
+      })
+    ),
   },
   {
     $id: "Tag",

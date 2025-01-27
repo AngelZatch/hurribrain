@@ -1,4 +1,11 @@
 import { Type, Static } from "@sinclair/typebox"
+import {
+  AuthenticationTimeoutErrorResponseSchema,
+  BadRequestErrorResponseSchema,
+  ConflictErrorResponseSchema,
+  ErrorResponseTemplateSchema,
+  InternalServerErrorResponseSchema,
+} from "./errors.schema.js"
 
 // Auth Schema
 export const AuthResponseSchema = Type.Object({
@@ -20,3 +27,25 @@ export const RegistrationRequestSchema = Type.Object({
 
 export type LoginRequestBody = Static<typeof LoginRequestSchema>
 export type RegistrationRequestBody = Static<typeof RegistrationRequestSchema>
+
+export const InvalidCredentialsErrorResponseSchema = {
+  401: Type.Ref(ErrorResponseTemplateSchema, {
+    description: "Invalid credentials",
+    examples: [
+      {
+        statusCode: 401,
+        error: "Unauthorized",
+        message: "Invalid credentials",
+        timestamp: "2021-07-06T16:00:00.000Z",
+      },
+    ],
+  }),
+}
+
+export const AuthErrorResponsesSchema = {
+  ...BadRequestErrorResponseSchema,
+  ...InvalidCredentialsErrorResponseSchema,
+  ...ConflictErrorResponseSchema,
+  ...AuthenticationTimeoutErrorResponseSchema,
+  ...InternalServerErrorResponseSchema,
+}

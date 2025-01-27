@@ -13,6 +13,7 @@ import {
   GameByCodeParams,
   GameByIdParams,
   GameByIdParamsSchema,
+  CannotStartGameErrorResponseSchema,
 } from "./../schemas/game.schema.js"
 import { Tag } from "./../entities/tag.entity.js"
 import { Participation } from "./../entities/participation.entity.js"
@@ -30,12 +31,14 @@ const GameController = async (fastify: FastifyInstance) => {
     {
       schema: {
         tags: ["Games"],
-        summary: "Returns the list of all available games",
+        summary:
+          "Returns the list of all available games to the authenticated user.",
         response: {
           200: GetGamesReplySchema,
           ...ErrorResponsesSchema,
         },
       },
+      preHandler: [fastify.auth([verifyJWT])],
     },
     async (request, reply) => {
       const em = request.em
@@ -44,6 +47,10 @@ const GameController = async (fastify: FastifyInstance) => {
         Game,
         {
           finishedAt: null,
+          $or: [
+            { isPrivate: false },
+            { isPrivate: true, creator: { uuid: request.user } },
+          ],
         },
         {
           refresh: true,
@@ -72,6 +79,7 @@ const GameController = async (fastify: FastifyInstance) => {
           ...ErrorResponsesSchema,
         },
       },
+      preHandler: [fastify.auth([verifyJWT])],
     },
     async (request, reply) => {
       const em = request.em
@@ -154,6 +162,10 @@ const GameController = async (fastify: FastifyInstance) => {
         tags: ["Games"],
         summary: "Joins a game",
         params: GameByCodeParamsSchema,
+        response: {
+          200: GameResponseSchema,
+          ...ErrorResponsesSchema,
+        },
       },
       preHandler: [fastify.auth([verifyJWT])],
     },
@@ -168,6 +180,7 @@ const GameController = async (fastify: FastifyInstance) => {
           finishedAt: null,
         },
         {
+          populate: ["tags", "playerCount", "creator"],
           failHandler: () => {
             reply.statusCode = 404
             return new Error("Game not found")
@@ -175,13 +188,20 @@ const GameController = async (fastify: FastifyInstance) => {
         }
       )
 
-      const participation = new Participation({
-        user: { uuid: request.user } as User,
+      const userHasParticipation = await em.findOne(Participation, {
+        user: { uuid: request.user },
         game,
       })
-      await em.persistAndFlush(participation)
 
-      return reply.code(201).send(participation)
+      if (!userHasParticipation) {
+        const participation = new Participation({
+          user: { uuid: request.user } as User,
+          game,
+        })
+        await em.persistAndFlush(participation)
+      }
+
+      return reply.code(201).send(game)
     }
   )
 
@@ -194,6 +214,13 @@ const GameController = async (fastify: FastifyInstance) => {
         tags: ["Games"],
         summary: "Starts a game",
         params: GameByIdParamsSchema,
+        response: {
+          200: {
+            type: "boolean",
+          },
+          ...ErrorResponsesSchema,
+          ...CannotStartGameErrorResponseSchema,
+        },
       },
       preHandler: [fastify.auth([verifyJWT])],
     },

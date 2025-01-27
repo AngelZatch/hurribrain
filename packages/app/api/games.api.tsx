@@ -58,7 +58,7 @@ export const useGetGame = (token: string, gameId: string) => {
 
 export const useJoinGame = (token: string) => {
   return useMutation({
-    mutationFn: async (gameCode: string) => {
+    mutationFn: async (gameCode: string): Promise<Game> => {
       try {
         const response = await axios.post(
           `http://localhost:8080/games/${gameCode}/join`,

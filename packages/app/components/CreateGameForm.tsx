@@ -2,7 +2,7 @@ import { useCreateGame, useJoinGame } from "@/api/games.api";
 import { useAuth } from "@/contexts/auth.context";
 import { Controller, useForm } from "react-hook-form";
 import { InputContainer } from "./ui/InputContainer";
-import React, { useState } from "react";
+import React from "react";
 import ThemedText from "./ui/ThemedText";
 import { Divider } from "./ui/Divider";
 import { View } from "react-native";
