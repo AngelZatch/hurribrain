@@ -43,6 +43,20 @@ const GameController = async (fastify: FastifyInstance) => {
     async (request, reply) => {
       const em = request.em
 
+      const activeGamesAccessedByUser = (
+        await em.find(
+          Participation,
+          {
+            game: { isPrivate: true, finishedAt: null },
+          },
+          { populate: ["game"] }
+        )
+      ).map((participation) => participation.game.uuid)
+
+      // The user can access different types of games:
+      // - Public games
+      // - Private games created by the user
+      // - Private games the user is allowed to join by already having a participation
       const games = await em.find(
         Game,
         {
@@ -50,6 +64,7 @@ const GameController = async (fastify: FastifyInstance) => {
           $or: [
             { isPrivate: false },
             { isPrivate: true, creator: { uuid: request.user } },
+            { isPrivate: true, uuid: { $in: activeGamesAccessedByUser } },
           ],
         },
         {
