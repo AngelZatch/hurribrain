@@ -35,7 +35,13 @@ export default function Leaderboard() {
           </Link>
         }
       />
-      <ContainerView>
+      <ContainerView
+        style={{
+          flexDirection: "column",
+          gap: 10,
+          flexGrow: 1,
+        }}
+      >
         {isLoading && <ThemedText>Loading...</ThemedText>}
         {leaderboard?.map((participation) => (
           <LeaderboardItem

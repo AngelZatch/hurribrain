@@ -13,9 +13,11 @@ export default function LeaderboardItem({
   return (
     <View
       style={{
+        paddingVertical: 10,
         flexDirection: "row",
         gap: 10,
-        flex: 1,
+        flexGrow: 0,
+        flexShrink: 1,
         alignItems: "center",
       }}
     >
