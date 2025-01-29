@@ -1010,6 +1010,26 @@
           "length": null,
           "mappedType": "integer"
         },
+        "streak": {
+          "name": "streak",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": null,
+          "mappedType": "integer"
+        },
+        "max_streak": {
+          "name": "max_streak",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": null,
+          "mappedType": "integer"
+        },
         "user_uuid": {
           "name": "user_uuid",
           "type": "varchar(255)",

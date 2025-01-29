@@ -7,6 +7,11 @@ import {
   GameByIdParamsSchema,
 } from "./../schemas/game.schema.js"
 import { FastifyInstance } from "fastify"
+import {
+  GetLeaderboardReplySchema,
+  GetParticipationReply,
+  GetParticipationReplySchema,
+} from "./../schemas/player.schema.js"
 
 const PlayerController = async (fastify: FastifyInstance) => {
   fastify.get<{
@@ -18,6 +23,9 @@ const PlayerController = async (fastify: FastifyInstance) => {
         tags: ["Games", "Leaderboard", "Players"],
         summary: "Returns the leaderboard for a game",
         params: GameByIdParamsSchema,
+        response: {
+          200: GetLeaderboardReplySchema,
+        },
       },
     },
     async (request, reply) => {
@@ -57,10 +65,13 @@ const PlayerController = async (fastify: FastifyInstance) => {
         tags: ["Games", "Players"],
         summary: "Returns the player details for the game",
         params: GameByIdParamsSchema,
+        response: {
+          200: GetParticipationReplySchema,
+        },
       },
       preHandler: [fastify.auth([verifyJWT])],
     },
-    async (request, reply) => {
+    async (request, reply): Promise<GetParticipationReply> => {
       const em = request.em
       const { gameId } = request.params
 
@@ -87,7 +98,10 @@ const PlayerController = async (fastify: FastifyInstance) => {
             "previousScore",
             "rank",
             "previousRank",
+            "streak",
+            "maxStreak",
             "user.uuid",
+            "user.email",
             "user.name",
           ],
         }

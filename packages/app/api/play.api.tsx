@@ -8,6 +8,8 @@ export type Participation = {
   previousScore: number;
   rank: number;
   previousRank: number;
+  streak: number;
+  maxStreak: number;
   user: {
     uuid: string;
     name: string;

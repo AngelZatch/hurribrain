@@ -6,7 +6,7 @@ import CurrentQuestionIndicator from "./CurrentQuestionIndicator";
 import ActiveTurnTimer from "./ActiveTurnTimer";
 import React from "react";
 import ActivePlayableTurn from "./ActivePlayableTurn";
-import ActivePlayedTurn from "./ActivePlayedTurn";
+import TurnRecap from "./TurnRecap";
 import {
   PlayableTurn,
   PlayedTurn,
@@ -74,7 +74,10 @@ export default function ActiveGame({ currentTurn }: ActiveTurnProps) {
       {!currentTurn.finishedAt ? (
         <ActivePlayableTurn currentTurn={currentTurn as PlayableTurn} />
       ) : (
-        <ActivePlayedTurn currentTurn={currentTurn as PlayedTurn} />
+        <TurnRecap
+          currentTurn={currentTurn as PlayedTurn}
+          participation={me!}
+        />
       )}
     </View>
   );

@@ -1,17 +1,24 @@
 import { View } from "react-native";
 import ThemedText from "./ui/ThemedText";
 import { useEffect, useState } from "react";
-import { PlayedTurn, Choice, useGetMyAnswer } from "@/api/play.api";
+import {
+  PlayedTurn,
+  Choice,
+  useGetMyAnswer,
+  Participation,
+} from "@/api/play.api";
 import { useAuth } from "@/contexts/auth.context";
 import ScoreMedal, { DifficultyMedal } from "./ScoreMedal";
 import { Divider } from "./ui/Divider";
 
 type ActivePlayedTurnProps = {
   currentTurn: PlayedTurn;
+  participation: Participation;
 };
 
-export default function ActivePlayedTurn({
+export default function TurnRecap({
   currentTurn,
+  participation,
 }: ActivePlayedTurnProps) {
   const [correctChoice, setCorrectChoice] = useState<Choice | null>(null);
   const { user } = useAuth();
@@ -20,6 +27,7 @@ export default function ActivePlayedTurn({
   >("none");
   const [difficultyMedalAwarded, setDifficultyMedalAwarded] =
     useState<boolean>(false);
+  const [streakMedalAwarded, setStreakMedalAwarded] = useState<boolean>(false);
   const [pointsGained, setPointsGained] = useState<number>(0);
 
   useEffect(() => {
@@ -65,6 +73,14 @@ export default function ActivePlayedTurn({
       }
     }
   }, [answerStatus, currentTurn.question.difficulty]);
+
+  useEffect(() => {
+    setStreakMedalAwarded(false);
+    if (participation.streak % 5 === 0) {
+      setStreakMedalAwarded(true);
+      setPointsGained((value) => value + participation.streak / 5);
+    }
+  }, [participation.streak]);
 
   return (
     <View>
@@ -152,6 +168,14 @@ export default function ActivePlayedTurn({
               medalType={{
                 type: "difficulty",
                 value: currentTurn.question.difficulty as DifficultyMedal,
+              }}
+            />
+          )}
+          {streakMedalAwarded && (
+            <ScoreMedal
+              medalType={{
+                type: "chain",
+                value: participation.streak,
               }}
             />
           )}

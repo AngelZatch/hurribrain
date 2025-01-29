@@ -144,6 +144,14 @@ export default class GameService {
     return game
   }
 
+  /**
+   * Starts the next turn of the game.
+   *
+   * To keep the gameplay loop going, this method will also create a job for the Game Worker to finish the turn in 15s.
+   *
+   * @param gameId The identifier of the game
+   * @returns a PlayableTurn object or null if the game is finished
+   */
   startNextTurn = async (gameId: string): Promise<PlayableTurn | null> => {
     const em = getEntityManager()
 
@@ -197,6 +205,18 @@ export default class GameService {
     return nextTurn
   }
 
+  /**
+   * Finishes the turn.
+   *
+   * This method does a lot of things for the game overall:
+   * - It finishes the turn
+   * - It calculates the score of every participant based on their answers for the turn
+   * - It then refreshes the ranks of all participants
+   *
+   * @param gameId The identifier of the game
+   * @param turnId The identifier of the turn to finish
+   * @returns A PlayedTurn object
+   */
   finishCurrentTurn = async (
     gameId: string,
     turnId: string
@@ -301,13 +321,32 @@ export default class GameService {
 
       // Correct answer
       if (correctAnswersByParticipationId[participation.uuid]) {
-        participation.score += questionScoreReward
+        let scoreReward = questionScoreReward
+
+        // Update streak
+        participation.streak += 1
+        participation.maxStreak = Math.max(
+          participation.maxStreak,
+          participation.streak
+        )
+
+        // If the streak is a multiple of 5, add a bonus
+        if (participation.streak % 5 === 0) {
+          scoreReward += participation.streak / 5
+        }
+
+        // Update score
+        participation.score += scoreReward
+      } else {
+        // Reset streak
+        participation.streak = 0
+
+        // Incorrect answer
+        if (incorrectAnswersByParticipationId[participation.uuid]) {
+          participation.score = Math.max(participation.score - 1, 0)
+        }
       }
 
-      // Incorrect answer
-      if (incorrectAnswersByParticipationId[participation.uuid]) {
-        participation.score = Math.max(participation.score - 1, 0)
-      }
       em.persist(participation)
     })
 
@@ -435,6 +474,15 @@ export default class GameService {
     return game
   }
 
+  /**
+   * Reference method to get the points awarded by a question based on its difficulty:
+   * - 1 point for easy questions
+   * - 2 points for medium questions
+   * - 3 points for hard questions
+   * - 4 points for expert questions
+   * @param difficulty The difficulty of the question
+   * @returns nothing
+   */
   private getQuestionScore = (difficulty: Question["difficulty"]) => {
     switch (difficulty) {
       case "expert":
@@ -450,6 +498,12 @@ export default class GameService {
     }
   }
 
+  /**
+   * Sets the level of the user based on the experience points. This method contains a static experience table
+   * up to level 100.
+   * @param experiencePoints The amount of experience points accumulated by the user
+   * @returns nothing
+   */
   private setUserLevel = (experiencePoints: number) => {
     const experienceTable: Array<number> = [
       100, 220, 364, 536, 742, 989, 1285, 1640, 2066, 2577, 3139, 3757, 4436,

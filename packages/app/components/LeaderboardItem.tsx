@@ -21,14 +21,16 @@ export default function LeaderboardItem({
         alignItems: "center",
       }}
     >
-      <ThemedText
-        style={{
-          color: "#5F5F5F",
-          fontFamily: "Exo_600SemiBold",
-        }}
-      >
-        {!participation.rank && "--"}
-      </ThemedText>
+      <View style={{ width: 40 }}>
+        <ThemedText
+          style={{
+            fontFamily: "Exo_600SemiBold",
+            textAlign: "center",
+          }}
+        >
+          {!participation.rank ? "--" : participation.rank}
+        </ThemedText>
+      </View>
       <View
         style={{
           flexGrow: 1,
