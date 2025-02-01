@@ -240,11 +240,6 @@ export default class GameService {
 
     em.persist(targetTurn)
 
-    // Get question score reward
-    const questionScoreReward = this.getQuestionScore(
-      targetTurn.question.difficulty
-    )
-
     // Find all the correct answers
     const correctChoice = await em.findOneOrFail(Choice, {
       question: { uuid: targetTurn.question.uuid } as Question,
@@ -314,6 +309,11 @@ export default class GameService {
     const participations = await em.find(Participation, {
       game: { uuid: targetTurn.game.uuid } as Game,
     })
+
+    // Get question score reward
+    const questionScoreReward = this.getQuestionScore(
+      targetTurn.question.difficulty
+    )
 
     participations.forEach((participation) => {
       // Update previous score
@@ -490,9 +490,11 @@ export default class GameService {
    * - 3 points for hard questions
    * - 4 points for expert questions
    * @param difficulty The difficulty of the question
-   * @returns nothing
+   * @returns one of the 4 possible values
    */
-  private getQuestionScore = (difficulty: Question["difficulty"]) => {
+  private getQuestionScore = (
+    difficulty: Question["difficulty"]
+  ): 1 | 2 | 3 | 4 => {
     switch (difficulty) {
       case "expert":
         return 4

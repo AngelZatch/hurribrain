@@ -61,6 +61,7 @@ export type PlayedTurn = {
       },
     ];
   };
+  speedRanking: Array<Game["uuid"]>;
   game: Turn["game"];
   startedAt: Date;
   finishedAt: Date;

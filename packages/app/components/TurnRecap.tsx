@@ -25,9 +25,14 @@ export default function TurnRecap({
   const [answerStatus, setAnswerStatus] = useState<
     "correct" | "wrong" | "none"
   >("none");
+
+  // Medals awarded
   const [difficultyMedalAwarded, setDifficultyMedalAwarded] =
     useState<boolean>(false);
   const [streakMedalAwarded, setStreakMedalAwarded] = useState<boolean>(false);
+  const [speedMedalAwarded, setSpeedMedalAwarded] = useState<boolean>(false);
+
+  // Points gained
   const [pointsGained, setPointsGained] = useState<number>(0);
 
   useEffect(() => {
@@ -35,6 +40,12 @@ export default function TurnRecap({
       currentTurn.question.choices.find((choice) => choice.isCorrect) ?? null
     );
   }, [currentTurn]);
+
+  useEffect(() => {
+    setPointsGained(
+      (value) => participation.score - participation.previousScore
+    );
+  }, [participation]);
 
   // Set my answer if I already answered
   const { data: myAnswer } = useGetMyAnswer(
@@ -47,14 +58,11 @@ export default function TurnRecap({
     if (myAnswer && myAnswer.choice) {
       if (myAnswer.choice.uuid === correctChoice?.uuid) {
         setAnswerStatus("correct");
-        setPointsGained((value) => value + 1);
       } else {
         setAnswerStatus("wrong");
-        setPointsGained(-1);
       }
     } else {
       setAnswerStatus("none");
-      setPointsGained(0);
     }
   }, [myAnswer, correctChoice]);
 
@@ -63,13 +71,10 @@ export default function TurnRecap({
     if (answerStatus === "correct") {
       if (currentTurn.question.difficulty === "medium") {
         setDifficultyMedalAwarded(true);
-        setPointsGained((value) => value + 1);
       } else if (currentTurn.question.difficulty === "hard") {
         setDifficultyMedalAwarded(true);
-        setPointsGained((value) => value + 2);
       } else if (currentTurn.question.difficulty === "expert") {
         setDifficultyMedalAwarded(true);
-        setPointsGained((value) => value + 3);
       }
     }
   }, [answerStatus, currentTurn.question.difficulty]);
@@ -78,9 +83,16 @@ export default function TurnRecap({
     setStreakMedalAwarded(false);
     if (participation.streak % 5 === 0) {
       setStreakMedalAwarded(true);
-      setPointsGained((value) => value + participation.streak / 5);
     }
   }, [participation.streak]);
+
+  useEffect(() => {
+    setSpeedMedalAwarded(false);
+    const speedRanking = currentTurn.speedRanking.indexOf(participation.uuid);
+    if (speedRanking !== -1) {
+      setSpeedMedalAwarded(true);
+    }
+  }, [currentTurn.speedRanking]);
 
   return (
     <View>
@@ -176,6 +188,14 @@ export default function TurnRecap({
               medalType={{
                 type: "chain",
                 value: participation.streak,
+              }}
+            />
+          )}
+          {speedMedalAwarded && (
+            <ScoreMedal
+              medalType={{
+                type: "speed",
+                value: currentTurn.speedRanking.indexOf(participation.uuid) + 1,
               }}
             />
           )}

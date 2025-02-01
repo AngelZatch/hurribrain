@@ -10,6 +10,7 @@ import { ErrorResponsesSchema } from "./../schemas/errors.schema.js"
 import { MyAnswerSchema } from "./../schemas/answer.schema.js"
 import { GameByIdParams } from "./../schemas/game.schema.js"
 import GameService from "./../services/game.service.js"
+import { PlayableTurn, PlayedTurn } from "@src/schemas/turn.schema.js"
 
 const TurnController = async (fastify: FastifyInstance) => {
   fastify.get<{
@@ -47,7 +48,7 @@ const TurnController = async (fastify: FastifyInstance) => {
 
   fastify.put<{
     Params: { gameId: string; turnId: string }
-  }>("/:turnId/finish", async (request) => {
+  }>("/:turnId/finish", async (request): Promise<PlayedTurn> => {
     const { gameId, turnId } = request.params
     const gameService = new GameService()
 
@@ -58,7 +59,7 @@ const TurnController = async (fastify: FastifyInstance) => {
 
   fastify.put<{
     Params: GameByIdParams
-  }>("/next", async (request) => {
+  }>("/next", async (request): Promise<PlayableTurn | null> => {
     const { gameId } = request.params
     const gameService = new GameService()
 

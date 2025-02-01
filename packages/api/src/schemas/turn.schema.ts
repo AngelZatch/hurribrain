@@ -29,6 +29,7 @@ export type PlayedTurn = Loaded<
   | "question.difficulty"
   | "question.choices.uuid"
   | "question.choices.value"
-  | "question.choices.isCorrect",
+  | "question.choices.isCorrect"
+  | "speedRanking",
   never
 >
