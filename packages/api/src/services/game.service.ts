@@ -335,6 +335,12 @@ export default class GameService {
           scoreReward += participation.streak / 5
         }
 
+        //  Speed bonus for the fastest correct answers
+        if (participation.rank < 3) {
+          scoreReward += Math.max(3 - participation.rank, 0)
+          targetTurn.speedRanking.push(participation.uuid)
+        }
+
         // Update score
         participation.score += scoreReward
       } else {
@@ -349,6 +355,8 @@ export default class GameService {
 
       em.persist(participation)
     })
+
+    em.persist(targetTurn)
 
     // Refresh ranks of all participants
     let currentRank = 0
@@ -386,6 +394,7 @@ export default class GameService {
           "question.choices.value",
           "question.choices.isCorrect",
           "game",
+          "speedRanking",
         ],
       }
     )

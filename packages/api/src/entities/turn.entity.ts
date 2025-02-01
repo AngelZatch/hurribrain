@@ -1,4 +1,5 @@
 import {
+  ArrayType,
   Entity,
   ManyToOne,
   PrimaryKey,
@@ -34,6 +35,10 @@ export class Turn {
 
   @Property({ type: Date, nullable: true })
   finishedAt: Date | null = null
+
+  // Speed ranks
+  @Property({ type: ArrayType, nullable: true })
+  speedRanking: string[] = []
 
   // Timestamps
   @Property()
