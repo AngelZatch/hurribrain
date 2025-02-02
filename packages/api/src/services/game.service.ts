@@ -311,7 +311,7 @@ export default class GameService {
     })
 
     // Get question score reward
-    const questionScoreReward = this.getQuestionScore(
+    const questionDifficultyBonus = this.getDifficultyBonus(
       targetTurn.question.difficulty
     )
 
@@ -321,7 +321,19 @@ export default class GameService {
 
       // Correct answer
       if (correctAnswersByParticipationId[participation.uuid]) {
-        let scoreReward = questionScoreReward
+        let scoreReward = 1
+
+        // Difficulty bonus
+        scoreReward += questionDifficultyBonus
+
+        //  Speed bonus for the fastest correct answers
+        if (correctAnswersByParticipationId[participation.uuid].rank < 3) {
+          scoreReward += Math.max(
+            3 - correctAnswersByParticipationId[participation.uuid].rank,
+            0
+          )
+          targetTurn.speedRanking.push(participation.uuid)
+        }
 
         // Update streak
         participation.streak += 1
@@ -333,12 +345,6 @@ export default class GameService {
         // If the streak is a multiple of 5, add a bonus
         if (participation.streak % 5 === 0) {
           scoreReward += participation.streak / 5
-        }
-
-        //  Speed bonus for the fastest correct answers
-        if (participation.rank < 3) {
-          scoreReward += Math.max(3 - participation.rank, 0)
-          targetTurn.speedRanking.push(participation.uuid)
         }
 
         // Update score
@@ -420,11 +426,15 @@ export default class GameService {
   finishGame = async (gameId: string) => {
     const em = getEntityManager()
 
-    const game = await em.findOneOrFail(Game, {
+    const game = await em.findOne(Game, {
       uuid: gameId,
       startedAt: { $ne: null },
       finishedAt: null,
     })
+
+    if (!game) {
+      return null
+    }
 
     game.finishedAt ||= new Date()
 
@@ -492,20 +502,20 @@ export default class GameService {
    * @param difficulty The difficulty of the question
    * @returns one of the 4 possible values
    */
-  private getQuestionScore = (
+  private getDifficultyBonus = (
     difficulty: Question["difficulty"]
-  ): 1 | 2 | 3 | 4 => {
+  ): 0 | 1 | 2 | 3 => {
     switch (difficulty) {
       case "expert":
-        return 4
-      case "hard":
         return 3
-      case "medium":
+      case "hard":
         return 2
+      case "medium":
+        return 1
       case "easy":
       case "unknown":
       default:
-        return 1
+        return 0
     }
   }
 
