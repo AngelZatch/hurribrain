@@ -6,12 +6,14 @@ import { useEffect, useState } from "react";
 type MultiSelectProps = {
   items: Array<Tag>;
   selectedItems: Array<Tag>;
+  maxItems?: number;
   onPress: (updatedItems: Array<Tag>) => void;
 };
 
 export default function MultiSelect({
   items,
   selectedItems,
+  maxItems = 3,
   onPress,
 }: MultiSelectProps) {
   const [selected, setSelected] = useState(selectedItems);
@@ -24,7 +26,7 @@ export default function MultiSelect({
     let updatedItems = selected ?? [];
     if (selected?.findIndex((t) => t.uuid === tag.uuid) !== -1) {
       updatedItems = selectedItems.filter((t) => t.uuid !== tag.uuid);
-    } else {
+    } else if (updatedItems.length < maxItems) {
       updatedItems.push(tag);
     }
     onPress(updatedItems);

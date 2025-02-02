@@ -74,7 +74,15 @@ export default function GameLobby({ game }: GameLobbyProps) {
         </ThemedText>
         <View style={styles.ruleContainer}>
           <ThemedText>Thèmes</ThemedText>
-          <View>
+          <View
+            style={{
+              flexDirection: "row",
+              gap: 10,
+              flexWrap: "wrap",
+              flexShrink: 1,
+              justifyContent: "flex-end",
+            }}
+          >
             {game.tags.map((tag) => (
               <TagChip key={tag.uuid} text={tag.name} active />
             ))}
@@ -101,7 +109,7 @@ export default function GameLobby({ game }: GameLobbyProps) {
 
 const styles = StyleSheet.create({
   ruleContainer: {
-    height: 50,
+    minHeight: 50,
     padding: 10,
     alignItems: "center",
     gap: 10,
