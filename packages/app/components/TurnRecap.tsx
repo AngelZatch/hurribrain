@@ -165,6 +165,7 @@ export default function TurnRecap({
             flexDirection: "column",
             gap: 10,
             flex: 1,
+            maxHeight: 350,
             width: "100%",
             alignItems: "flex-start",
           }}

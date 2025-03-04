@@ -72,7 +72,7 @@ const QuestionForm = ({ question }: QuestionFormProps) => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="w-full h-full bg-white/20 rounded-[10px] flex-col justify-center items-center gap-[15px] inline-flex"
+      className="w-full h-full rounded-[10px] flex-col justify-center items-center gap-[15px] inline-flex"
     >
       <div className="h-[80px] px-2.5 py-5 w-full justify-between items-center inline-flex">
         <span className="text-[24px] font-bold">

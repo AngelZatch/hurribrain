@@ -33,7 +33,10 @@ const HBButton = ({
         // variant contained
         variant === "contained" &&
           color === "primary" &&
-          "bg-[--main-color] text-[--black]",
+          "bg-[--main-color] text-[--white]",
+        variant === "contained" &&
+          color === "secondary" &&
+          "bg-white text[--inherit-main-text-color]",
         variant === "contained" &&
           color === "error" &&
           "bg-red-500 text-[--error-color]",
