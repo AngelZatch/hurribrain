@@ -3,9 +3,10 @@ import FileInput from "@/app/components/FileInput";
 import { Modal } from "@/app/components/modal";
 import HBIconButton from "@/app/components/ui/hbIconButton";
 import { Controller, useForm } from "react-hook-form";
-import { XMarkIcon } from "@heroicons/react/16/solid";
+import { ArrowDownTrayIcon, XMarkIcon } from "@heroicons/react/16/solid";
 import { useRouter } from "next/navigation";
 import HBButton from "@/app/components/ui/hbButton";
+import Link from "next/link";
 
 const ImportQuestionsPage = () => {
   const router = useRouter();
@@ -32,6 +33,19 @@ const ImportQuestionsPage = () => {
           <HBIconButton icon={<XMarkIcon />} onClick={() => router.back()} />
         </div>
         <div className="grow px-2.5 py-5 w-full flex-col justify-start items-start gap-5 inline-flex">
+          <a
+            download
+            href="/downloads/hurribrain_template.csv"
+            className="w-full"
+          >
+            <HBButton
+              label="Télécharger le modèle"
+              size="large"
+              color="secondary"
+              startIcon={<ArrowDownTrayIcon />}
+              fullWidth
+            />
+          </a>
           <Controller
             control={control}
             name="file"

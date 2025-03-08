@@ -45,7 +45,7 @@ const FileInput = ({ name, onChange, value }: FileInputProps) => {
         onDragLeave={onDragOver}
         onDragOver={onDragOver}
         onDrop={onDrop}
-        className="w-full h-[350px] p-[10px] rounded-[20px] border border-[--main-color] bg-[--input-background] text-[--text-color] placeholder-[--placeholder-color]"
+        className="w-full h-[350px] p-[10px] rounded-[20px] border border-[--main-color] border-dotted bg-[--input-background] text-[--text-color] placeholder-[--placeholder-color] justify-center items-center gap-2.5 inline-flex"
       >
         <p>Drop here</p>
       </div>

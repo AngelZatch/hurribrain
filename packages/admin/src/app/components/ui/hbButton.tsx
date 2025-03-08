@@ -7,6 +7,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   color?: "primary" | "secondary" | "error";
   size?: "small" | "medium" | "large";
   variant?: "contained" | "outline" | "text";
+  fullWidth?: boolean;
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
   onClick?: () => void;
@@ -17,6 +18,7 @@ const HBButton = ({
   color = "primary",
   size = "large",
   variant = "contained",
+  fullWidth = false,
   startIcon,
   endIcon,
   onClick,
@@ -26,6 +28,7 @@ const HBButton = ({
     <Button
       className={clsx(
         "rounded-[10px] justify-center items-center gap-2.5 inline-flex",
+        fullWidth && "w-full",
         // size
         size === "large" && "h-14 p-4",
         size === "medium" && "h-9 px-3 py-1.5 min-w-[120px] min-h-[36px]",
