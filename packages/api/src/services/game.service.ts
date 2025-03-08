@@ -10,6 +10,7 @@ import { UserStats } from "./../entities/userStats.entity.js"
 import { server } from "./../server.js"
 
 import Queue from "bull"
+import { SECOND } from "./../utils/helperVariables.js"
 const gameQueue = new Queue("games")
 
 export default class GameService {
@@ -197,7 +198,7 @@ export default class GameService {
         order: "finish",
       },
       {
-        delay: 15000,
+        delay: 15 * SECOND,
         attempts: 3,
         removeOnComplete: true,
       }
@@ -417,7 +418,11 @@ export default class GameService {
         turnId: null,
         order: "next",
       },
-      { delay: 15000, attempts: 3, removeOnComplete: true }
+      {
+        delay: 15 * SECOND,
+        attempts: 3,
+        removeOnComplete: true,
+      }
     )
 
     return updatedTurn

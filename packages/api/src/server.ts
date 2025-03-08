@@ -18,6 +18,8 @@ import GameController from "./controllers/game.controller.js"
 import fastifySocketIo from "fastify-socket.io"
 import { Socket } from "socket.io"
 import GameService from "./services/game.service.js"
+import { fastifyMultipart } from "@fastify/multipart"
+import { MEGABYTE } from "./utils/helperVariables.js"
 
 export const server = Fastify()
 
@@ -55,6 +57,14 @@ export const initializeServer = async () => {
   await server.register(fastifyCors, {
     credentials: true,
     origin: true,
+  })
+
+  // Multipart
+  await server.register(fastifyMultipart, {
+    limits: {
+      files: 1,
+      fileSize: 2 * MEGABYTE,
+    },
   })
 
   // Websockets

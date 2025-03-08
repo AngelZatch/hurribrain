@@ -46,6 +46,15 @@ const createQuestion = async (data: QuestionFormInputs) => {
   revalidatePath("/questions");
 }
 
+const importQuestions = async (data: FormData) => {
+  await fetch("http://localhost:8080/questions/import", {
+    method: "POST",
+    body: data,
+  });
+
+  revalidatePath("/questions");
+}
+
 const updateQuestion = async (data: QuestionFormInputs, uuid: string): Promise<void> => {
   const rawFormData: CreateQuestionDto = {
     title: data.title,
@@ -81,4 +90,4 @@ const updateQuestion = async (data: QuestionFormInputs, uuid: string): Promise<v
   revalidatePath("/questions");
 }
 
-export { getQuestion, createQuestion, updateQuestion };
+export { getQuestion, createQuestion, importQuestions, updateQuestion };

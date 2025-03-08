@@ -6,11 +6,11 @@ import { Controller, useForm } from "react-hook-form";
 import { ArrowDownTrayIcon, XMarkIcon } from "@heroicons/react/16/solid";
 import { useRouter } from "next/navigation";
 import HBButton from "@/app/components/ui/hbButton";
-import Link from "next/link";
+import { importQuestions } from "../../actions";
 
 const ImportQuestionsPage = () => {
   const router = useRouter();
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, formState } = useForm({
     defaultValues: {
       file: [],
     },
@@ -18,6 +18,7 @@ const ImportQuestionsPage = () => {
 
   const onSubmit = async (data: unknown) => {
     console.log("SUBMIT", data);
+    importQuestions(data as FormData);
   };
 
   return (
@@ -68,7 +69,12 @@ const ImportQuestionsPage = () => {
             size="medium"
             onClick={() => router.back()}
           />
-          <HBButton label="Importer" type="submit" size="medium" />
+          <HBButton
+            label="Importer"
+            type="submit"
+            size="medium"
+            disabled={!formState.isValid}
+          />
         </div>
       </form>
     </Modal>

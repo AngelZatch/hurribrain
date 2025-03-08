@@ -158,6 +158,23 @@ const QuestionController = async (fastify: FastifyInstance) => {
     }
   )
 
+  fastify.post(
+    "/import",
+    {
+      schema: {
+        tags: ["Questions"],
+        summary: "Imports questions from a CSV file",
+      },
+    },
+    async (request, reply) => {
+      const data = await request.file()
+
+      console.log(data)
+
+      return reply.code(200).send({ message: "File uploaded" })
+    }
+  )
+
   // TODO: If the question is being used in an ongoing game, it should not be editable
   fastify.put<{
     Params: QuestionParams
