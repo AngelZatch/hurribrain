@@ -3,12 +3,13 @@ import TagForm from "../../TagForm";
 import { getTag } from "../../actions";
 
 type UpdateTagPageProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
-const UpdateTagPage = async ({ params }: UpdateTagPageProps) => {
+const UpdateTagPage = async (props: UpdateTagPageProps) => {
+  const params = await props.params;
   const { id } = params;
   const tag = await getTag(id);
 

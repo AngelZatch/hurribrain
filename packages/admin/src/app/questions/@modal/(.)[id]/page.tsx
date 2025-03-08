@@ -3,12 +3,13 @@ import { getQuestion } from "../../actions";
 import QuestionForm from "../../QuestionForm";
 
 type UpdateQuestionPageProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
-const UpdateQuestionPage = async ({ params }: UpdateQuestionPageProps) => {
+const UpdateQuestionPage = async (props: UpdateQuestionPageProps) => {
+  const params = await props.params;
   const { id } = params;
   const question = await getQuestion(id);
 

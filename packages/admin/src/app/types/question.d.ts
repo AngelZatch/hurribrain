@@ -29,3 +29,7 @@ export type QuestionFormInputs = {
   "choices-3": Choice["value"];
   tags: Array<Tag>;
 };
+
+export type ImportFormInputs = {
+  file: File;
+}

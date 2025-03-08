@@ -2,23 +2,20 @@
 import FileInput from "@/app/components/FileInput";
 import { Modal } from "@/app/components/modal";
 import HBIconButton from "@/app/components/ui/hbIconButton";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { ArrowDownTrayIcon, XMarkIcon } from "@heroicons/react/16/solid";
 import { useRouter } from "next/navigation";
 import HBButton from "@/app/components/ui/hbButton";
 import { importQuestions } from "../../actions";
+import { ImportFormInputs } from "@/app/types/question";
 
 const ImportQuestionsPage = () => {
   const router = useRouter();
-  const { control, handleSubmit, formState } = useForm({
-    defaultValues: {
-      file: [],
-    },
-  });
+  const { control, handleSubmit, formState } = useForm<ImportFormInputs>();
 
-  const onSubmit = async (data: unknown) => {
+  const onSubmit: SubmitHandler<ImportFormInputs> = async (data) => {
     console.log("SUBMIT", data);
-    importQuestions(data as FormData);
+    importQuestions(data);
   };
 
   return (

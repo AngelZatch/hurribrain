@@ -1,6 +1,6 @@
 "use server"
 import { revalidatePath } from "next/cache";
-import { CreateQuestionDto, Question, QuestionFormInputs } from "../types/question"
+import { CreateQuestionDto, ImportFormInputs, Question, QuestionFormInputs } from "../types/question"
 
 const getQuestion = async (uuid: string): Promise<Question> => {
   const data = await fetch(`http://localhost:8080/questions/${uuid}`, {
@@ -46,10 +46,13 @@ const createQuestion = async (data: QuestionFormInputs) => {
   revalidatePath("/questions");
 }
 
-const importQuestions = async (data: FormData) => {
+const importQuestions = async (data: ImportFormInputs) => {
+  const formData = new FormData();
+  formData.append("file", data.file);
+
   await fetch("http://localhost:8080/questions/import", {
     method: "POST",
-    body: data,
+    body: formData,
   });
 
   revalidatePath("/questions");
