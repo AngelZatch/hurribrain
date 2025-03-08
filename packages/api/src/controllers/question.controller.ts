@@ -1,4 +1,3 @@
-import { Asset } from "./../entities/asset.entity.js"
 import { Question } from "./../entities/question.entity.js"
 import {
   PostQuestionBody,
@@ -13,6 +12,9 @@ import { ErrorResponsesSchema } from "./../schemas/errors.schema.js"
 import { Choice } from "./../entities/choice.entity.js"
 import { wrap } from "@mikro-orm/core"
 import { Tag } from "./../entities/tag.entity.js"
+import { pipeline } from "stream/promises"
+import csv from "csv-parser"
+import QuestionService from "./../services/question.service.js"
 
 const QuestionController = async (fastify: FastifyInstance) => {
   fastify.addSchema(QuestionResponseSchema)
@@ -101,60 +103,13 @@ const QuestionController = async (fastify: FastifyInstance) => {
       },
     },
     async (request, reply) => {
-      const em = request.em
+      const questionService = new QuestionService()
 
-      const { title, asset, choices, tags } = request.body
+      const createdQuestion = await questionService.createQuestions([
+        request.body,
+      ])
 
-      let targetAsset = null
-      if (asset) {
-        targetAsset = await em.findOneOrFail(
-          Asset,
-          { uuid: asset },
-          {
-            failHandler: () => {
-              throw new Error("Asset not found")
-            },
-          }
-        )
-      }
-
-      // Create the question
-      const question = new Question({ title, asset: targetAsset })
-
-      em.persist(question)
-
-      // Add the choices
-      const questionChoices = choices.map((choice) => {
-        return new Choice({
-          value: choice.value,
-          isCorrect: choice.isCorrect,
-        })
-      })
-
-      question.choices.add(questionChoices)
-
-      // Add the tags
-      const matchingTags = await em.find(
-        Tag,
-        { uuid: { $in: tags.map((tag) => tag.uuid) } },
-        { fields: ["uuid"] }
-      )
-      wrap(question).assign({ tags: matchingTags })
-
-      await em.persistAndFlush(question)
-
-      const createdQuestion = await em.findOneOrFail(
-        Question,
-        {
-          uuid: question.uuid,
-        },
-        {
-          populate: ["tags", "choices"],
-          populateWhere: { tags: { deletedAt: null } },
-        }
-      )
-
-      return reply.code(201).send(createdQuestion)
+      return reply.code(201).send(createdQuestion[0])
     }
   )
 
@@ -169,9 +124,45 @@ const QuestionController = async (fastify: FastifyInstance) => {
     async (request, reply) => {
       const data = await request.file()
 
-      console.log(data)
+      if (!data) {
+        return reply.code(400).send({ message: "No file uploaded" })
+      }
 
-      return reply.code(200).send({ message: "File uploaded" })
+      const questionsToCreate: PostQuestionBody[] = []
+      const questionService = new QuestionService()
+
+      await pipeline(
+        data.file,
+        csv({
+          separator: ";",
+        }),
+        async (
+          source: AsyncIterable<{
+            title: string
+            choices: string
+            tags: string
+          }>
+        ) => {
+          for await (const chunk of source) {
+            const choices = chunk.choices.split(",")
+
+            questionsToCreate.push({
+              title: chunk.title,
+              choices: [
+                { value: choices[0], isCorrect: true },
+                { value: choices[1], isCorrect: false },
+                { value: choices[2], isCorrect: false },
+                { value: choices[3], isCorrect: false },
+              ],
+              tags: [],
+            })
+          }
+        }
+      )
+
+      await questionService.createQuestions(questionsToCreate)
+
+      return reply.code(201).send({ message: "Questions created." })
     }
   )
 
