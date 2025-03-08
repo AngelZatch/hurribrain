@@ -122,6 +122,7 @@ const QuestionController = async (fastify: FastifyInstance) => {
       },
     },
     async (request, reply) => {
+      const em = request.em
       const data = await request.file()
 
       if (!data) {
@@ -130,6 +131,8 @@ const QuestionController = async (fastify: FastifyInstance) => {
 
       const questionsToCreate: PostQuestionBody[] = []
       const questionService = new QuestionService()
+
+      const availableTags = await em.find(Tag, {}, { fields: ["uuid", "name"] })
 
       await pipeline(
         data.file,
@@ -144,7 +147,17 @@ const QuestionController = async (fastify: FastifyInstance) => {
           }>
         ) => {
           for await (const chunk of source) {
+            // Split choices
             const choices = chunk.choices.split(",")
+
+            // Split tags and find the existing ones
+            const questionTags = chunk.tags.split(",")
+            const matchingTags = availableTags.filter((tag) =>
+              questionTags.find((questionTag) => tag.name === questionTag)
+            )
+
+            console.log("TAGS OF THE QUESTION: ", questionTags)
+            console.log("FOUND TAGS: ", matchingTags)
 
             questionsToCreate.push({
               title: chunk.title,
@@ -154,7 +167,7 @@ const QuestionController = async (fastify: FastifyInstance) => {
                 { value: choices[2], isCorrect: false },
                 { value: choices[3], isCorrect: false },
               ],
-              tags: [],
+              tags: matchingTags,
             })
           }
         }
