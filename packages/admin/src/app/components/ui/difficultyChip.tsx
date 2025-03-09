@@ -1,21 +1,26 @@
 import clsx from "clsx";
 
+type DifficultyChipProps = {
+  successRate: number | null;
+  difficulty?: string;
+  fullWidth?: boolean;
+};
+
 const DifficultyChip = ({
   difficulty,
   successRate,
-}: {
-  successRate: number | null;
-  difficulty?: string;
-}) => {
+  fullWidth,
+}: DifficultyChipProps) => {
   return (
     <div
       className={clsx(
+        "text-white text-xs font-semibold rounded-full px-3 py-1 capitalize grow-1 shrink-0",
         difficulty === "unknown" && "bg-[#5F5F5F]",
         difficulty === "expert" && "bg-[#990000]",
         difficulty === "hard" && "bg-[#E0521E]",
         difficulty === "medium" && "bg-[#D1A256]",
         difficulty === "easy" && "bg-[#4BCF77]",
-        "text-white text-xs font-semibold rounded-full px-3 py-1 capitalize grow-1 shrink-0"
+        fullWidth && "w-full text-center"
       )}
     >
       {difficulty}{" "}
