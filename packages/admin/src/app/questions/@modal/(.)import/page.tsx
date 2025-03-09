@@ -3,7 +3,11 @@ import FileInput from "@/app/components/FileInput";
 import { Modal } from "@/app/components/modal";
 import HBIconButton from "@/app/components/ui/hbIconButton";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { ArrowDownTrayIcon, XMarkIcon } from "@heroicons/react/16/solid";
+import {
+  ArrowDownTrayIcon,
+  InformationCircleIcon,
+  XMarkIcon,
+} from "@heroicons/react/16/solid";
 import { useRouter } from "next/navigation";
 import HBButton from "@/app/components/ui/hbButton";
 import { importQuestions } from "../../actions";
@@ -44,6 +48,44 @@ const ImportQuestionsPage = () => {
               fullWidth
             />
           </a>
+          <details>
+            <summary className="flex flex-row p-2.5 gap-2.5 justify-start items-center cursor-pointer">
+              <InformationCircleIcon height={24} />
+              <p className="font-bold">Aide à l&apos;utilisation du modèle</p>
+            </summary>
+            <p>
+              Le modèle est un fichier .csv contenant les champs{" "}
+              <strong>title</strong>, <strong>choices</strong> et{" "}
+              <strong>tags</strong>. Ils sont séparés par un{" "}
+              <strong>point-virgule</strong> (;)
+            </p>
+            <ul className="pl-2.5 list-disc list-inside [&_ul]:list-[revert]">
+              <li>
+                Remplissez <strong>title</strong> avec l&apos;intitulé de la
+                question. N&apos;utilisez pas de guillemets !
+              </li>
+              <li>
+                Remplissez <strong>choices</strong> avec les quatre choix de
+                réponse
+              </li>
+              <ul className="pl-8">
+                <li>Les choix doivent être séparés par une virgule (,)</li>
+                <li>
+                  Le premier choix donné sera considéré comme le choix correct.
+                </li>
+              </ul>
+              <li>
+                Remplissez <strong>tags</strong> avec les thèmes de la question
+              </li>
+              <ul className="pl-8">
+                <li>Les tags doivent être séparés par une virgule (,)</li>
+                <li>
+                  Utilisez les noms exacts des thèmes. Les thèmes introuvables
+                  seront ignorés.
+                </li>
+              </ul>
+            </ul>
+          </details>
           <Controller
             control={control}
             name="file"
