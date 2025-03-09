@@ -132,7 +132,10 @@ const QuestionController = async (fastify: FastifyInstance) => {
       const questionsToCreate: PostQuestionBody[] = []
       const questionService = new QuestionService()
 
-      const availableTags = await em.find(Tag, {}, { fields: ["uuid", "name"] })
+      const availableTags = await em.findAll(Tag, {
+        fields: ["uuid", "name"],
+        filters: { notDeleted: true },
+      })
 
       await pipeline(
         data.file,
@@ -153,11 +156,12 @@ const QuestionController = async (fastify: FastifyInstance) => {
             // Split tags and find the existing ones
             const questionTags = chunk.tags.split(",")
             const matchingTags = availableTags.filter((tag) =>
-              questionTags.find((questionTag) => tag.name === questionTag)
+              questionTags.find(
+                (questionTag) =>
+                  tag.name.toLocaleLowerCase() ===
+                  questionTag.toLocaleLowerCase()
+              )
             )
-
-            console.log("TAGS OF THE QUESTION: ", questionTags)
-            console.log("FOUND TAGS: ", matchingTags)
 
             questionsToCreate.push({
               title: chunk.title,
