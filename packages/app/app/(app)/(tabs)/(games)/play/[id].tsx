@@ -53,10 +53,17 @@ export default function PlayScreen() {
         });
       })
       .on("turn:current", (turn: PlayableTurn | PlayedTurn | null) => {
-        console.log("TURN RECEIVED", turn);
         queryClient.invalidateQueries({
           queryKey: ["my-participation", gameId],
         });
+        if (turn) {
+          const choices = turn.question.choices;
+          for (let i = choices.length - 1; i >= 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [choices[i], choices[j]] = [choices[j], choices[i]];
+          }
+          turn.question.choices = choices;
+        }
         setCurrentTurn(turn);
       });
 

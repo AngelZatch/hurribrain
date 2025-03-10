@@ -101,6 +101,7 @@ export default function GameLobby({ game }: GameLobbyProps) {
         <ThemedButton
           title="Démarrer la partie"
           onPress={() => startGame(game.uuid)}
+          disabled={false}
         />
       )}
     </View>
