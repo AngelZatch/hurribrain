@@ -72,6 +72,7 @@ export default function ActivePlayableTurn({
       <ThemedButton
         title={sentChoice ? "Modifier" : "Répondre"}
         onPress={handleSendAnswer}
+        disabled={!selectedChoice}
       />
     </>
   );

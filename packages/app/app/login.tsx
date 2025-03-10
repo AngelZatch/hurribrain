@@ -16,13 +16,13 @@ type FormData = {
 };
 
 export default function LoginScreen() {
-  const { mutateAsync: signIn } = useLogin();
+  const { mutateAsync: signIn, error } = useLogin();
   const { login } = useAuth();
 
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<FormData>({
     defaultValues: {
       email: "",
@@ -31,9 +31,13 @@ export default function LoginScreen() {
   });
 
   const onSubmit = async (data: FormData) => {
-    const tokens = await signIn(data);
-    login(tokens.accessToken);
-    router.replace("/");
+    try {
+      const tokens = await signIn(data);
+      login(tokens.accessToken);
+      router.replace("/");
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
@@ -92,7 +96,9 @@ export default function LoginScreen() {
           title="Login"
           fullWidth
           onPress={handleSubmit(onSubmit)}
+          disabled={!isValid}
         />
+        {error && <ThemedText>{error.message}</ThemedText>}
       </BodyContainer>
     </PageContainer>
   );

@@ -23,7 +23,7 @@ export default function JoinGameForm() {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<FormData>({
     defaultValues: {
       code: "",
@@ -48,6 +48,7 @@ export default function JoinGameForm() {
           control={control}
           rules={{
             required: true,
+            minLength: 8,
           }}
           render={({ field: { onChange, onBlur, value } }) => (
             <ThemedTextInput
@@ -70,7 +71,11 @@ export default function JoinGameForm() {
           alignItems: "center",
         }}
       >
-        <ThemedButton title="Rejoindre" onPress={handleSubmit(onSubmit)} />
+        <ThemedButton
+          title="Rejoindre"
+          onPress={handleSubmit(onSubmit)}
+          disabled={!isValid}
+        />
       </View>
     </>
   );

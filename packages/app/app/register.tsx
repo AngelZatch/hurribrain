@@ -24,7 +24,7 @@ export default function RegisterScreen() {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<FormData>({
     defaultValues: {
       email: "",
@@ -116,6 +116,7 @@ export default function RegisterScreen() {
           title="Create"
           onPress={handleSubmit(onSubmit)}
           fullWidth
+          disabled={!isValid}
         />
       </BodyContainer>
     </PageContainer>

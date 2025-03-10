@@ -48,7 +48,7 @@ export default function Lobby() {
       >
         {lobbyState === null && (
           <>
-            <Pressable
+            {/* <Pressable
               style={[
                 styles.playOption,
                 {
@@ -68,7 +68,7 @@ export default function Lobby() {
                   joueurs.
                 </ThemedText>
               </View>
-            </Pressable>
+            </Pressable> */}
             <Pressable
               style={[
                 styles.playOption,

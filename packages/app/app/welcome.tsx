@@ -13,10 +13,21 @@ export default function WelcomeScreen() {
       <ThemedText type="title">Hurribrain</ThemedText>
       <ThemedText type="subtitle">Come test your knowledge!</ThemedText>
       <Link push href="/register" asChild style={{ width: "100%" }}>
-        <ThemedButton title={"Create my account"} type="secondary" fullWidth />
+        <ThemedButton
+          title={"Create my account"}
+          type="secondary"
+          fullWidth
+          disabled={false}
+        />
       </Link>
       <Link push href="/login" asChild style={{ width: "100%" }}>
-        <ThemedButton title={"Login"} fullWidth type="primary" size="large" />
+        <ThemedButton
+          title={"Login"}
+          type="primary"
+          size="large"
+          fullWidth
+          disabled={false}
+        />
       </Link>
     </PageContainer>
   );

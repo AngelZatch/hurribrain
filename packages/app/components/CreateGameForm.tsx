@@ -62,7 +62,7 @@ export default function CreateGameForm() {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
     watch,
   } = useForm<FormData>({
     defaultValues: {
@@ -268,6 +268,7 @@ export default function CreateGameForm() {
           title="Créer une partie"
           onPress={handleSubmit(onSubmit)}
           fullWidth
+          disabled={!isValid}
         />
       </View>
     </>

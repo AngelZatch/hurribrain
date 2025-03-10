@@ -14,6 +14,8 @@ export const Colors = {
     text: '#0F2969',
     inheritText: '#0F2969',
     background: 'transparent',
+    disabledBackground: "#BDBDBD",
+    error: "#D36F6F",
     tint: tintColorLight,
     icon: '#687076',
     tabIconDefault: '#687076',
@@ -22,6 +24,7 @@ export const Colors = {
     containerBackground: "white",
     secondaryText: "#0F2969",
     disabled: "#5F5F5F",
+    inheritDisabledTextColor: "#5F5F5F",
     fadedWhite: "#00000066"
 
   },
@@ -30,6 +33,8 @@ export const Colors = {
     text: '#fff',
     inheritText: '#0F2969',
     background: 'transparent',
+    disabledBackground: "#BDBDBD",
+    error: "#D36F6F",
     tint: tintColorDark,
     icon: '#9BA1A6',
     tabIconDefault: '#9BA1A6',
@@ -38,6 +43,7 @@ export const Colors = {
     containerBackground: "#00000033",
     secondaryText: "#FFFFFF",
     disabled: "#C6C6C6",
+    inheritDisabledTextColor: "#5F5F5F",
     fadedWhite: "#FFFFFF66"
   },
 };
