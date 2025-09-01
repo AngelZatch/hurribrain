@@ -103,6 +103,8 @@ const PlayerController = async (fastify: FastifyInstance) => {
             "user.uuid",
             "user.email",
             "user.name",
+            "game.uuid",
+            "game.code",
           ],
         }
       )

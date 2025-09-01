@@ -1,9 +1,15 @@
+import { hasACurrentParticipation } from "@/api/play.api";
 import ProfileBanner from "@/components/ProfileBanner";
 import { PageContainer } from "@/components/ui/PageContainer";
+import { useAuth } from "@/contexts/auth.context";
 import { Link } from "expo-router";
 import { Image, Text, Pressable } from "react-native";
 
 export default function HomeScreen() {
+  const { user } = useAuth();
+
+  const { data: participation } = hasACurrentParticipation(user!);
+
   return (
     <PageContainer>
       <ProfileBanner />
@@ -16,7 +22,11 @@ export default function HomeScreen() {
           flex: 1,
         }}
       />
-      <Link href="/menu" style={{ width: "100%" }} asChild>
+      <Link
+        href={participation ? `/play/${participation!.game!.uuid}` : "/menu"}
+        style={{ width: "100%" }}
+        asChild
+      >
         <Pressable
           style={{
             width: "100%",
@@ -35,7 +45,7 @@ export default function HomeScreen() {
               fontFamily: "Exo_700Bold",
             }}
           >
-            Jouer
+            {participation ? "Reprendre" : "Jouer"}
           </Text>
         </Pressable>
       </Link>

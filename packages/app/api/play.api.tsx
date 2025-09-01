@@ -14,6 +14,10 @@ export type Participation = {
     uuid: string;
     name: string;
   };
+  game?: {
+    uuid: string;
+    code: string;
+  };
 };
 
 export type Leaderboard = Array<Participation>;
@@ -81,6 +85,24 @@ export type Choice = {
   isCorrect?: boolean;
 };
 
+// Utility function to check if the user has a current participation so they can quickly resume
+export const hasACurrentParticipation = (token: string) => {
+  return useQuery({
+    queryKey: ["my-participation"],
+    queryFn: async (): Promise<Participation | null> => {
+      const response = await axios.get(
+        `http://localhost:8080/auth/my-participation`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    },
+  });
+};
+
 export const useGetLeaderboard = (token: string, gameId: string) => {
   return useQuery({
     queryKey: ["leaderboard", gameId],
@@ -125,7 +147,7 @@ export const useStartGame = (token: string) => {
 
 export const useGetMyParticipation = (token: string, gameId: string) => {
   return useQuery({
-    queryKey: ["my-participation", gameId],
+    queryKey: ["my-participation"],
     queryFn: async (): Promise<Participation> => {
       const response = await axios.get(
         `http://localhost:8080/games/${gameId}/leaderboard/me`,

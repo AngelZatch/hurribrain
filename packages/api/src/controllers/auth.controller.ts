@@ -12,6 +12,8 @@ import {
 } from "./../schemas/auth.schema.js"
 import { verifyJWT } from "../utils/authChecker.js"
 import { UserStats } from "../entities/userStats.entity.js"
+import { Participation } from "../entities/participation.entity.js"
+import { GetParticipationReplySchema } from "../schemas/player.schema.js"
 
 const AuthController = async (fastify: FastifyInstance) => {
   fastify.post<{
@@ -157,6 +159,55 @@ const AuthController = async (fastify: FastifyInstance) => {
       }
     }
   )
-}
 
+  fastify.get(
+    "/my-participation",
+    {
+      preHandler: [fastify.auth([verifyJWT])],
+      schema: {
+        tags: ["User", "Participations"],
+        summary:
+          "Check if the user has a current participation to quickly resume",
+        response: {
+          200: GetParticipationReplySchema,
+        },
+      },
+    },
+    async (request, reply) => {
+      const em = request.em
+
+      const user = await em.findOneOrFail(User, { uuid: request.user })
+
+      const activeParticipation = await em.findOne(
+        Participation,
+        {
+          user: user,
+          game: { finishedAt: null },
+        },
+        {
+          fields: [
+            "score",
+            "previousScore",
+            "rank",
+            "previousRank",
+            "streak",
+            "maxStreak",
+            "user.uuid",
+            "user.email",
+            "user.name",
+            "game.uuid",
+            "game.code",
+          ],
+        }
+      )
+
+      if (!activeParticipation) {
+        reply.statusCode = 204
+        return null
+      }
+
+      return activeParticipation
+    }
+  )
+}
 export default AuthController

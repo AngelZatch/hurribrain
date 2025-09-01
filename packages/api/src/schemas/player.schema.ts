@@ -1,5 +1,6 @@
 import { Static, Type } from "@sinclair/typebox"
 import { UserResponseSchema } from "./user.schema.js"
+import { GameResponseSchema } from "./game.schema.js"
 
 export const PlayerSchema = Type.Object(
   {
@@ -11,6 +12,10 @@ export const PlayerSchema = Type.Object(
     streak: Type.Number({ examples: [0] }),
     maxStreak: Type.Number({ examples: [0] }),
     user: UserResponseSchema,
+    game: Type.Object({
+      uuid: GameResponseSchema.properties.uuid,
+      code: GameResponseSchema.properties.code,
+    }),
   },
   { $id: "Player", description: "Player entity" }
 )
