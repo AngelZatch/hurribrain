@@ -88,7 +88,9 @@ export default function TurnRecap({
 
   useEffect(() => {
     setSpeedMedalAwarded(false);
-    const speedRanking = currentTurn.speedRanking.indexOf(participation.uuid);
+    if (!currentTurn.speedRanking) return;
+
+    const speedRanking = currentTurn?.speedRanking.indexOf(participation.uuid);
     if (speedRanking !== -1) {
       setSpeedMedalAwarded(true);
     }
