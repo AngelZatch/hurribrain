@@ -15463,19 +15463,19 @@ __metadata:
   linkType: hard
 
 "ts-mocha@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "ts-mocha@npm:10.0.0"
+  version: 10.1.0
+  resolution: "ts-mocha@npm:10.1.0"
   dependencies:
     ts-node: "npm:7.0.1"
     tsconfig-paths: "npm:^3.5.0"
   peerDependencies:
-    mocha: ^3.X.X || ^4.X.X || ^5.X.X || ^6.X.X || ^7.X.X || ^8.X.X || ^9.X.X || ^10.X.X
+    mocha: ^3.X.X || ^4.X.X || ^5.X.X || ^6.X.X || ^7.X.X || ^8.X.X || ^9.X.X || ^10.X.X || ^11.X.X
   dependenciesMeta:
     tsconfig-paths:
       optional: true
   bin:
     ts-mocha: bin/ts-mocha
-  checksum: 10c0/d21ba7a379f80b010ef1115ca3d94ca7490bfdb5a0d65fd2e1b500d992c99c2e68346c41e645589df785bbd7bed1baaa0529fbcfd5444d0bd00efdcd9b4f32ed
+  checksum: 10c0/ebc4be7d31939c502f6ff5bebe67a8370b69a76dac2889a5a6fc56fa0c11e25298f45c6ab81260d9899fc0120402ed75f0cf6dce37020df27ada55787b70bb42
   languageName: node
   linkType: hard
 
