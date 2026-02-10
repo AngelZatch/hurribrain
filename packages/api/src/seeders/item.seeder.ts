@@ -77,6 +77,8 @@ export class ItemSeeder extends Seeder {
       },
     ]
 
-    await new ItemFactory(em).create(items.length, ...items)
+    for (const item of items) {
+      await new ItemFactory(em).createOne(item)
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { Entity, Enum, PrimaryKey, Property } from "@mikro-orm/core"
+import { Entity, Enum, PrimaryKey, Property, Unique } from "@mikro-orm/core"
 import { v4 } from "uuid"
 
 export enum ItemType {
@@ -8,6 +8,7 @@ export enum ItemType {
 }
 
 @Entity()
+@Unique({ properties: ["name"] })
 export class Item {
   @PrimaryKey()
   uuid: string = v4()
