@@ -28,9 +28,9 @@ export default function TopNavigation({
       style={{
         display: "flex",
         flexDirection: "row",
-        height: 73,
-        paddingHorizontal: 10,
-        paddingVertical: 0,
+        height: 60,
+        paddingHorizontal: 0,
+        paddingVertical: 10,
         alignItems: "center",
         gap: 10,
         alignSelf: "stretch",

@@ -75,6 +75,19 @@ export default class GameService {
     return currentTurn
   }
 
+  /**
+   * Starts the game.
+   *
+   * This method does a lot of things for the game overall:
+   * - It updates the game with the start date
+   * - It picks the questions for the game based on its settings (tags and difficulty)
+   * - It creates all turns of the game with their corresponding question
+   * - It emits a socket event to update the game in real time for all participants
+   *
+   * @param gameId The identifier of the game to start
+   * @param userId The identifier of the user who starts the game (for security reasons, only the creator can start the game)
+   * @returns
+   */
   startGame = async (gameId: string, userId: string) => {
     const em = getEntityManager()
 
@@ -209,10 +222,10 @@ export default class GameService {
   /**
    * Finishes the turn.
    *
-   * This method does a lot of things for the game overall:
-   * - It finishes the turn
-   * - It calculates the score of every participant based on their answers for the turn
-   * - It then refreshes the ranks of all participants
+   * When a turn finishes:
+   * - The score of every participant is updated based on their answer (correct or not, speed, streak, etc.)
+   * - Ranks are recalculated for every participant based on their new score
+   * - TODO: Powerups must charged appropriately
    *
    * @param gameId The identifier of the game
    * @param turnId The identifier of the turn to finish
