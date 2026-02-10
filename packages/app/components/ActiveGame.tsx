@@ -23,8 +23,10 @@ export default function ActiveGame({ currentTurn }: ActiveTurnProps) {
   // Get the participant's data
   const { data: me, isLoading } = useGetMyParticipation(
     user!,
-    currentTurn.game
+    currentTurn.game,
   );
+
+  console.log("MY PARTICIPATION", me);
 
   return (
     <View

@@ -1,6 +1,7 @@
 import { Static, Type } from "@sinclair/typebox"
 import { UserResponseSchema } from "./user.schema.js"
 import { GameResponseSchema } from "./game.schema.js"
+import { Nullable } from "./common.schema.js"
 
 export const PlayerSchema = Type.Object(
   {
@@ -11,6 +12,14 @@ export const PlayerSchema = Type.Object(
     previousRank: Type.Number({ examples: [1] }),
     streak: Type.Number({ examples: [0] }),
     maxStreak: Type.Number({ examples: [0] }),
+    itemCharge: Type.Number({ examples: [0] }),
+    activeItem: Nullable(Type.String({ format: "uuid" })),
+    statuses: Type.Array(
+      Type.Object({
+        id: Type.String({ format: "uuid" }),
+        duration: Type.Number({ examples: [3] }),
+      })
+    ),
     user: UserResponseSchema,
     game: Type.Object({
       uuid: GameResponseSchema.properties.uuid,

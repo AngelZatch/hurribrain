@@ -47,6 +47,15 @@ const PlayerController = async (fastify: FastifyInstance) => {
         Participation,
         { game: game.uuid },
         {
+          fields: [
+            "score",
+            "previousScore",
+            "rank",
+            "previousRank",
+            "user.uuid",
+            "user.name",
+            "game.uuid",
+          ],
           populate: ["user"],
           orderBy: { score: "desc" },
         }
@@ -100,6 +109,9 @@ const PlayerController = async (fastify: FastifyInstance) => {
             "previousRank",
             "streak",
             "maxStreak",
+            "itemCharge",
+            "activeItem",
+            "statuses",
             "user.uuid",
             "user.email",
             "user.name",

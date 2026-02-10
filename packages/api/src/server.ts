@@ -20,6 +20,7 @@ import { Socket } from "socket.io"
 import GameService from "./services/game.service.js"
 import { fastifyMultipart } from "@fastify/multipart"
 import { MEGABYTE } from "./utils/helperVariables.js"
+import fastifyRedis from "@fastify/redis"
 
 export const server = Fastify()
 
@@ -78,6 +79,12 @@ export const initializeServer = async () => {
     >,
     {}
   )
+
+  // Redis
+  await server.register(fastifyRedis, {
+    host: process.env.REDIS_HOST || "localhost",
+    port: parseInt(process.env.REDIS_PORT || "6379"),
+  })
 
   // Authentication
   await server.register(fastifyAuth)
