@@ -416,8 +416,8 @@ export default class GameService {
         }
       }
 
-      // Increase item charge by 33 regardless of the answer, to a maximum of 100
-      participation.itemCharge = Math.min(participation.itemCharge + 33, 100)
+      // Increase item charge by 34 regardless of the answer, to a maximum of 100
+      participation.itemCharge = Math.min(participation.itemCharge + 34, 100)
 
       em.persist(participation)
     })
@@ -426,6 +426,7 @@ export default class GameService {
 
     // Refresh ranks of all participants
     let currentRank = 0
+    let topScore = 0
     let minScore = Infinity
 
     participations
@@ -436,8 +437,18 @@ export default class GameService {
           currentRank += 1
         }
 
+        // Update ranks
         participation.previousRank = participation.rank
         participation.rank = currentRank
+
+        // Bonus item charge
+        if (participation.rank === 1) {
+          topScore = participation.score
+        }
+
+        participation.itemCharge += this.getBonusItemCharge(
+          topScore - participation.score
+        )
 
         em.persist(participation)
       })
@@ -620,5 +631,30 @@ export default class GameService {
     }
 
     return level
+  }
+
+  /**
+   * Grants a bonus to the item charge of a participant based on their distance to the top player.
+   * The further they are, the bigger the bonus they get, to help them catch up and keep the game competitive.
+   *
+   * See the itemCharge property of the Participation entity for more details.
+   *
+   * @param pointsDifference The distance between the current participant and the top rank
+   * @returns the bonus to apply to the item charge of the participant (between 0 and 60)
+   */
+  private getBonusItemCharge = (pointsDifference: number): number => {
+    if (pointsDifference < 5) {
+      return 0
+    } else if (pointsDifference < 10) {
+      return 5
+    } else if (pointsDifference < 20) {
+      return 15
+    } else if (pointsDifference < 50) {
+      return 25
+    } else if (pointsDifference < 100) {
+      return 40
+    } else {
+      return 60
+    }
   }
 }
