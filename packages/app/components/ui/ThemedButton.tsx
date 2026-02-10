@@ -71,6 +71,7 @@ export default function ThemedButton({
         paddingHorizontal: size === "small" ? 12 : size === "medium" ? 12 : 16,
         paddingVertical: size === "small" ? 4 : size === "medium" ? 6 : 16,
         width: fullWidth ? "100%" : "auto",
+        flex: fullWidth ? 1 : undefined,
         backgroundColor:
           backgroundColorMap[`${type}:${variant}:${!!rest.disabled}`],
       }}

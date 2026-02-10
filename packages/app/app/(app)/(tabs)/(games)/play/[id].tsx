@@ -12,8 +12,10 @@ import ActiveGame from "@/components/ActiveGame";
 import { useQueryClient } from "@tanstack/react-query";
 import ThemedIconButton from "@/components/ui/ThemedIconButton";
 import { useGetGame } from "@/api/games.api";
-import { PlayableTurn, PlayedTurn } from "@/api/play.api";
+import { Participation, PlayableTurn, PlayedTurn } from "@/api/play.api";
 import GameRecap from "@/components/GameRecap";
+import ThemedText from "@/components/ui/ThemedText";
+import { useGetMe } from "@/api/auth.api";
 
 export default function PlayScreen() {
   const colorScheme = useColorScheme();
@@ -22,13 +24,20 @@ export default function PlayScreen() {
   const { id: gameId } = useLocalSearchParams<{ id: string }>();
   const socket = useRef<Socket>();
 
+  // Getting "long-term" data for the game (game info and logged user)
   const { data: game, isLoading, error } = useGetGame(user!, gameId);
+  const { data: me } = useGetMe(user!);
+
+  // Working states for the game (current turn and participation)
   const [currentTurn, setCurrentTurn] = useState<
     PlayableTurn | PlayedTurn | null
   >(null);
+  const [participation, setParticipation] = useState<Participation | null>(
+    null,
+  );
 
   useEffect(() => {
-    if (!game?.uuid) {
+    if (!game?.uuid || !user) {
       return;
     }
 
@@ -39,11 +48,9 @@ export default function PlayScreen() {
       reconnectionAttempts: 10,
     })
       .on("connect", () => {
-        console.log("connected");
-        socket.current?.emit("game:join", game.uuid);
+        socket.current?.emit("game:join", { game: game.uuid, user: me!.uuid });
       })
       .on("game:joined", () => {
-        console.log("game:joined");
         socket.current?.emit("sync:request", game.uuid);
       })
       .on("game:updated", () => {
@@ -52,10 +59,8 @@ export default function PlayScreen() {
           queryKey: ["games", gameId],
         });
       })
+      // When the current turn changes, the server emits the new turn to all participants
       .on("turn:current", (turn: PlayableTurn | PlayedTurn | null) => {
-        queryClient.invalidateQueries({
-          queryKey: ["my-participation", gameId],
-        });
         if (turn) {
           const choices = turn.question.choices;
           for (let i = choices.length - 1; i >= 0; i--) {
@@ -65,6 +70,18 @@ export default function PlayScreen() {
           turn.question.choices = choices;
         }
         setCurrentTurn(turn);
+      })
+      /**
+       * When a participation is updated (e.g. a player joins, leaves, answers a question, etc.), the server emits the
+       * new participation to the concerned player. We listen to this event to update the participation data in
+       * real-time and reflect it in the UI (e.g. update the player's score, show that they answered, etc.)
+       */
+      .on("participation:updated", (participation: Participation) => {
+        if (!participation || participation.user !== me?.uuid) {
+          return;
+        }
+
+        setParticipation(participation);
       });
 
     // Clean up
@@ -75,8 +92,12 @@ export default function PlayScreen() {
     };
   }, [game?.uuid]);
 
-  if (!game) {
-    return null;
+  if (!game || !me || !participation) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ThemedText>Chargement...</ThemedText>
+      </View>
+    );
   }
 
   return (
@@ -122,7 +143,7 @@ export default function PlayScreen() {
       >
         {!game.startedAt && <GameLobby game={game!} />}
         {game.startedAt && !game.finishedAt && currentTurn && (
-          <ActiveGame currentTurn={currentTurn} />
+          <ActiveGame currentTurn={currentTurn} participation={participation} />
         )}
         {game.finishedAt && <GameRecap />}
       </View>

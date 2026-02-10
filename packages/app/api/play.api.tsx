@@ -26,14 +26,8 @@ export type Participation = {
   }>;
 
   // GENERAL
-  user: {
-    uuid: string;
-    name: string;
-  };
-  game?: {
-    uuid: string;
-    code: string;
-  };
+  user: string; // Loaded by the client
+  game?: string; // Loaded by the client
 };
 
 export type Leaderboard = Array<Participation>;
@@ -168,22 +162,22 @@ export const useStartGame = (token: string) => {
   });
 };
 
-export const useGetMyParticipation = (token: string, gameId: string) => {
-  return useQuery({
-    queryKey: ["my-participation"],
-    queryFn: async (): Promise<Participation> => {
-      const response = await axios.get(
-        `http://localhost:8080/games/${gameId}/leaderboard/me`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-      return response.data;
-    },
-  });
-};
+// export const useGetMyParticipation = (token: string, gameId: string) => {
+//   return useQuery({
+//     queryKey: ["my-participation"],
+//     queryFn: async (): Promise<Participation> => {
+//       const response = await axios.get(
+//         `http://localhost:8080/games/${gameId}/leaderboard/me`,
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         },
+//       );
+//       return response.data;
+//     },
+//   });
+// };
 
 export const useAnswerQuestion = (token: string, gameId: string) => {
   return useMutation({

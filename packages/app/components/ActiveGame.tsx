@@ -7,27 +7,17 @@ import ActiveTurnTimer from "./ActiveTurnTimer";
 import React from "react";
 import ActivePlayableTurn from "./ActivePlayableTurn";
 import TurnRecap from "./TurnRecap";
-import {
-  PlayableTurn,
-  PlayedTurn,
-  useGetMyParticipation,
-} from "@/api/play.api";
+import { Participation, PlayableTurn, PlayedTurn } from "@/api/play.api";
 
 type ActiveTurnProps = {
   currentTurn: PlayableTurn | PlayedTurn;
+  participation: Participation;
 };
 
-export default function ActiveGame({ currentTurn }: ActiveTurnProps) {
-  const { user } = useAuth();
-
-  // Get the participant's data
-  const { data: me, isLoading } = useGetMyParticipation(
-    user!,
-    currentTurn.game,
-  );
-
-  console.log("MY PARTICIPATION", me);
-
+export default function ActiveGame({
+  currentTurn,
+  participation,
+}: ActiveTurnProps) {
   return (
     <View
       style={{
@@ -55,7 +45,7 @@ export default function ActiveGame({ currentTurn }: ActiveTurnProps) {
           {!currentTurn.finishedAt && <ActiveTurnTimer />}
         </View>
         <View style={{ flex: 1 }}>
-          {!isLoading && <PlayerRanking player={me!} />}
+          <PlayerRanking player={participation!} />
         </View>
       </View>
       <View
@@ -74,11 +64,14 @@ export default function ActiveGame({ currentTurn }: ActiveTurnProps) {
         </ThemedText>
       </View>
       {!currentTurn.finishedAt ? (
-        <ActivePlayableTurn currentTurn={currentTurn as PlayableTurn} />
+        <ActivePlayableTurn
+          currentTurn={currentTurn as PlayableTurn}
+          participation={participation}
+        />
       ) : (
         <TurnRecap
           currentTurn={currentTurn as PlayedTurn}
-          participation={me!}
+          participation={participation}
         />
       )}
     </View>

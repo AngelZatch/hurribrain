@@ -112,11 +112,18 @@ export const initializeServer = async () => {
 
     // Start the sync service
     server.io.on("connect", (socket: Socket) => {
-      socket.on("game:join", async (gameId: string) => {
-        // Confirm that there is a participation before joining
-        await socket.join(`game:${gameId}`)
-        socket.emit("game:joined")
-      })
+      socket.on(
+        "game:join",
+        async ({ game, user }: { game: string; user: string }) => {
+          // Confirm that there is a participation before joining
+          await socket.join(`game:${game}`)
+          socket.emit("game:joined")
+
+          // Get the participation and emit it to the user
+          const participation = await gameService.getParticipation(user, game)
+          socket.emit("participation:updated", participation)
+        }
+      )
 
       socket.on("sync:request", async (gameId: string) => {
         // Send the current game state

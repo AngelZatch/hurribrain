@@ -11,6 +11,7 @@ import { server } from "./../server.js"
 
 import Queue from "bull"
 import { SECOND } from "./../utils/helperVariables.js"
+import { User } from "./../entities/user.entity.js"
 const gameQueue = new Queue("games")
 
 export default class GameService {
@@ -73,6 +74,48 @@ export default class GameService {
     }
 
     return currentTurn
+  }
+
+  /**
+   * Gets the participation of a user in a game, which contains all the information about their progress in the game
+   * (score, rank, streak, item charge, etc.). Is used when a user arrives in a game and needs to get their current state.
+   *
+   * @param userId The id of the user for which we want to get the participation
+   * @param gameId The id of the game for which we want to get the participation
+   * @returns A Participation object or null if the user is not participating in the game
+   */
+  getParticipation = async (
+    userId: User["uuid"],
+    gameId: Game["uuid"]
+  ): Promise<Participation | null> => {
+    const em = getEntityManager()
+
+    console.log("Getting participation for user", userId, "in game", gameId)
+
+    return em.findOne(
+      Participation,
+      {
+        user: { uuid: userId } as User,
+        game: { uuid: gameId },
+      },
+      {
+        fields: [
+          "score",
+          "previousScore",
+          "rank",
+          "previousRank",
+          "streak",
+          "maxStreak",
+          "itemCharge",
+          "activeItem",
+          "statuses",
+          "user",
+          "game",
+          "createdAt",
+          "updatedAt",
+        ],
+      }
+    )
   }
 
   /**
@@ -373,6 +416,9 @@ export default class GameService {
         }
       }
 
+      // Increase item charge by 33 regardless of the answer, to a maximum of 100
+      participation.itemCharge = Math.min(participation.itemCharge + 33, 100)
+
       em.persist(participation)
     })
 
@@ -398,6 +444,13 @@ export default class GameService {
 
     await em.flush()
 
+    // Emit updated participations to all participants in the room
+    participations.forEach((participation) => {
+      server.io
+        .to(`game:${gameId}`)
+        .emit("participation:updated", participation)
+    })
+
     const updatedTurn = await em.findOneOrFail(
       Turn,
       { uuid: targetTurn.uuid },
@@ -418,8 +471,6 @@ export default class GameService {
         ],
       }
     )
-
-    console.log("UPDATED FINISHED TURN: ", updatedTurn)
 
     // Update sockets
     server.io.to(`game:${gameId}`).emit("turn:current", updatedTurn)
