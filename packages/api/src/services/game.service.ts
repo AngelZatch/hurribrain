@@ -12,6 +12,7 @@ import { server } from "./../server.js"
 import Queue from "bull"
 import { SECOND } from "./../utils/helperVariables.js"
 import { User } from "./../entities/user.entity.js"
+import { Item } from "./../entities/item.entity.js"
 const gameQueue = new Queue("games")
 
 export default class GameService {
@@ -417,12 +418,14 @@ export default class GameService {
       }
 
       // Increase item charge by 34 regardless of the answer, to a maximum of 100
-      participation.itemCharge = Math.min(participation.itemCharge + 34, 100)
+      participation.itemCharge += 34
 
       em.persist(participation)
     })
 
     em.persist(targetTurn)
+
+    const items = await em.findAll(Item)
 
     // Refresh ranks of all participants
     let currentRank = 0
@@ -449,6 +452,27 @@ export default class GameService {
         participation.itemCharge += this.getBonusItemCharge(
           topScore - participation.score
         )
+
+        if (participation.itemCharge >= 100) {
+          // If the participant is holding an item, the charge caps to 50%
+          if (participation.activeItem) {
+            participation.itemCharge = 50
+            return
+          }
+
+          // Grant item and remove 100 from the charge
+          const grantedItemName = this.grantItemToParticipant(
+            topScore - participation.score
+          )
+          const grantedItem = items.find(
+            (item) => item.name === grantedItemName
+          )
+          if (grantedItem) {
+            participation.activeItem = grantedItem.uuid
+          }
+
+          participation.itemCharge -= 100
+        }
 
         em.persist(participation)
       })
@@ -655,6 +679,98 @@ export default class GameService {
       return 40
     } else {
       return 60
+    }
+  }
+
+  /**
+   * Finds which item to grant to a participant based on their point distance to the top player.
+   *
+   * The probability distribution changes based on the distance, to give better items to players further behind.
+   *
+   * @param pointsDifference The distance between the current participant and the top rank
+   * @returns the uuid of the item to grant to the participant
+   */
+  private grantItemToParticipant = (pointsDifference: number): string => {
+    const probabilityDistribution =
+      this.getProbabilityDistributionForItemGrant(pointsDifference)
+
+    const randomValue = Math.random()
+
+    const grantedItem = probabilityDistribution.find(
+      (item) => randomValue >= item.min && randomValue <= item.max
+    )
+
+    return grantedItem ? grantedItem.name : "coin"
+  }
+
+  private getProbabilityDistributionForItemGrant = (
+    pointsDifference: number
+  ): Array<{
+    name: string
+    min: number
+    max: number
+  }> => {
+    if (pointsDifference < 5) {
+      return [
+        { name: "Shield", min: 0, max: 0.25 }, // 25% chance to get a shield
+        { name: "Coin", min: 0.26, max: 0.95 }, // 70% chance to get a coin
+        { name: "Half", min: 0.96, max: 1.0 }, // 5% chance to get a half
+      ]
+    } else if (pointsDifference < 10) {
+      return [
+        { name: "Shield", min: 0, max: 0.15 }, // 15% chance to get a shield
+        { name: "Turnaround", min: 0.16, max: 0.25 }, // 10% chance to get a turnaround
+        { name: "Coin", min: 0.26, max: 0.55 }, // 30% chance to get a coin
+        { name: "Scramble", min: 0.56, max: 0.6 }, // 5% chance to get a scramble
+        { name: "Hurry", min: 0.61, max: 0.66 }, // 5% chance to get a hurry
+        { name: "Punishment", min: 0.67, max: 0.7 }, // 5% chance to get a punishment
+        { name: "Lock", min: 0.71, max: 0.8 }, // 10% chance to get a lock
+        { name: "Passthrough", min: 0.81, max: 0.85 }, // 5% chance to get a passthrough
+        { name: "Hidden", min: 0.86, max: 0.9 }, // 5% chance to get a hidden
+        { name: "Half", min: 0.91, max: 0.95 }, // 5% chance to get a half
+        { name: "Spy", min: 0.96, max: 1.0 }, // 5% chance to get a spy
+      ]
+    } else if (pointsDifference < 20) {
+      return [
+        { name: "Shield", min: 0, max: 0.05 }, // 5% shield
+        { name: "Turnaround", min: 0.05, max: 0.15 }, // 10% turnaround
+        { name: "Scramble", min: 0.15, max: 0.25 }, // 10% scramble
+        { name: "Hurry", min: 0.25, max: 0.3 }, // 5% hurry
+        { name: "Punishment", min: 0.3, max: 0.4 }, // 10% punishment
+        { name: "Lock", min: 0.4, max: 0.5 }, // 10% lock
+        { name: "Passthrough", min: 0.5, max: 0.7 }, // 20% passthrough
+        { name: "Hidden", min: 0.7, max: 0.85 }, // 15% hidden
+        { name: "Half", min: 0.85, max: 0.95 }, // 10% half
+        { name: "Spy", min: 0.95, max: 1.0 }, // 5% spy
+      ]
+    } else if (pointsDifference < 50) {
+      return [
+        { name: "Scramble", min: 0, max: 0.15 }, // 15% scramble
+        { name: "Boost", min: 0.15, max: 0.3 }, // 15% boost
+        { name: "Hurry", min: 0.3, max: 0.5 }, // 20% hurry
+        { name: "Punishment", min: 0.5, max: 0.65 }, // 15% punishment
+        { name: "Lock", min: 0.65, max: 0.75 }, // 10% lock
+        { name: "Passthrough", min: 0.75, max: 0.8 }, // 5% passthrough
+        { name: "Hidden", min: 0.8, max: 0.9 }, // 10% hidden
+        { name: "Spy", min: 0.9, max: 1.0 }, // 10% spy
+      ]
+    } else if (pointsDifference < 100) {
+      return [
+        { name: "Scramble", min: 0, max: 0.2 }, // 20% scramble
+        { name: "Boost", min: 0.2, max: 0.35 }, // 15% boost
+        { name: "Hurry", min: 0.35, max: 0.5 }, // 15% hurry
+        { name: "Punishment", min: 0.5, max: 0.75 }, // 25% punishment
+        { name: "Lock", min: 0.75, max: 0.95 }, // 20% lock
+        { name: "Hidden", min: 0.95, max: 1.0 }, // 5% hidden
+      ]
+    } else {
+      return [
+        { name: "Scramble", min: 0, max: 0.2 }, // 20% scramble
+        { name: "Boost", min: 0.2, max: 0.5 }, // 30% boost
+        { name: "Hurry", min: 0.5, max: 0.65 }, // 15% hurry
+        { name: "Punishment", min: 0.65, max: 0.95 }, // 30% punishment
+        { name: "Lock", min: 0.95, max: 1.0 }, // 5% lock
+      ]
     }
   }
 }
