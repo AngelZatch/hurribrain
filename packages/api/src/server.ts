@@ -130,6 +130,13 @@ export const initializeServer = async () => {
         const currentTurn = await gameService.syncGame(gameId)
         socket.emit("turn:current", currentTurn)
       })
+
+      socket.on(
+        "item:use",
+        async ({ game, user }: { game: string; user: string }) => {
+          await gameService.useItem(user, game)
+        }
+      )
     })
   })
 }

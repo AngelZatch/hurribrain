@@ -7,7 +7,7 @@ import TopNavigation from "@/components/TopNavigation";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import GameLobby from "@/components/GameLobby";
-import { io, Socket } from "socket.io-client";
+import { socket } from "@/contexts/socket";
 import ActiveGame from "@/components/ActiveGame";
 import { useQueryClient } from "@tanstack/react-query";
 import ThemedIconButton from "@/components/ui/ThemedIconButton";
@@ -22,7 +22,6 @@ export default function PlayScreen() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const { id: gameId } = useLocalSearchParams<{ id: string }>();
-  const socket = useRef<Socket>();
 
   // Getting "long-term" data for the game (game info and logged user)
   const { data: game, isLoading, error } = useGetGame(user!, gameId);
@@ -41,54 +40,55 @@ export default function PlayScreen() {
       return;
     }
 
-    socket.current = io("http://localhost:8080", {
-      transports: ["websocket"],
-      reconnection: true,
-      reconnectionDelay: 400,
-      reconnectionAttempts: 10,
-    })
-      .on("connect", () => {
-        socket.current?.emit("game:join", { game: game.uuid, user: me!.uuid });
-      })
-      .on("game:joined", () => {
-        socket.current?.emit("sync:request", game.uuid);
-      })
-      .on("game:updated", () => {
-        console.log("game:updated");
-        queryClient.invalidateQueries({
-          queryKey: ["games", gameId],
-        });
-      })
-      // When the current turn changes, the server emits the new turn to all participants
-      .on("turn:current", (turn: PlayableTurn | PlayedTurn | null) => {
-        if (turn) {
-          const choices = turn.question.choices;
-          for (let i = choices.length - 1; i >= 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [choices[i], choices[j]] = [choices[j], choices[i]];
-          }
-          turn.question.choices = choices;
-        }
-        setCurrentTurn(turn);
-      })
-      /**
-       * When a participation is updated (e.g. a player joins, leaves, answers a question, etc.), the server emits the
-       * new participation to the concerned player. We listen to this event to update the participation data in
-       * real-time and reflect it in the UI (e.g. update the player's score, show that they answered, etc.)
-       */
-      .on("participation:updated", (participation: Participation) => {
-        if (!participation || participation.user !== me?.uuid) {
-          return;
-        }
+    socket.connect();
 
-        setParticipation(participation);
+    socket.on("connect", () => {
+      socket.emit("game:join", { game: game.uuid, user: me!.uuid });
+    });
+
+    socket.on("game:joined", () => {
+      socket.emit("sync:request", game.uuid);
+    });
+
+    socket.on("game:updated", () => {
+      console.log("game:updated");
+      queryClient.invalidateQueries({
+        queryKey: ["games", gameId],
       });
+    });
+
+    // When the current turn changes, the server emits the new turn to all participants
+    socket.on("turn:current", (turn: PlayableTurn | PlayedTurn | null) => {
+      if (turn) {
+        const choices = turn.question.choices;
+        for (let i = choices.length - 1; i >= 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [choices[i], choices[j]] = [choices[j], choices[i]];
+        }
+        turn.question.choices = choices;
+      }
+      setCurrentTurn(turn);
+    });
+
+    /**
+     * When a participation is updated (e.g. a player joins, leaves, answers a question, etc.), the server emits the
+     * new participation to the concerned player. We listen to this event to update the participation data in
+     * real-time and reflect it in the UI (e.g. update the player's score, show that they answered, etc.)
+     */
+    socket.on("participation:updated", (participation: Participation) => {
+      if (!participation || participation.user !== me?.uuid) {
+        return;
+      }
+
+      setParticipation(participation);
+    });
 
     // Clean up
     return () => {
-      socket.current?.off("connect");
-      socket.current?.off("turn:change");
-      socket.current?.disconnect();
+      socket.off("connect");
+      socket.off("turn:current");
+      socket.off("participation:updated");
+      socket.disconnect();
     };
   }, [game?.uuid]);
 

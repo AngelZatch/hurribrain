@@ -1,4 +1,5 @@
 import { Participation } from "@/api/play.api";
+import { socket } from "@/contexts/socket";
 import { TouchableOpacity } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 
@@ -27,6 +28,13 @@ export default function ItemButton({ participation }: ItemButtonProps) {
   //   setIsUsingItem(false);
   // };
 
+  const handleUseItem = () => {
+    socket.emit("item:use", {
+      game: participation.game,
+      user: participation.user,
+    });
+  };
+
   return (
     <AnimatedCircularProgress
       size={70}
@@ -38,7 +46,7 @@ export default function ItemButton({ participation }: ItemButtonProps) {
     >
       {(fill) => (
         <TouchableOpacity
-          // onPress={handleUseItem}
+          onPress={handleUseItem}
           // disabled={!participation.activeItem || isUsingItem}
           disabled={!participation.activeItem}
           style={{
@@ -50,7 +58,9 @@ export default function ItemButton({ participation }: ItemButtonProps) {
             justifyContent: "center",
             alignItems: "center",
           }}
-        />
+        >
+          {participation.activeItem}
+        </TouchableOpacity>
       )}
     </AnimatedCircularProgress>
   );
