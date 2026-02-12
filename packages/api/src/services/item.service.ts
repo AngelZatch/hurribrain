@@ -214,6 +214,14 @@ export default class ItemService {
       return null
     }
 
+    // If the target has a shield active, the debuff isn't applied
+    const shieldItem = await em.findOne(Item, { name: "Shield" })
+    if (
+      target.statuses.some((status) => status.itemUuid === shieldItem?.uuid)
+    ) {
+      return null
+    }
+
     this.addStatus(target, item)
 
     // Notify target

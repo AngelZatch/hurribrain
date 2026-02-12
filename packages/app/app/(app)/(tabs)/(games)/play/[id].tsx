@@ -98,7 +98,7 @@ export default function PlayScreen() {
     };
   }, [game?.uuid, user]);
 
-  if (!game || !me || !participation) {
+  if (!game || !me || !participation || !items) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ThemedText>Chargement...</ThemedText>
