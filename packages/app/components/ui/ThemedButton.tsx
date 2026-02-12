@@ -15,10 +15,10 @@ type ThemedButtonProps = ButtonProps & {
 };
 
 type ColorMapKey =
-  `${NonNullable<ThemedButtonProps["type"]>}:${NonNullable<ThemedButtonProps["variant"]>}:${ButtonProps["disabled"]}`;
+  `${NonNullable<ThemedButtonProps["type"]>}:${NonNullable<ThemedButtonProps["variant"]>}`;
 
 type ColorMap = {
-  [key in ColorMapKey]: ColorValue;
+  [key in ColorMapKey]: string;
 };
 
 export default function ThemedButton({
@@ -31,30 +31,39 @@ export default function ThemedButton({
   const colorScheme = useColorScheme();
 
   const backgroundColorMap: Partial<ColorMap> = {
-    "primary:contained:false": Colors[colorScheme ?? "light"].main,
-    "primary:contained:true": Colors[colorScheme ?? "light"].disabledBackground,
-    "primary:outlined:false": "transparent",
-    "primary:text:false": "transparent",
-    "secondary:contained:false": "white",
-    "secondary:outlined:false": "transparent",
-    "secondary:text:false": "transparent",
-    "danger:contained:false": Colors[colorScheme ?? "light"].error,
-    "danger:outlined:false": "transparent",
-    "danger:text:false": "transparent",
+    "primary:contained":
+      "linear-gradient(to bottom, rgba(9, 103, 255, 1) 0%,rgba(10, 153, 255, 1) 90%)",
+    "primary:outlined": "transparent",
+    "primary:text": "transparent",
+    "secondary:contained":
+      "linear-gradient(to bottom, rgba(233, 233, 233, 1) 0%,rgba(255, 255, 255, 1) 90%)",
+    "secondary:outlined": "transparent",
+    "secondary:text": "transparent",
+    "danger:contained":
+      "linear-gradient(to bottom, rgba(211, 111, 111, 1) 0%,rgba(242, 71, 71, 1) 90%)",
+    "danger:outlined": "transparent",
+    "danger:text": "transparent",
+  };
+
+  const borderColorMap: Partial<ColorMap> = {
+    "primary:contained":
+      "linear-gradient(to bottom, rgba(62, 105, 209, 1) 0%,rgba(83, 198, 245, 1) 100%)",
+    "danger:contained":
+      "border-color: linear-gradient(to bottom, rgba(182, 51, 51, 1) 0%,rgba(249, 70, 70, 1) 100%)",
+    "secondary:contained":
+      "border-color: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%,rgba(160, 160, 160, 1) 100%)",
   };
 
   const textColorMap: Partial<ColorMap> = {
-    "primary:contained:false": "white",
-    "primary:contained:true":
-      Colors[colorScheme ?? "light"].inheritDisabledTextColor,
-    "primary:outlined:false": Colors[colorScheme ?? "light"].main,
-    "primary:text:false": Colors[colorScheme ?? "light"].main,
-    "danger:contained:false": "white",
-    "danger:outlined:false": Colors[colorScheme ?? "light"].error,
-    "danger:text:false": Colors[colorScheme ?? "light"].error,
-    "secondary:contained:false": Colors[colorScheme ?? "light"].inheritText,
-    "secondary:outlined:false": Colors[colorScheme ?? "light"].inheritText,
-    "secondary:text:false": Colors[colorScheme ?? "light"].inheritText,
+    "primary:contained": "white",
+    "primary:outlined": Colors[colorScheme ?? "light"].main,
+    "primary:text": Colors[colorScheme ?? "light"].main,
+    "danger:contained": "white",
+    "danger:outlined": Colors[colorScheme ?? "light"].error,
+    "danger:text": Colors[colorScheme ?? "light"].error,
+    "secondary:contained": Colors[colorScheme ?? "light"].inheritText,
+    "secondary:outlined": Colors[colorScheme ?? "light"].inheritText,
+    "secondary:text": Colors[colorScheme ?? "light"].inheritText,
   };
 
   return (
@@ -62,24 +71,30 @@ export default function ThemedButton({
       style={{
         display: "flex",
         minWidth: 120,
-        minHeight: 56,
-        maxHeight: 56,
+        minHeight: 48,
+        maxHeight: 48,
         justifyContent: "center",
         alignItems: "center",
         gap: 10,
-        borderRadius: 10,
+        borderRadius: 22,
         paddingHorizontal: size === "small" ? 12 : size === "medium" ? 12 : 16,
         paddingVertical: size === "small" ? 4 : size === "medium" ? 6 : 16,
         width: fullWidth ? "100%" : "auto",
         flex: fullWidth ? 1 : undefined,
-        backgroundColor:
-          backgroundColorMap[`${type}:${variant}:${!!rest.disabled}`],
+        backgroundImage: backgroundColorMap[`${type}:${variant}`],
+        borderColor: borderColorMap[`${type}:${variant}`],
+        borderWidth: 1,
+        opacity: rest.disabled ? 0.4 : 1,
+        shadowColor: "#000000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 1,
       }}
       onPress={rest.onPress}
     >
       <Text
         style={{
-          color: textColorMap[`${type}:${variant}:${!!rest.disabled}`],
+          color: textColorMap[`${type}:${variant}`],
           fontFamily: "Exo_600SemiBold",
           fontSize: size === "small" ? 12 : size === "medium" ? 14 : 16,
         }}
