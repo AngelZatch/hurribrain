@@ -3,7 +3,7 @@ import LeaderboardItem from "@/components/LeaderboardItem";
 import TopNavigation from "@/components/TopNavigation";
 import { ContainerView } from "@/components/ui/ContainerView";
 import { PageContainer } from "@/components/ui/PageContainer";
-import ThemedIconButton from "@/components/ui/ThemedIconButton";
+import ThemedButton from "@/components/ui/ThemedButton";
 import ThemedText from "@/components/ui/ThemedText";
 import { useAuth } from "@/contexts/auth.context";
 import { Link, router, useLocalSearchParams } from "expo-router";
@@ -31,7 +31,7 @@ export default function Leaderboard() {
         }
         rightElement={
           <Link href={isPresented ? "../" : "/"} asChild>
-            <ThemedIconButton icon="xmark" />
+            <ThemedButton icon="xmark" title="" size="large" type="secondary" />
           </Link>
         }
       />
@@ -45,7 +45,7 @@ export default function Leaderboard() {
         {isLoading && <ThemedText>Loading...</ThemedText>}
         {leaderboard?.map((participation) => (
           <LeaderboardItem
-            key={participation.user.uuid}
+            key={participation.uuid}
             participation={participation}
           />
         ))}

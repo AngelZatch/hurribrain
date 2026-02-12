@@ -9,7 +9,6 @@ import { View } from "react-native";
 import ThemedButton from "./ui/ThemedButton";
 import { ContainerView } from "./ui/ContainerView";
 import Slider from "@react-native-community/slider";
-import ThemedIconButton from "./ui/ThemedIconButton";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
 import { Tag, useGetTags } from "@/api/tags.api";
@@ -144,10 +143,12 @@ export default function CreateGameForm() {
                   gap: 10,
                 }}
               >
-                <ThemedIconButton
+                <ThemedButton
                   disabled={value <= 25}
                   icon="minus"
                   onPress={() => onChange(Math.max(value - 25, 25))}
+                  title=""
+                  type="secondary"
                 />
                 <Slider
                   value={value}
@@ -166,10 +167,12 @@ export default function CreateGameForm() {
                     flexGrow: 1,
                   }}
                 />
-                <ThemedIconButton
+                <ThemedButton
                   disabled={value >= 100}
                   icon="plus"
                   onPress={() => onChange(Math.min(value + 25, 100))}
+                  title=""
+                  type="secondary"
                 />
               </View>
             )}
@@ -213,10 +216,12 @@ export default function CreateGameForm() {
                 gap: 10,
               }}
             >
-              <ThemedIconButton
+              <ThemedButton
                 disabled={value <= 10}
                 icon="minus"
                 onPress={() => onChange(Math.max(value - 5, 10))}
+                title=""
+                type="secondary"
               />
               <Slider
                 value={value}
@@ -235,10 +240,12 @@ export default function CreateGameForm() {
                   flexGrow: 1,
                 }}
               />
-              <ThemedIconButton
+              <ThemedButton
                 disabled={value >= 50}
                 icon="plus"
                 onPress={() => onChange(Math.min(value + 5, 50))}
+                title=""
+                type="secondary"
               />
             </View>
           )}

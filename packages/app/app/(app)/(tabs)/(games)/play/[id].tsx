@@ -10,7 +10,6 @@ import GameLobby from "@/components/GameLobby";
 import { socket } from "@/contexts/socket";
 import ActiveGame from "@/components/ActiveGame";
 import { useQueryClient } from "@tanstack/react-query";
-import ThemedIconButton from "@/components/ui/ThemedIconButton";
 import { useGetGame } from "@/api/games.api";
 import {
   Participation,
@@ -21,6 +20,7 @@ import {
 import GameRecap from "@/components/GameRecap";
 import ThemedText from "@/components/ui/ThemedText";
 import { useGetMe } from "@/api/auth.api";
+import ThemedButton from "@/components/ui/ThemedButton";
 
 export default function PlayScreen() {
   const colorScheme = useColorScheme();
@@ -111,7 +111,7 @@ export default function PlayScreen() {
       <TopNavigation
         leftElement={
           <Link replace href="/games" asChild>
-            <ThemedIconButton icon="chevron.left" />
+            <ThemedButton icon="chevron.left" title="" type="secondary" />
           </Link>
         }
         topLabel={game?.isPrivate ? "Partie Privée" : "Partie Rapide"}
@@ -124,7 +124,9 @@ export default function PlayScreen() {
             }}
             asChild
           >
-            <ThemedIconButton
+            <ThemedButton
+              title=""
+              type="secondary"
               onPress={() => {
                 console.log("PRESSED");
               }}

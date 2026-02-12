@@ -1,9 +1,9 @@
 import { useRouter } from "expo-router";
 import { View } from "react-native";
-import ThemedIconButton from "./ui/ThemedIconButton";
 import ThemedText from "./ui/ThemedText";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import ThemedButton from "./ui/ThemedButton";
 
 type TopNavigationProps = {
   topLabel?: string;
@@ -37,8 +37,10 @@ export default function TopNavigation({
       }}
     >
       {leftElement ?? (
-        <ThemedIconButton
+        <ThemedButton
           icon={"chevron.left"}
+          size="large"
+          title=""
           onPress={() => {
             onPress ?? router.back();
           }}

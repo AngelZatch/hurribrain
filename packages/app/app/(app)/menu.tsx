@@ -5,10 +5,10 @@ import { Link, router } from "expo-router";
 import JoinGameForm from "@/components/JoinGameForm";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { PageContainer } from "@/components/ui/PageContainer";
-import ThemedIconButton from "@/components/ui/ThemedIconButton";
 import ThemedText from "@/components/ui/ThemedText";
 import CreateGameForm from "@/components/CreateGameForm";
 import TopNavigation from "@/components/TopNavigation";
+import ThemedButton from "@/components/ui/ThemedButton";
 
 export default function Lobby() {
   const isPresented = router.canGoBack();
@@ -23,11 +23,19 @@ export default function Lobby() {
         leftElement={
           lobbyState === null ? (
             <Link href={isPresented ? "../" : "/"} asChild>
-              <ThemedIconButton icon="xmark" />
+              <ThemedButton
+                icon="xmark"
+                size="large"
+                title=""
+                type="secondary"
+              />
             </Link>
           ) : (
-            <ThemedIconButton
+            <ThemedButton
               icon="chevron.left"
+              size="large"
+              title=""
+              type="secondary"
               onPress={() => setLobbyState(null)}
             />
           )

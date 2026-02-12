@@ -6,12 +6,14 @@ import {
   Text,
   useColorScheme,
 } from "react-native";
+import { IconSymbol, IconSymbolName } from "./IconSymbol";
 
 type ThemedButtonProps = ButtonProps & {
   variant?: "contained" | "outlined" | "text";
   size?: "small" | "medium" | "large";
   type?: "primary" | "secondary" | "danger";
   fullWidth?: boolean;
+  icon?: IconSymbolName;
 };
 
 type ColorMapKey =
@@ -70,15 +72,15 @@ export default function ThemedButton({
     <Pressable
       style={{
         display: "flex",
-        minWidth: 120,
         minHeight: 48,
         maxHeight: 48,
         justifyContent: "center",
         alignItems: "center",
-        gap: 10,
-        borderRadius: 22,
-        paddingHorizontal: size === "small" ? 12 : size === "medium" ? 12 : 16,
-        paddingVertical: size === "small" ? 4 : size === "medium" ? 6 : 16,
+        flexDirection: "row",
+        gap: 8,
+        borderRadius: 24,
+        paddingHorizontal: rest.title ? 12 : 8,
+        paddingVertical: rest.title ? 16 : 8,
         width: fullWidth ? "100%" : "auto",
         flex: fullWidth ? 1 : undefined,
         backgroundImage: backgroundColorMap[`${type}:${variant}`],
@@ -92,15 +94,24 @@ export default function ThemedButton({
       }}
       onPress={rest.onPress}
     >
-      <Text
-        style={{
-          color: textColorMap[`${type}:${variant}`],
-          fontFamily: "Exo_600SemiBold",
-          fontSize: size === "small" ? 12 : size === "medium" ? 14 : 16,
-        }}
-      >
-        {rest.title}
-      </Text>
+      {rest.icon && (
+        <IconSymbol
+          color={textColorMap[`${type}:${variant}`] as ColorValue}
+          size={32}
+          name={rest.icon}
+        />
+      )}
+      {rest.title && (
+        <Text
+          style={{
+            color: textColorMap[`${type}:${variant}`],
+            fontFamily: "Exo_600SemiBold",
+            fontSize: size === "small" ? 12 : size === "medium" ? 14 : 16,
+          }}
+        >
+          {rest.title}
+        </Text>
+      )}
     </Pressable>
   );
 }
