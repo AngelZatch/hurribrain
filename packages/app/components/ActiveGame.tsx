@@ -7,16 +7,19 @@ import ActiveTurnTimer from "./ActiveTurnTimer";
 import React from "react";
 import ActivePlayableTurn from "./ActivePlayableTurn";
 import TurnRecap from "./TurnRecap";
-import { Participation, PlayableTurn, PlayedTurn } from "@/api/play.api";
+import { Item, Participation, PlayableTurn, PlayedTurn } from "@/api/play.api";
+import PlayerStatusList from "./PlayerStatusList";
 
 type ActiveTurnProps = {
   currentTurn: PlayableTurn | PlayedTurn;
   participation: Participation;
+  items: Array<Item>;
 };
 
 export default function ActiveGame({
   currentTurn,
   participation,
+  items,
 }: ActiveTurnProps) {
   return (
     <View
@@ -48,6 +51,7 @@ export default function ActiveGame({
           <PlayerRanking player={participation!} />
         </View>
       </View>
+      <PlayerStatusList participation={participation} items={items} />
       <View
         style={{
           alignContent: "center",

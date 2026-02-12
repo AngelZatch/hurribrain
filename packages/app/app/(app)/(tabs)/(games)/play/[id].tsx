@@ -31,6 +31,7 @@ export default function PlayScreen() {
   // Getting "long-term" data for the game (game info and logged user)
   const { data: game, isLoading, error } = useGetGame(user!, gameId);
   const { data: me } = useGetMe(user!);
+  const { data: items } = useGetItemList(user!, gameId);
 
   // Working states for the game (current turn and participation)
   const [currentTurn, setCurrentTurn] = useState<
@@ -148,7 +149,11 @@ export default function PlayScreen() {
       >
         {!game.startedAt && <GameLobby game={game!} />}
         {game.startedAt && !game.finishedAt && currentTurn && (
-          <ActiveGame currentTurn={currentTurn} participation={participation} />
+          <ActiveGame
+            currentTurn={currentTurn}
+            participation={participation}
+            items={items}
+          />
         )}
         {game.finishedAt && <GameRecap />}
       </View>

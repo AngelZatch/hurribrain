@@ -21,7 +21,7 @@ export type Participation = {
   itemCharge: number;
   activeItem: string | null; // Loaded by the client
   statuses: Array<{
-    id: string; // Loaded by the client
+    itemUuid: string; // Loaded by the client
     duration: number;
   }>;
 
