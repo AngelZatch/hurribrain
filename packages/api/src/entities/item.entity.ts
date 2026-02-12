@@ -22,6 +22,9 @@ export class Item {
   @Enum({ items: () => ItemType, default: ItemType.SUPPORT })
   type!: ItemType
 
+  @Property({ type: "boolean", default: false })
+  isDebuff!: boolean
+
   // Timestamps
   @Property()
   createdAt: Date = new Date()
@@ -29,9 +32,10 @@ export class Item {
   @Property({ onUpdate: () => new Date() })
   updatedAt: Date = new Date()
 
-  constructor(body: Pick<Item, "name" | "description" | "type">) {
+  constructor(body: Pick<Item, "name" | "description" | "type" | "isDebuff">) {
     this.name = body.name
     this.type = body.type
+    this.isDebuff = body.isDebuff
     this.description = body.description
   }
 }

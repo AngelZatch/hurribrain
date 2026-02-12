@@ -128,6 +128,17 @@
           ],
           "mappedType": "enum"
         },
+        "is_debuff": {
+          "name": "is_debuff",
+          "type": "tinyint(1)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 1,
+          "default": "false",
+          "mappedType": "boolean"
+        },
         "created_at": {
           "name": "created_at",
           "type": "datetime",

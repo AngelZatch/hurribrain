@@ -474,6 +474,11 @@ export default class GameService {
           participation.itemCharge -= 100
         }
 
+        // Remove 1 turn of duration to all statuses of the participant, removing those that are expired
+        participation.statuses = participation.statuses
+          .map((status) => ({ ...status, duration: status.duration - 1 }))
+          .filter((status) => status.duration > 0)
+
         em.persist(participation)
       })
 

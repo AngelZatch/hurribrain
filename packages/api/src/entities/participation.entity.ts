@@ -105,7 +105,7 @@ export class Participation {
    */
   @Property({ type: "json" })
   statuses: Array<{
-    id: Item["uuid"]
+    itemUuid: Item["uuid"]
     duration: number
   }> = []
 
