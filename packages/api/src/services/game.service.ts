@@ -119,27 +119,6 @@ export default class GameService {
     )
   }
 
-  useItem = async (userId: User["uuid"], gameId: Game["uuid"]) => {
-    const em = getEntityManager()
-
-    const participation = await em.findOneOrFail(Participation, {
-      user: { uuid: userId } as User,
-      game: { uuid: gameId } as Game,
-    })
-
-    if (!participation.activeItem) {
-      return
-    }
-
-    // Update the participation to remove the active item
-    participation.activeItem = null
-    em.persist(participation)
-    await em.flush()
-
-    // Emit updated participation to the participant
-    server.io.to(`game:${gameId}`).emit("participation:updated", participation)
-  }
-
   /**
    * Starts the game.
    *

@@ -12,7 +12,12 @@ import ActiveGame from "@/components/ActiveGame";
 import { useQueryClient } from "@tanstack/react-query";
 import ThemedIconButton from "@/components/ui/ThemedIconButton";
 import { useGetGame } from "@/api/games.api";
-import { Participation, PlayableTurn, PlayedTurn } from "@/api/play.api";
+import {
+  Participation,
+  PlayableTurn,
+  PlayedTurn,
+  useGetItemList,
+} from "@/api/play.api";
 import GameRecap from "@/components/GameRecap";
 import ThemedText from "@/components/ui/ThemedText";
 import { useGetMe } from "@/api/auth.api";
@@ -90,7 +95,7 @@ export default function PlayScreen() {
       socket.off("participation:updated");
       socket.disconnect();
     };
-  }, [game?.uuid]);
+  }, [game?.uuid, user]);
 
   if (!game || !me || !participation) {
     return (

@@ -230,3 +230,20 @@ export const useGetMyAnswer = (
     },
   });
 };
+
+export const useGetItemList = (token: string, gameId: string) => {
+  return useQuery({
+    queryKey: ["items", gameId],
+    queryFn: async (): Promise<Array<Item>> => {
+      const response = await axios.get(
+        `http://localhost:8080/games/${gameId}/items`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      return response.data;
+    },
+  });
+};

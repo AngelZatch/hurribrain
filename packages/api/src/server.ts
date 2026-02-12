@@ -21,6 +21,7 @@ import GameService from "./services/game.service.js"
 import { fastifyMultipart } from "@fastify/multipart"
 import { MEGABYTE } from "./utils/helperVariables.js"
 import fastifyRedis from "@fastify/redis"
+import ItemService from "./services/item.service.js"
 
 export const server = Fastify()
 
@@ -109,6 +110,7 @@ export const initializeServer = async () => {
     if (err) throw err
 
     const gameService = new GameService()
+    const itemService = new ItemService()
 
     // Start the sync service
     server.io.on("connect", (socket: Socket) => {
@@ -134,7 +136,7 @@ export const initializeServer = async () => {
       socket.on(
         "item:use",
         async ({ game, user }: { game: string; user: string }) => {
-          await gameService.useItem(user, game)
+          await itemService.useItem(user, game)
         }
       )
     })
