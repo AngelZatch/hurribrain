@@ -1,9 +1,11 @@
 import { View } from "react-native";
 import ThemedText from "./ui/ThemedText";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 import ThemedButton from "./ui/ThemedButton";
 
 export default function GameRecap() {
+  const router = useRouter();
+
   const navigateToHome = () => {
     router.dismissAll();
     router.replace("/");
