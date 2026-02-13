@@ -1,4 +1,4 @@
-import { Item, Participation, useGetItemList } from "@/api/play.api";
+import { Participation } from "@/api/play.api";
 import { socket } from "@/contexts/socket";
 import { TouchableOpacity, View } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
@@ -9,15 +9,12 @@ import { hasStatus } from "@/utils/gameUtils";
 
 type ItemButtonProps = {
   participation: Participation;
-  items: Array<Item>;
 };
 
-export default function ItemButton({ participation, items }: ItemButtonProps) {
+export default function ItemButton({ participation }: ItemButtonProps) {
   const { user } = useAuth();
 
-  const [heldItem, setHeldItem] = useState(
-    items?.find((i) => i.uuid === participation.activeItem) || null,
-  );
+  const [heldItem, setHeldItem] = useState(participation.activeItem);
 
   const handleUseItem = () => {
     socket.emit("item:use", {
@@ -28,11 +25,8 @@ export default function ItemButton({ participation, items }: ItemButtonProps) {
   };
 
   useEffect(() => {
-    // Get the item from the list when activeItem changes
     if (participation.activeItem) {
-      const item = items?.find((i) => i.uuid === participation.activeItem);
-      console.log("Active item:", item);
-      setHeldItem(item || null);
+      setHeldItem(participation.activeItem || null);
     }
   }, [participation.activeItem]);
 
@@ -66,7 +60,7 @@ export default function ItemButton({ participation, items }: ItemButtonProps) {
           }}
         >
           <View>
-            <ThemedText>{heldItem?.name}</ThemedText>
+            <ThemedText>{heldItem}</ThemedText>
           </View>
         </TouchableOpacity>
       )}

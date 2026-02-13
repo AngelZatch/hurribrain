@@ -12,7 +12,6 @@ import { server } from "./../server.js"
 import Queue from "bull"
 import { SECOND } from "./../utils/helperVariables.js"
 import { User } from "./../entities/user.entity.js"
-import { Item } from "./../entities/item.entity.js"
 const gameQueue = new Queue("games")
 
 export default class GameService {
@@ -441,8 +440,6 @@ export default class GameService {
 
     em.persist(targetTurn)
 
-    const items = await em.findAll(Item)
-
     // Refresh ranks of all participants
     let currentRank = 0
     let topScore = 0
@@ -477,15 +474,9 @@ export default class GameService {
           }
 
           // Grant item and remove 100 from the charge
-          const grantedItemName = this.grantItemToParticipant(
+          participation.activeItem = this.grantItemToParticipant(
             topScore - participation.score
           )
-          const grantedItem = items.find(
-            (item) => item.name === grantedItemName
-          )
-          if (grantedItem) {
-            participation.activeItem = grantedItem.uuid
-          }
 
           participation.itemCharge -= 100
         }
@@ -721,7 +712,7 @@ export default class GameService {
       (item) => randomValue >= item.min && randomValue <= item.max
     )
 
-    return grantedItem ? grantedItem.name : "coin"
+    return grantedItem ? grantedItem.name : "Coin"
   }
 
   private getProbabilityDistributionForItemGrant = (

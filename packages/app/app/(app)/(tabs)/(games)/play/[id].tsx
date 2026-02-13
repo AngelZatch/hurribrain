@@ -11,12 +11,7 @@ import { socket } from "@/contexts/socket";
 import ActiveGame from "@/components/ActiveGame";
 import { useQueryClient } from "@tanstack/react-query";
 import { useGetGame } from "@/api/games.api";
-import {
-  Participation,
-  PlayableTurn,
-  PlayedTurn,
-  useGetItemList,
-} from "@/api/play.api";
+import { Participation, PlayableTurn, PlayedTurn } from "@/api/play.api";
 import GameRecap from "@/components/GameRecap";
 import ThemedText from "@/components/ui/ThemedText";
 import { useGetMe } from "@/api/auth.api";
@@ -31,7 +26,6 @@ export default function PlayScreen() {
   // Getting "long-term" data for the game (game info and logged user)
   const { data: game, isLoading, error } = useGetGame(user!, gameId);
   const { data: me } = useGetMe(user!);
-  const { data: items } = useGetItemList(user!, gameId);
 
   // Working states for the game (current turn and participation)
   const [currentTurn, setCurrentTurn] = useState<
@@ -98,7 +92,7 @@ export default function PlayScreen() {
     };
   }, [game?.uuid, user]);
 
-  if (!game || !me || !participation || !items) {
+  if (!game || !me || !participation) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ThemedText>Chargement...</ThemedText>
@@ -151,11 +145,7 @@ export default function PlayScreen() {
       >
         {!game.startedAt && <GameLobby game={game!} />}
         {game.startedAt && !game.finishedAt && currentTurn && (
-          <ActiveGame
-            currentTurn={currentTurn}
-            participation={participation}
-            items={items}
-          />
+          <ActiveGame currentTurn={currentTurn} participation={participation} />
         )}
         {game.finishedAt && <GameRecap />}
       </View>

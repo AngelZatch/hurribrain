@@ -13,13 +13,11 @@ import { hasStatus, scrambleSentence } from "@/utils/gameUtils";
 type ActiveTurnProps = {
   currentTurn: PlayableTurn | PlayedTurn;
   participation: Participation;
-  items: Array<Item>;
 };
 
 export default function ActiveGame({
   currentTurn,
   participation,
-  items,
 }: ActiveTurnProps) {
   const [questionTitle, setQuestionTitle] = useState(
     currentTurn.question.title,
@@ -83,7 +81,6 @@ export default function ActiveGame({
         <ActivePlayableTurn
           currentTurn={currentTurn as PlayableTurn}
           participation={participation}
-          items={items}
         />
       ) : (
         <TurnRecap

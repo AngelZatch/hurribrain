@@ -16,13 +16,11 @@ import ItemButton from "./ItemButton";
 type ActivePlayableTurnProps = {
   currentTurn: PlayableTurn;
   participation: Participation;
-  items: Array<Item>;
 };
 
 export default function ActivePlayableTurn({
   currentTurn,
   participation,
-  items,
 }: ActivePlayableTurnProps) {
   const [selectedChoice, setSelectedChoice] = useState<Choice | null>(null);
   const [sentChoice, setSentChoice] = useState<Choice | null>(null);
@@ -86,7 +84,7 @@ export default function ActivePlayableTurn({
           alignItems: "center",
         }}
       >
-        <ItemButton participation={participation} items={items} />
+        <ItemButton participation={participation} />
         <ThemedButton
           title={sentChoice ? "Modifier" : "Répondre"}
           onPress={handleSendAnswer}

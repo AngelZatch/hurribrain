@@ -96,7 +96,7 @@ export class Participation {
    * have an active item.
    */
   @Property({ nullable: true })
-  activeItem: Item["uuid"] | null = null
+  activeItem: Item["name"] | null = null
 
   /**
    * The statuses represent the active status effects applied to the participant.
