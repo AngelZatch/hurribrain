@@ -21,7 +21,7 @@ export const Colors = {
     tabIconDefault: '#687076',
     tabIconSelected: tintColorLight,
     backgroundGradient: "linear-gradient(#3C73FF, #BFEAEC)",
-    containerBackground: "#00000033",
+    containerBackground: "#ffffff33",
     secondaryText: "#0F2969",
     disabled: "#5F5F5F",
     inheritDisabledTextColor: "#5F5F5F",

@@ -37,13 +37,13 @@ export default function TurnRecap({
 
   useEffect(() => {
     setCorrectChoice(
-      currentTurn.question.choices.find((choice) => choice.isCorrect) ?? null
+      currentTurn.question.choices.find((choice) => choice.isCorrect) ?? null,
     );
   }, [currentTurn]);
 
   useEffect(() => {
     setPointsGained(
-      (value) => participation.score - participation.previousScore
+      (value) => participation.score - participation.previousScore,
     );
   }, [participation]);
 
@@ -51,7 +51,7 @@ export default function TurnRecap({
   const { data: myAnswer } = useGetMyAnswer(
     user!,
     currentTurn.game,
-    currentTurn.uuid
+    currentTurn.uuid,
   );
 
   useEffect(() => {
@@ -67,23 +67,17 @@ export default function TurnRecap({
   }, [myAnswer, correctChoice]);
 
   useEffect(() => {
-    setDifficultyMedalAwarded(false);
-    if (answerStatus === "correct") {
-      if (currentTurn.question.difficulty === "medium") {
-        setDifficultyMedalAwarded(true);
-      } else if (currentTurn.question.difficulty === "hard") {
-        setDifficultyMedalAwarded(true);
-      } else if (currentTurn.question.difficulty === "expert") {
-        setDifficultyMedalAwarded(true);
-      }
-    }
+    setDifficultyMedalAwarded(
+      answerStatus === "correct" &&
+        currentTurn.question.difficulty !== "easy" &&
+        currentTurn.question.difficulty !== "unknown",
+    );
   }, [answerStatus, currentTurn.question.difficulty]);
 
   useEffect(() => {
-    setStreakMedalAwarded(false);
-    if (participation.streak % 5 === 0) {
-      setStreakMedalAwarded(true);
-    }
+    setStreakMedalAwarded(
+      participation.streak % 5 === 0 && participation.streak > 0,
+    );
   }, [participation.streak]);
 
   useEffect(() => {
@@ -115,7 +109,7 @@ export default function TurnRecap({
       <View
         style={[
           {
-            height: 400,
+            maxHeight: 300,
             borderStyle: "solid",
             borderWidth: 1,
             borderRadius: 10,
@@ -123,6 +117,8 @@ export default function TurnRecap({
             gap: 10,
             alignItems: "center",
             justifyContent: "space-between",
+            flexGrow: 1,
+            flexBasis: "auto",
           },
           answerStatus === "correct" && {
             borderColor: "#3DC96C",
