@@ -52,11 +52,16 @@ const PlayerController = async (fastify: FastifyInstance) => {
             "previousScore",
             "rank",
             "previousRank",
+            "streak",
+            "maxStreak",
+            "itemCharge",
+            "activeItem",
+            "statuses",
             "user.uuid",
+            "user.email",
             "user.name",
             "game.uuid",
           ],
-          populate: ["user"],
           orderBy: { score: "desc" },
         }
       )
