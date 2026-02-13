@@ -27,7 +27,9 @@ export type Participation = {
 
   // GENERAL
   user: string; // Loaded by the client
-  game?: string; // Loaded by the client
+  game?: {
+    uuid: string;
+  };
 };
 
 export type Leaderboard = Array<Participation>;

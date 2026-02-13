@@ -192,11 +192,13 @@ const AuthController = async (fastify: FastifyInstance) => {
             "previousRank",
             "streak",
             "maxStreak",
+            "itemCharge",
+            "activeItem",
+            "statuses",
             "user.uuid",
             "user.email",
             "user.name",
             "game.uuid",
-            "game.code",
           ],
         }
       )

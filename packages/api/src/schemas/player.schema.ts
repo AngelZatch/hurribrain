@@ -1,6 +1,5 @@
 import { Static, Type } from "@sinclair/typebox"
 import { UserResponseSchema } from "./user.schema.js"
-import { GameResponseSchema } from "./game.schema.js"
 import { Nullable } from "./common.schema.js"
 
 export const PlayerSchema = Type.Object(
@@ -22,8 +21,9 @@ export const PlayerSchema = Type.Object(
     ),
     user: UserResponseSchema,
     game: Type.Object({
-      uuid: GameResponseSchema.properties.uuid,
-      code: GameResponseSchema.properties.code,
+      uuid: Type.String({
+        format: "uuid",
+      }),
     }),
   },
   { $id: "Player", description: "Player entity" }
