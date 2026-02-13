@@ -3,6 +3,6 @@ const config = {
   tabWidth: 2,
   semi: false,
   singleQuote: false,
-};
+}
 
-export default config;
+export default config
