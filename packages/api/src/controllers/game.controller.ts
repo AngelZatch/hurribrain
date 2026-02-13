@@ -22,7 +22,6 @@ import { verifyJWT } from "./../utils/authChecker.js"
 import PlayerController from "./player.controller.js"
 import TurnController from "./turn.controller.js"
 import GameService from "./../services/game.service.js"
-import { Item } from "./../entities/item.entity.js"
 
 const GameController = async (fastify: FastifyInstance) => {
   fastify.addSchema(GameResponseSchema)
@@ -248,52 +247,6 @@ const GameController = async (fastify: FastifyInstance) => {
       await gameService.startNextTurn(gameId)
 
       return reply.code(200).send(true)
-    }
-  )
-
-  // Get all the items activated for a game (by default, returns all items)
-  fastify.get<{
-    Params: GameByIdParams
-  }>(
-    "/:gameId/items",
-    {
-      schema: {
-        tags: ["Games", "Gameplay Loop"],
-        summary: "Returns the library of items for a game",
-        params: GameByIdParamsSchema,
-        response: {
-          200: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                uuid: { type: "string" },
-                name: { type: "string" },
-                description: { type: "string" },
-                type: { type: "string" },
-              },
-            },
-          },
-          ...ErrorResponsesSchema,
-        },
-      },
-      preHandler: [fastify.auth([verifyJWT])],
-    },
-    async (request, reply) => {
-      const em = request.em
-      const { gameId } = request.params
-
-      const game = await em.findOneOrFail(Game, { uuid: gameId })
-
-      if (!game) {
-        return reply.code(404).send({
-          message: "Game not found",
-        })
-      }
-
-      const items = await em.findAll(Item)
-
-      return reply.code(200).send(items)
     }
   )
 

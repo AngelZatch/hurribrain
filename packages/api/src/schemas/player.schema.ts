@@ -13,7 +13,7 @@ export const PlayerSchema = Type.Object(
     streak: Type.Number({ examples: [0] }),
     maxStreak: Type.Number({ examples: [0] }),
     itemCharge: Type.Number({ examples: [0] }),
-    activeItem: Nullable(Type.String({ format: "uuid" })),
+    activeItem: Nullable(Type.String()),
     statuses: Type.Array(
       Type.Object({
         name: Type.String(),

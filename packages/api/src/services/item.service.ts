@@ -22,7 +22,7 @@ export default class ItemService {
 
     if (
       !participation.activeItem ||
-      participation.statuses.some((status) => status.name === "lock")
+      participation.statuses.some((status) => status.name === "Lock")
     ) {
       return
     }
