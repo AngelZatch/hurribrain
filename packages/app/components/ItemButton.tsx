@@ -1,20 +1,19 @@
-import { Participation, useGetItemList } from "@/api/play.api";
+import { Item, Participation, useGetItemList } from "@/api/play.api";
 import { socket } from "@/contexts/socket";
 import { TouchableOpacity, View } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/auth.context";
 import ThemedText from "./ui/ThemedText";
+import { hasStatus } from "@/utils/gameUtils";
 
 type ItemButtonProps = {
   participation: Participation;
+  items: Array<Item>;
 };
 
-export default function ItemButton({ participation }: ItemButtonProps) {
+export default function ItemButton({ participation, items }: ItemButtonProps) {
   const { user } = useAuth();
-
-  // TODO: Move the get item list to the active game component to prevent fetching it multiple times
-  const { data: items } = useGetItemList(user!, participation.game!);
 
   const [heldItem, setHeldItem] = useState(
     items?.find((i) => i.uuid === participation.activeItem) || null,
@@ -37,6 +36,13 @@ export default function ItemButton({ participation }: ItemButtonProps) {
     }
   }, [participation.activeItem]);
 
+  const lockItem = items.find((item) => item.name === "lock");
+  const [hasLock, setHasLock] = useState(false);
+
+  useEffect(() => {
+    setHasLock(hasStatus(participation, lockItem!));
+  }, [participation]);
+
   return (
     <AnimatedCircularProgress
       size={70}
@@ -49,8 +55,7 @@ export default function ItemButton({ participation }: ItemButtonProps) {
       {(fill) => (
         <TouchableOpacity
           onPress={handleUseItem}
-          // disabled={!participation.activeItem || isUsingItem}
-          disabled={!participation.activeItem}
+          disabled={!participation.activeItem || hasLock}
           style={{
             width: 70,
             height: 70,

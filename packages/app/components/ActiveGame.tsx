@@ -81,6 +81,7 @@ export default function ActiveGame({
         <ActivePlayableTurn
           currentTurn={currentTurn as PlayableTurn}
           participation={participation}
+          items={items}
         />
       ) : (
         <TurnRecap
