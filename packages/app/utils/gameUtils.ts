@@ -6,9 +6,9 @@ import { Item, Participation } from "@/api/play.api";
  * @param item The item to look for
  * @returns A boolean for the presence of the status
  */
-export function hasStatus(participation: Participation, item: Item): boolean {
+export function hasStatus(participation: Participation, item: string): boolean {
   if (!participation.statuses) return false;
-  return participation.statuses.some((status) => status.itemUuid === item.uuid);
+  return participation.statuses.some((status) => status.name === item);
 }
 
 /**

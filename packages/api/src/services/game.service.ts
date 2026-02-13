@@ -376,10 +376,12 @@ export default class GameService {
     participations.forEach((participation) => {
       // Update previous score
       participation.previousScore = participation.score
+      let scoreReward = 0
 
       // Correct answer
       if (correctAnswersByParticipationId[participation.uuid]) {
-        let scoreReward = 1
+        // Correct answer base reward
+        scoreReward += 1
 
         // Difficulty bonus
         scoreReward += questionDifficultyBonus
@@ -405,15 +407,29 @@ export default class GameService {
           scoreReward += participation.streak / 5
         }
 
+        // If the player has a boost status, the score reward is doubled
+        if (participation.statuses.some((status) => status.name === "Boost")) {
+          scoreReward *= 2
+        }
+
         // Update score
         participation.score += scoreReward
       } else {
+        // Incorrect answer score penalty
+        scoreReward -= 1
+
+        // If the player has a punishment status, they will lose an additional 2 points
+        if (
+          participation.statuses.some((status) => status.name === "Punishment")
+        ) {
+          scoreReward -= 2
+        }
+
         // Reset streak
         participation.streak = 0
 
-        // Incorrect answer
         if (incorrectAnswersByParticipationId[participation.uuid]) {
-          participation.score = Math.max(participation.score - 1, 0)
+          participation.score = Math.max(participation.score + scoreReward, 0)
         }
       }
 

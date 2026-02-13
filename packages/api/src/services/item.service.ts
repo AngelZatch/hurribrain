@@ -31,8 +31,7 @@ export default class ItemService {
 
     switch (item.name) {
       /**
-       * EFFECT:
-       * - Immediately clears all debuffs currently applied to the participant and protects them from new ones
+       * Immediately clears all debuffs currently applied to the participant and protects them from new ones
        * until the end of the turn.
        */
       case "Shield":
@@ -41,97 +40,92 @@ export default class ItemService {
         break
 
       /**
-       * EFFECT:
-       * - Immediately adds 1 point to the participant's score.
+       * Immediately adds 1 point to the participant's score.
        */
       case "Coin":
         participation.score += 1
         break
 
       /**
-       * EFFECT:
-       * - Immediately removes 2 wrong choices from the current question for the participant.
+       * TODO:
+       * Immediately removes 2 wrong choices from the current question for the participant.
        */
       case "Half":
         this.addStatus(participation, item)
         break
 
       /**
-       * EFFECT:
-       * - Immediately turns all debuffs into coins for the participant (1 point per debuff removed).
+       * TODO:
+       * Immediately turns all debuffs into coins for the participant (1 point per debuff removed).
        */
       case "Turnaround":
         this.addStatus(participation, item)
         break
 
       /**
-       * EFFECT:
-       * - Immediately scrambles the words in the question and choices for a random player ranked higher
+       * Immediately scrambles the words in the question and choices for a random player ranked higher
        * than the participant.
-       * - Stackable on the target.
+       * Stackable on the target.
        */
       case "Scramble":
         await this.attackTarget(participation, item)
         break
 
       /**
-       * EFFECT:
-       * - Immediately removes 5 seconds from the timer for a random player ranked higher than the participant.
-       * - Stackable on the target.
+       * TODO:
+       * Immediately removes 5 seconds from the timer for a random player ranked higher than the participant.
+       * Stackable on the target.
        */
       case "Hurry":
         await this.attackTarget(participation, item)
         break
 
       /**
-       * EFFECT:
-       * - Immediately, if a random player ranked higher than the participant answers incorrectly, they will lose 3 points.
-       * - Stackable on the target.
+       * Immediately, if a random player ranked higher than the participant answers incorrectly, they will lose 3 points.
+       * Stackable on the target.
        */
       case "Punishment":
         await this.attackTarget(participation, item)
         break
 
       /**
-       * EFFECT:
-       * - Immediately prevents a random player ranked higher than the participant from using their item.
-       * - Stackable on the target.
+       * Immediately prevents a random player ranked higher than the participant from using their item.
+       * Stackable on the target.
        */
       case "Lock":
         await this.attackTarget(participation, item)
         break
 
       /**
-       * EFFECT:
-       * - During the turn, redirects all future attacks to another player ranked even higher.
-       * - Cannot be stacked.
+       * TODO:
+       * During the turn, redirects all future attacks to another player ranked even higher.
+       * Cannot be stacked.
        */
       case "Passthrough":
         this.addStatus(participation, item)
         break
 
       /**
-       * EFFECT:
-       * - Immediately, a random player ranked higher than the participant will not be able to fully see
+       * TODO:
+       * Immediately, a random player ranked higher than the participant will not be able to fully see
        * the question and choices.
-       * - Stackable on the target.
+       * Stackable on the target.
        */
       case "Hidden":
         await this.attackTarget(participation, item)
         break
 
       /**
-       * EFFECT:
-       * - For the current turn, if the participant answers correctly, the points awarded will be doubled.
-       * - Cannot be stacked.
+       * For the current turn, if the participant answers correctly, the points awarded will be doubled.
+       * Cannot be stacked.
        */
       case "Boost":
         this.addStatus(participation, item)
         break
 
       /**
-       * EFFECT:
-       * - For the current turn, the participant using the item will be able to see what the others are answering.
+       * TODO:
+       * For the current turn, the participant using the item will be able to see what the others are answering.
        */
       case "Spy":
         this.addStatus(participation, item)
@@ -161,7 +155,7 @@ export default class ItemService {
       isDebuff: true,
     })
     participation.statuses = participation.statuses.filter((status) => {
-      return !debuffs.some((debuff) => debuff.uuid === status.itemUuid)
+      return !debuffs.some((debuff) => debuff.name === status.name)
     })
 
     return participation
@@ -175,14 +169,14 @@ export default class ItemService {
    */
   private addStatus = (participation: Participation, item: Item) => {
     const existingStatus = participation.statuses.find(
-      (status) => status.itemUuid === item.uuid
+      (status) => status.name === item.name
     )
 
     if (existingStatus) {
       existingStatus.duration += 1
     } else {
       participation.statuses.push({
-        itemUuid: item.uuid,
+        name: item.name,
         duration: 1,
       })
     }
@@ -215,10 +209,7 @@ export default class ItemService {
     }
 
     // If the target has a shield active, the debuff isn't applied
-    const shieldItem = await em.findOne(Item, { name: "Shield" })
-    if (
-      target.statuses.some((status) => status.itemUuid === shieldItem?.uuid)
-    ) {
+    if (target.statuses.some((status) => status.name === "shield")) {
       return null
     }
 

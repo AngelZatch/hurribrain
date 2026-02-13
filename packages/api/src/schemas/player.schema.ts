@@ -16,7 +16,7 @@ export const PlayerSchema = Type.Object(
     activeItem: Nullable(Type.String({ format: "uuid" })),
     statuses: Type.Array(
       Type.Object({
-        itemUuid: Type.String({ format: "uuid" }),
+        name: Type.String(),
         duration: Type.Number({ examples: [3] }),
       })
     ),

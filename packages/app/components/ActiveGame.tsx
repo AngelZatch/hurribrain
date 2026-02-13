@@ -23,10 +23,8 @@ export default function ActiveGame({
 }: ActiveTurnProps) {
   const [hasScramble, setHasScramble] = useState(false);
 
-  const scrambleItem = items.find((item) => item.name === "scramble");
-
   useEffect(() => {
-    setHasScramble(hasStatus(participation, scrambleItem!));
+    setHasScramble(hasStatus(participation, "scramble"));
   }, [participation]);
 
   return (

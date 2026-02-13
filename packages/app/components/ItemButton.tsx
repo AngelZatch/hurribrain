@@ -36,11 +36,10 @@ export default function ItemButton({ participation, items }: ItemButtonProps) {
     }
   }, [participation.activeItem]);
 
-  const lockItem = items.find((item) => item.name === "lock");
   const [hasLock, setHasLock] = useState(false);
 
   useEffect(() => {
-    setHasLock(hasStatus(participation, lockItem!));
+    setHasLock(hasStatus(participation, "lock"));
   }, [participation]);
 
   return (
