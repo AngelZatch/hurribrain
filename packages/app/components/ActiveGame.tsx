@@ -55,7 +55,9 @@ export default function ActiveGame({
           />
         </View>
         <View style={{ flex: 1, alignItems: "center" }}>
-          {!currentTurn.finishedAt && <ActiveTurnTimer />}
+          {!currentTurn.finishedAt && (
+            <ActiveTurnTimer currentTurn={currentTurn} />
+          )}
         </View>
         <View style={{ flex: 1 }}>
           <PlayerRanking player={participation!} />

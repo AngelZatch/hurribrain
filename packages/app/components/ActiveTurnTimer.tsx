@@ -2,9 +2,26 @@ import { View } from "react-native";
 import ThemedText from "./ui/ThemedText";
 import { IconSymbol } from "./ui/IconSymbol";
 import { useEffect, useState } from "react";
+import { PlayableTurn } from "@/api/play.api";
 
-export default function ActiveTurnTimer() {
-  const [timeLeft, setTimeLeft] = useState(15);
+type ActiveTurnTimerProps = {
+  currentTurn: PlayableTurn;
+};
+
+export default function ActiveTurnTimer({ currentTurn }: ActiveTurnTimerProps) {
+  const [timeLeft, setTimeLeft] = useState(getInitialTimeLeft());
+
+  function getInitialTimeLeft(): number {
+    if (!currentTurn.startedAt) return 15;
+    const elapsed = Math.floor(
+      (Date.now() - new Date(currentTurn.startedAt).getTime()) / 1000,
+    );
+    return Math.max(15 - elapsed, 0);
+  }
+
+  useEffect(() => {
+    setTimeLeft(getInitialTimeLeft());
+  }, [currentTurn.startedAt]);
 
   useEffect(() => {
     if (timeLeft > 0) {
