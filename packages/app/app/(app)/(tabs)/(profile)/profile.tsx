@@ -26,10 +26,8 @@ export default function ProfileScreen() {
     logout();
   }
 
-  console.log(data);
-
   const computeWinRate = (gamesPlayed: number, gamesWon: number) => {
-    return gamesPlayed > 0 ? (gamesWon / gamesPlayed) * 100 : 0;
+    return gamesPlayed > 0 ? ((gamesWon / gamesPlayed) * 100).toFixed(2) : 0;
   };
 
   return (
@@ -159,7 +157,7 @@ export default function ProfileScreen() {
               Taux de victoire
             </ThemedText>
             <ThemedText style={styles.statValue} colorType="main">
-              {computeWinRate(data!.stats.gamesWon, data!.stats.gamesPlayed)} %
+              {computeWinRate(data!.stats.gamesPlayed, data!.stats.gamesWon)} %
             </ThemedText>
           </View>
           {/* 
