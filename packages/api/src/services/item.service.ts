@@ -150,28 +150,33 @@ export default class ItemService {
   private attackTarget = async (participation: Participation, item: string) => {
     const em = getEntityManager()
 
-    // Random number between 1 and the rank of the participant
-    const rankToTarget =
-      Math.floor(Math.random() * (participation.rank - 1)) + 1
-
-    // Find players ranked higher than the participant
-    const target = await em.findOne(Participation, {
+    // Get all players ranked higher than the participant
+    let potentialTargets = await em.find(Participation, {
       game: { uuid: participation.game.uuid } as Game,
-      rank: rankToTarget,
+      rank: { $lt: participation.rank },
     })
 
-    if (!target) {
+    // Exclude those with the "Passthrough" status
+    potentialTargets = potentialTargets.filter(
+      (p) => !p.statuses.some((status) => status.name === "Passthrough")
+    )
+
+    if (potentialTargets.length === 0) {
       return null
     }
 
-    // If the target has a shield active, the debuff isn't applied
+    // Select a random target
+    const target =
+      potentialTargets[Math.floor(Math.random() * potentialTargets.length)]
+
+    // If the target has an active shield, the effect is not applied
     if (target.statuses.some((status) => status.name === "shield")) {
       return null
     }
 
     this.addStatus(target, item)
 
-    // Notify target
+    // Notify the target
     server.io
       .to(`game:${participation.game.uuid}`)
       .emit("participation:updated", target)
