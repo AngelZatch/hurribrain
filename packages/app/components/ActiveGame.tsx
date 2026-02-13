@@ -21,11 +21,17 @@ export default function ActiveGame({
   participation,
   items,
 }: ActiveTurnProps) {
-  const [hasScramble, setHasScramble] = useState(false);
+  const [questionTitle, setQuestionTitle] = useState(
+    currentTurn.question.title,
+  );
 
   useEffect(() => {
-    setHasScramble(hasStatus(participation, "scramble"));
-  }, [participation]);
+    if (hasStatus(participation, "scramble")) {
+      setQuestionTitle(scrambleSentence(currentTurn.question.title));
+    } else {
+      setQuestionTitle(currentTurn.question.title);
+    }
+  }, [participation, currentTurn.question.title]);
 
   return (
     <View
@@ -70,9 +76,7 @@ export default function ActiveGame({
             textAlign: "center",
           }}
         >
-          {hasScramble
-            ? scrambleSentence(currentTurn.question.title)
-            : currentTurn.question.title}
+          {questionTitle}
         </ThemedText>
       </View>
       {!currentTurn.finishedAt ? (
