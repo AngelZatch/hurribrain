@@ -1,14 +1,14 @@
 import { View } from "react-native";
 import ThemedText from "./ui/ThemedText";
-import { useAuth } from "@/contexts/auth.context";
 import PlayerRanking from "./PlayerRanking";
 import CurrentQuestionIndicator from "./CurrentQuestionIndicator";
 import ActiveTurnTimer from "./ActiveTurnTimer";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ActivePlayableTurn from "./ActivePlayableTurn";
 import TurnRecap from "./TurnRecap";
 import { Item, Participation, PlayableTurn, PlayedTurn } from "@/api/play.api";
 import PlayerStatusList from "./PlayerStatusList";
+import { hasStatus, scrambleSentence } from "@/utils/gameUtils";
 
 type ActiveTurnProps = {
   currentTurn: PlayableTurn | PlayedTurn;
@@ -21,6 +21,14 @@ export default function ActiveGame({
   participation,
   items,
 }: ActiveTurnProps) {
+  const [hasScramble, setHasScramble] = useState(false);
+
+  const scrambleItem = items.find((item) => item.name === "scramble");
+
+  useEffect(() => {
+    setHasScramble(hasStatus(participation, scrambleItem!));
+  }, [participation]);
+
   return (
     <View
       style={{
@@ -64,7 +72,9 @@ export default function ActiveGame({
             textAlign: "center",
           }}
         >
-          {currentTurn.question.title}
+          {hasScramble
+            ? scrambleSentence(currentTurn.question.title)
+            : currentTurn.question.title}
         </ThemedText>
       </View>
       {!currentTurn.finishedAt ? (
