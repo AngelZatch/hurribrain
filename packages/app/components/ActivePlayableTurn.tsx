@@ -9,18 +9,19 @@ import {
   useAnswerQuestion,
   useGetMyAnswer,
   Participation,
-  Item,
 } from "@/api/play.api";
 import ItemButton from "./ItemButton";
 
 type ActivePlayableTurnProps = {
   currentTurn: PlayableTurn;
   participation: Participation;
+  timeLeft: number;
 };
 
 export default function ActivePlayableTurn({
   currentTurn,
   participation,
+  timeLeft,
 }: ActivePlayableTurnProps) {
   const [selectedChoice, setSelectedChoice] = useState<Choice | null>(null);
   const [sentChoice, setSentChoice] = useState<Choice | null>(null);
@@ -45,7 +46,7 @@ export default function ActivePlayableTurn({
   }, [myAnswer]);
 
   const handleSendAnswer = async () => {
-    if (!selectedChoice) {
+    if (!selectedChoice || timeLeft <= 0) {
       return;
     }
 
@@ -88,7 +89,7 @@ export default function ActivePlayableTurn({
         <ThemedButton
           title={sentChoice ? "Modifier" : "Répondre"}
           onPress={handleSendAnswer}
-          disabled={!selectedChoice}
+          disabled={!selectedChoice || timeLeft <= 0}
           fullWidth
         />
       </View>

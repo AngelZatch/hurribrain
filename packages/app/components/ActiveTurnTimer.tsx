@@ -5,34 +5,10 @@ import { useEffect, useState } from "react";
 import { PlayableTurn } from "@/api/play.api";
 
 type ActiveTurnTimerProps = {
-  currentTurn: PlayableTurn;
+  timeLeft: number;
 };
 
-export default function ActiveTurnTimer({ currentTurn }: ActiveTurnTimerProps) {
-  const [timeLeft, setTimeLeft] = useState(getInitialTimeLeft());
-
-  function getInitialTimeLeft(): number {
-    if (!currentTurn.startedAt) return 15;
-    const elapsed = Math.floor(
-      (Date.now() - new Date(currentTurn.startedAt).getTime()) / 1000,
-    );
-    return Math.max(15 - elapsed, 0);
-  }
-
-  useEffect(() => {
-    setTimeLeft(getInitialTimeLeft());
-  }, [currentTurn.startedAt]);
-
-  useEffect(() => {
-    if (timeLeft > 0) {
-      const timerId = setInterval(() => {
-        setTimeLeft((prevTime) => prevTime - 1);
-      }, 1000);
-
-      return () => clearInterval(timerId);
-    }
-  }, [timeLeft]);
-
+export default function ActiveTurnTimer({ timeLeft }: ActiveTurnTimerProps) {
   return (
     <View
       style={{

@@ -68,7 +68,7 @@ export default class ItemService {
        * All attacks target and random player ranked higher than the attacker.
        *
        * Scramble: Immediately scrambles the words in the question on the screen of the target.
-       * (TODO:) Hurry: Immediately removes 5 seconds from the timer of the target.
+       * Hurry: Immediately removes 5 seconds from the timer of the target.
        * Punishment: If the target answers incorrectly, they will lose 3 points.
        * Lock: Prevents the target from using their item until the end of the turn.
        * (TODO:) Hidden: Parts of the question will be hidden on the screen of the target.

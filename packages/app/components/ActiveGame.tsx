@@ -31,6 +31,35 @@ export default function ActiveGame({
     }
   }, [participation, currentTurn.question.title]);
 
+  // Timer
+  const [timeLeft, setTimeLeft] = useState(getInitialTimeLeft());
+
+  function getInitialTimeLeft(): number {
+    if (!currentTurn.startedAt) return 15;
+    const elapsed = Math.floor(
+      (Date.now() - new Date(currentTurn.startedAt).getTime()) / 1000,
+    );
+    return Math.max(15 - elapsed, 0);
+  }
+
+  useEffect(() => {
+    if (hasStatus(participation, "Hurry")) {
+      setTimeLeft(getInitialTimeLeft() - 5);
+    } else {
+      setTimeLeft(getInitialTimeLeft());
+    }
+  }, [currentTurn.startedAt, participation]);
+
+  useEffect(() => {
+    if (timeLeft > 0) {
+      const timerId = setInterval(() => {
+        setTimeLeft((prevTime) => prevTime - 1);
+      }, 1000);
+
+      return () => clearInterval(timerId);
+    }
+  }, [timeLeft]);
+
   return (
     <View
       style={{
@@ -55,9 +84,7 @@ export default function ActiveGame({
           />
         </View>
         <View style={{ flex: 1, alignItems: "center" }}>
-          {!currentTurn.finishedAt && (
-            <ActiveTurnTimer currentTurn={currentTurn} />
-          )}
+          {!currentTurn.finishedAt && <ActiveTurnTimer timeLeft={timeLeft} />}
         </View>
         <View style={{ flex: 1 }}>
           <PlayerRanking player={participation!} />
@@ -83,6 +110,7 @@ export default function ActiveGame({
         <ActivePlayableTurn
           currentTurn={currentTurn as PlayableTurn}
           participation={participation}
+          timeLeft={timeLeft}
         />
       ) : (
         <TurnRecap
