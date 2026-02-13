@@ -57,19 +57,6 @@ export default function PlayScreen() {
       });
     });
 
-    // When the current turn changes, the server emits the new turn to all participants
-    socket.on("turn:current", (turn: PlayableTurn | PlayedTurn | null) => {
-      if (turn) {
-        const choices = turn.question.choices;
-        for (let i = choices.length - 1; i >= 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [choices[i], choices[j]] = [choices[j], choices[i]];
-        }
-        turn.question.choices = choices;
-      }
-      setCurrentTurn(turn);
-    });
-
     /**
      * When a participation is updated (e.g. a player joins, leaves, answers a question, etc.), the server emits the
      * new participation to the concerned player. We listen to this event to update the participation data in
@@ -81,6 +68,19 @@ export default function PlayScreen() {
       }
 
       setParticipation(participation);
+    });
+
+    // When the current turn changes, the server emits the new turn to all participants
+    socket.on("turn:current", (turn: PlayableTurn | PlayedTurn | null) => {
+      if (turn) {
+        const choices = turn.question.choices;
+        for (let i = choices.length - 1; i >= 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [choices[i], choices[j]] = [choices[j], choices[i]];
+        }
+        turn.question.choices = choices;
+      }
+      setCurrentTurn(turn);
     });
 
     // Clean up

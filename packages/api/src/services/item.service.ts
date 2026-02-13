@@ -51,7 +51,7 @@ export default class ItemService {
        * Buffs
        *
        * (TODO:) Half: Immediately removes 2 wrong choices from the current question for the participant.
-       * (TODO:) Passthrough: During the turn, redirects all future attacks to another player ranked even higher. (Non stack)
+       * Passthrough: During the turn, redirects all future attacks to another player ranked even higher. (Non stack)
        * Boost: For the current turn, if the participant answers correctly, the points awarded will be doubled.
        * (TODO:) Spy: For the current turn, the participant using the item will be able to see what the others are answering.
        */
@@ -143,7 +143,6 @@ export default class ItemService {
   /**
    * Finds a random player ranked higher than the participant using the item to be the target of the item's effect.
    *
-   * TODO: Implement "Passthrough" effect.
    * @param participation The player using the item
    * @returns
    */
@@ -170,7 +169,7 @@ export default class ItemService {
       potentialTargets[Math.floor(Math.random() * potentialTargets.length)]
 
     // If the target has an active shield, the effect is not applied
-    if (target.statuses.some((status) => status.name === "shield")) {
+    if (target.statuses.some((status) => status.name === "Shield")) {
       return null
     }
 

@@ -41,6 +41,7 @@ export default function TopNavigation({
           icon={"chevron.left"}
           size="large"
           title=""
+          type="secondary"
           onPress={() => {
             onPress ?? router.back();
           }}
