@@ -21,7 +21,10 @@ export default class ItemService {
       game: { uuid: gameId } as Game,
     })
 
-    if (!participation.activeItem) {
+    if (
+      !participation.activeItem ||
+      participation.statuses.some((status) => status.name === "lock")
+    ) {
       return
     }
 
