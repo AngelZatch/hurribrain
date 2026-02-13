@@ -4,17 +4,15 @@ import StatusTimer from "./StatusTimer";
 
 export default function PlayerStatusList({
   participation,
-  items,
 }: {
   participation: Participation;
-  items: Array<Item>;
 }) {
   return (
     <View style={{ flexDirection: "row", gap: 8 }}>
       {participation.statuses.map((status) => (
         <StatusTimer
-          key={status.itemUuid}
-          item={items.find((i) => i.uuid === status.itemUuid)!}
+          key={status.name}
+          name={status.name}
           duration={status.duration}
         />
       ))}{" "}

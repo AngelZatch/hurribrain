@@ -57,7 +57,7 @@ export default function ActiveGame({
           <PlayerRanking player={participation!} />
         </View>
       </View>
-      <PlayerStatusList participation={participation} items={items} />
+      <PlayerStatusList participation={participation} />
       <View
         style={{
           alignContent: "center",

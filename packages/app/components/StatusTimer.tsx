@@ -3,11 +3,11 @@ import ThemedText from "./ui/ThemedText";
 import { Item } from "@/api/play.api";
 
 type StatusTimerProps = {
-  item: Item;
+  name: string;
   duration: number;
 };
 
-export default function StatusTimer({ item, duration }: StatusTimerProps) {
+export default function StatusTimer({ name, duration }: StatusTimerProps) {
   return (
     <View
       style={{
@@ -27,7 +27,7 @@ export default function StatusTimer({ item, duration }: StatusTimerProps) {
           color: "#FFFFFF",
         }}
       >
-        {item.name} ({duration})
+        {name} ({duration})
       </ThemedText>
     </View>
   );
