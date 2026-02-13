@@ -8,7 +8,7 @@ export function PageContainer({ style, ...otherProps }: ViewProps) {
           flex: 1,
           justifyContent: "flex-start",
           alignItems: "center",
-          gap: 16,
+          gap: 6,
           padding: 20,
         },
         style,

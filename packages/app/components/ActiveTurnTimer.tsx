@@ -2,20 +2,13 @@ import { View } from "react-native";
 import ThemedText from "./ui/ThemedText";
 import { IconSymbol } from "./ui/IconSymbol";
 import { useEffect, useState } from "react";
+import { PlayableTurn } from "@/api/play.api";
 
-export default function ActiveTurnTimer() {
-  const [timeLeft, setTimeLeft] = useState(15);
+type ActiveTurnTimerProps = {
+  timeLeft: number;
+};
 
-  useEffect(() => {
-    if (timeLeft > 0) {
-      const timerId = setInterval(() => {
-        setTimeLeft((prevTime) => prevTime - 1);
-      }, 1000);
-
-      return () => clearInterval(timerId);
-    }
-  }, [timeLeft]);
-
+export default function ActiveTurnTimer({ timeLeft }: ActiveTurnTimerProps) {
   return (
     <View
       style={{

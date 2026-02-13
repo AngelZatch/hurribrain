@@ -8,14 +8,20 @@ import {
   Choice,
   useAnswerQuestion,
   useGetMyAnswer,
+  Participation,
 } from "@/api/play.api";
+import ItemButton from "./ItemButton";
 
 type ActivePlayableTurnProps = {
   currentTurn: PlayableTurn;
+  participation: Participation;
+  timeLeft: number;
 };
 
 export default function ActivePlayableTurn({
   currentTurn,
+  participation,
+  timeLeft,
 }: ActivePlayableTurnProps) {
   const [selectedChoice, setSelectedChoice] = useState<Choice | null>(null);
   const [sentChoice, setSentChoice] = useState<Choice | null>(null);
@@ -31,7 +37,7 @@ export default function ActivePlayableTurn({
   const { data: myAnswer } = useGetMyAnswer(
     user!,
     currentTurn.game,
-    currentTurn.uuid
+    currentTurn.uuid,
   );
   useEffect(() => {
     if (myAnswer) {
@@ -40,7 +46,7 @@ export default function ActivePlayableTurn({
   }, [myAnswer]);
 
   const handleSendAnswer = async () => {
-    if (!selectedChoice) {
+    if (!selectedChoice || timeLeft <= 0) {
       return;
     }
 
@@ -69,11 +75,24 @@ export default function ActivePlayableTurn({
           />
         ))}
       </View>
-      <ThemedButton
-        title={sentChoice ? "Modifier" : "Répondre"}
-        onPress={handleSendAnswer}
-        disabled={!selectedChoice}
-      />
+      <View
+        style={{
+          display: "flex",
+          gap: 24,
+          flexDirection: "row",
+          justifyContent: "center",
+          alignSelf: "stretch",
+          alignItems: "center",
+        }}
+      >
+        <ItemButton participation={participation} />
+        <ThemedButton
+          title={sentChoice ? "Modifier" : "Répondre"}
+          onPress={handleSendAnswer}
+          disabled={!selectedChoice || timeLeft <= 0}
+          fullWidth
+        />
+      </View>
     </>
   );
 }

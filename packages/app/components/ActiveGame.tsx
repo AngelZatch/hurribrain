@@ -1,30 +1,64 @@
 import { View } from "react-native";
 import ThemedText from "./ui/ThemedText";
-import { useAuth } from "@/contexts/auth.context";
 import PlayerRanking from "./PlayerRanking";
 import CurrentQuestionIndicator from "./CurrentQuestionIndicator";
 import ActiveTurnTimer from "./ActiveTurnTimer";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ActivePlayableTurn from "./ActivePlayableTurn";
 import TurnRecap from "./TurnRecap";
-import {
-  PlayableTurn,
-  PlayedTurn,
-  useGetMyParticipation,
-} from "@/api/play.api";
+import { Item, Participation, PlayableTurn, PlayedTurn } from "@/api/play.api";
+import PlayerStatusList from "./PlayerStatusList";
+import { hasStatus, scrambleSentence } from "@/utils/gameUtils";
 
 type ActiveTurnProps = {
   currentTurn: PlayableTurn | PlayedTurn;
+  participation: Participation;
 };
 
-export default function ActiveGame({ currentTurn }: ActiveTurnProps) {
-  const { user } = useAuth();
-
-  // Get the participant's data
-  const { data: me, isLoading } = useGetMyParticipation(
-    user!,
-    currentTurn.game
+export default function ActiveGame({
+  currentTurn,
+  participation,
+}: ActiveTurnProps) {
+  const [questionTitle, setQuestionTitle] = useState(
+    currentTurn.question.title,
   );
+
+  useEffect(() => {
+    if (hasStatus(participation, "scramble")) {
+      setQuestionTitle(scrambleSentence(currentTurn.question.title));
+    } else {
+      setQuestionTitle(currentTurn.question.title);
+    }
+  }, [participation, currentTurn.question.title]);
+
+  // Timer
+  const [timeLeft, setTimeLeft] = useState(getInitialTimeLeft());
+
+  function getInitialTimeLeft(): number {
+    if (!currentTurn.startedAt) return 15;
+    const elapsed = Math.floor(
+      (Date.now() - new Date(currentTurn.startedAt).getTime()) / 1000,
+    );
+    return Math.max(15 - elapsed, 0);
+  }
+
+  useEffect(() => {
+    if (hasStatus(participation, "Hurry")) {
+      setTimeLeft(getInitialTimeLeft() - 5);
+    } else {
+      setTimeLeft(getInitialTimeLeft());
+    }
+  }, [currentTurn.startedAt, participation]);
+
+  useEffect(() => {
+    if (timeLeft > 0) {
+      const timerId = setInterval(() => {
+        setTimeLeft((prevTime) => prevTime - 1);
+      }, 1000);
+
+      return () => clearInterval(timerId);
+    }
+  }, [timeLeft]);
 
   return (
     <View
@@ -50,12 +84,13 @@ export default function ActiveGame({ currentTurn }: ActiveTurnProps) {
           />
         </View>
         <View style={{ flex: 1, alignItems: "center" }}>
-          {!currentTurn.finishedAt && <ActiveTurnTimer />}
+          {!currentTurn.finishedAt && <ActiveTurnTimer timeLeft={timeLeft} />}
         </View>
         <View style={{ flex: 1 }}>
-          {!isLoading && <PlayerRanking player={me!} />}
+          <PlayerRanking player={participation!} />
         </View>
       </View>
+      <PlayerStatusList participation={participation} />
       <View
         style={{
           alignContent: "center",
@@ -68,15 +103,19 @@ export default function ActiveGame({ currentTurn }: ActiveTurnProps) {
             textAlign: "center",
           }}
         >
-          {currentTurn.question.title}
+          {questionTitle}
         </ThemedText>
       </View>
       {!currentTurn.finishedAt ? (
-        <ActivePlayableTurn currentTurn={currentTurn as PlayableTurn} />
+        <ActivePlayableTurn
+          currentTurn={currentTurn as PlayableTurn}
+          participation={participation}
+          timeLeft={timeLeft}
+        />
       ) : (
         <TurnRecap
           currentTurn={currentTurn as PlayedTurn}
-          participation={me!}
+          participation={participation}
         />
       )}
     </View>

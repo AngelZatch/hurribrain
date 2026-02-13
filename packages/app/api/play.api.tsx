@@ -4,20 +4,30 @@ import { Game } from "./games.api";
 
 export type Participation = {
   uuid: string;
+
+  // SCORE
   score: number;
   previousScore: number;
+
+  // RANK
   rank: number;
   previousRank: number;
+
+  // RANK
   streak: number;
   maxStreak: number;
-  user: {
-    uuid: string;
-    name: string;
-  };
-  game?: {
-    uuid: string;
-    code: string;
-  };
+
+  // ITEM AND STATUSES
+  itemCharge: number;
+  activeItem: string | null; // Loaded by the client
+  statuses: Array<{
+    name: string; // Loaded by the client
+    duration: number;
+  }>;
+
+  // GENERAL
+  user: string; // Loaded by the client
+  game?: string; // Loaded by the client
 };
 
 export type Leaderboard = Array<Participation>;
@@ -85,6 +95,13 @@ export type Choice = {
   isCorrect?: boolean;
 };
 
+export type Item = {
+  uuid: string;
+  name: string;
+  description: string;
+  type: "attack" | "defense" | "support";
+};
+
 // Utility function to check if the user has a current participation so they can quickly resume
 export const hasACurrentParticipation = (token: string) => {
   return useQuery({
@@ -96,7 +113,7 @@ export const hasACurrentParticipation = (token: string) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       return response.data;
     },
@@ -113,7 +130,7 @@ export const useGetLeaderboard = (token: string, gameId: string) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       return response.data;
     },
@@ -131,7 +148,7 @@ export const useStartGame = (token: string) => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
 
         return response.data;
@@ -145,22 +162,22 @@ export const useStartGame = (token: string) => {
   });
 };
 
-export const useGetMyParticipation = (token: string, gameId: string) => {
-  return useQuery({
-    queryKey: ["my-participation"],
-    queryFn: async (): Promise<Participation> => {
-      const response = await axios.get(
-        `http://localhost:8080/games/${gameId}/leaderboard/me`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      return response.data;
-    },
-  });
-};
+// export const useGetMyParticipation = (token: string, gameId: string) => {
+//   return useQuery({
+//     queryKey: ["my-participation"],
+//     queryFn: async (): Promise<Participation> => {
+//       const response = await axios.get(
+//         `http://localhost:8080/games/${gameId}/leaderboard/me`,
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         },
+//       );
+//       return response.data;
+//     },
+//   });
+// };
 
 export const useAnswerQuestion = (token: string, gameId: string) => {
   return useMutation({
@@ -179,7 +196,7 @@ export const useAnswerQuestion = (token: string, gameId: string) => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
 
         return response.data;
@@ -196,7 +213,7 @@ export const useAnswerQuestion = (token: string, gameId: string) => {
 export const useGetMyAnswer = (
   token: string,
   gameId: string,
-  turnId: string
+  turnId: string,
 ) => {
   return useQuery({
     queryKey: ["my-answer", gameId, turnId],
@@ -207,7 +224,7 @@ export const useGetMyAnswer = (
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       return response.data;
     },

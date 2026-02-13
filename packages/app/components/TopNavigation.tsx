@@ -1,9 +1,9 @@
 import { useRouter } from "expo-router";
 import { View } from "react-native";
-import ThemedIconButton from "./ui/ThemedIconButton";
 import ThemedText from "./ui/ThemedText";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import ThemedButton from "./ui/ThemedButton";
 
 type TopNavigationProps = {
   topLabel?: string;
@@ -28,17 +28,20 @@ export default function TopNavigation({
       style={{
         display: "flex",
         flexDirection: "row",
-        height: 73,
-        paddingHorizontal: 10,
-        paddingVertical: 0,
+        height: 60,
+        paddingHorizontal: 0,
+        paddingVertical: 10,
         alignItems: "center",
         gap: 10,
         alignSelf: "stretch",
       }}
     >
       {leftElement ?? (
-        <ThemedIconButton
+        <ThemedButton
           icon={"chevron.left"}
+          size="large"
+          title=""
+          type="secondary"
           onPress={() => {
             onPress ?? router.back();
           }}

@@ -6,7 +6,6 @@ import { PageContainer } from "@/components/ui/PageContainer";
 import { Link } from "expo-router";
 import { View, Text, Image, StyleSheet } from "react-native";
 import { useAuth } from "@/contexts/auth.context";
-import ThemedIconButton from "@/components/ui/ThemedIconButton";
 import ThemedButton from "@/components/ui/ThemedButton";
 import { useGetMeWithStats } from "@/api/auth.api";
 
@@ -46,7 +45,12 @@ export default function ProfileScreen() {
         }}
       >
         <Link href="/settings">
-          <ThemedIconButton icon="gearshape.fill" />
+          <ThemedButton
+            icon="gearshape.fill"
+            size="large"
+            title=""
+            type="secondary"
+          />
         </Link>
       </View>
       <View

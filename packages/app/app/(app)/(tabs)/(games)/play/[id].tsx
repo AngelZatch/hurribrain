@@ -7,76 +7,97 @@ import TopNavigation from "@/components/TopNavigation";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import GameLobby from "@/components/GameLobby";
-import { io, Socket } from "socket.io-client";
+import { socket } from "@/contexts/socket";
 import ActiveGame from "@/components/ActiveGame";
 import { useQueryClient } from "@tanstack/react-query";
-import ThemedIconButton from "@/components/ui/ThemedIconButton";
 import { useGetGame } from "@/api/games.api";
-import { PlayableTurn, PlayedTurn } from "@/api/play.api";
+import { Participation, PlayableTurn, PlayedTurn } from "@/api/play.api";
 import GameRecap from "@/components/GameRecap";
+import ThemedText from "@/components/ui/ThemedText";
+import { useGetMe } from "@/api/auth.api";
+import ThemedButton from "@/components/ui/ThemedButton";
 
 export default function PlayScreen() {
   const colorScheme = useColorScheme();
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const { id: gameId } = useLocalSearchParams<{ id: string }>();
-  const socket = useRef<Socket>();
 
+  // Getting "long-term" data for the game (game info and logged user)
   const { data: game, isLoading, error } = useGetGame(user!, gameId);
+  const { data: me } = useGetMe(user!);
+
+  // Working states for the game (current turn and participation)
   const [currentTurn, setCurrentTurn] = useState<
     PlayableTurn | PlayedTurn | null
   >(null);
+  const [participation, setParticipation] = useState<Participation | null>(
+    null,
+  );
 
   useEffect(() => {
-    if (!game?.uuid) {
+    if (!game?.uuid || !user) {
       return;
     }
 
-    socket.current = io("http://localhost:8080", {
-      transports: ["websocket"],
-      reconnection: true,
-      reconnectionDelay: 400,
-      reconnectionAttempts: 10,
-    })
-      .on("connect", () => {
-        console.log("connected");
-        socket.current?.emit("game:join", game.uuid);
-      })
-      .on("game:joined", () => {
-        console.log("game:joined");
-        socket.current?.emit("sync:request", game.uuid);
-      })
-      .on("game:updated", () => {
-        console.log("game:updated");
-        queryClient.invalidateQueries({
-          queryKey: ["games", gameId],
-        });
-      })
-      .on("turn:current", (turn: PlayableTurn | PlayedTurn | null) => {
-        queryClient.invalidateQueries({
-          queryKey: ["my-participation", gameId],
-        });
-        if (turn) {
-          const choices = turn.question.choices;
-          for (let i = choices.length - 1; i >= 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [choices[i], choices[j]] = [choices[j], choices[i]];
-          }
-          turn.question.choices = choices;
-        }
-        setCurrentTurn(turn);
+    socket.connect();
+
+    socket.on("connect", () => {
+      socket.emit("game:join", { game: game.uuid, user: me!.uuid });
+    });
+
+    socket.on("game:joined", () => {
+      socket.emit("sync:request", game.uuid);
+    });
+
+    socket.on("game:updated", () => {
+      console.log("game:updated");
+      queryClient.invalidateQueries({
+        queryKey: ["games", gameId],
       });
+    });
+
+    /**
+     * When a participation is updated (e.g. a player joins, leaves, answers a question, etc.), the server emits the
+     * new participation to the concerned player. We listen to this event to update the participation data in
+     * real-time and reflect it in the UI (e.g. update the player's score, show that they answered, etc.)
+     */
+    socket.on("participation:updated", (participation: Participation) => {
+      if (!participation || participation.user !== me?.uuid) {
+        return;
+      }
+
+      setParticipation(participation);
+    });
+
+    // When the current turn changes, the server emits the new turn to all participants
+    socket.on("turn:current", (turn: PlayableTurn | PlayedTurn | null) => {
+      if (turn) {
+        const choices = turn.question.choices;
+        for (let i = choices.length - 1; i >= 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [choices[i], choices[j]] = [choices[j], choices[i]];
+        }
+        turn.question.choices = choices;
+      }
+      setCurrentTurn(turn);
+    });
 
     // Clean up
     return () => {
-      socket.current?.off("connect");
-      socket.current?.off("turn:change");
-      socket.current?.disconnect();
+      socket.off("connect");
+      socket.off("turn:current");
+      socket.off("participation:updated");
+      socket.disconnect();
     };
-  }, [game?.uuid]);
+  }, [game?.uuid, user]);
 
-  if (!game) {
-    return null;
+  if (!game || !me || !participation) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ThemedText>Chargement...</ThemedText>
+      </View>
+    );
   }
 
   return (
@@ -84,7 +105,7 @@ export default function PlayScreen() {
       <TopNavigation
         leftElement={
           <Link replace href="/games" asChild>
-            <ThemedIconButton icon="chevron.left" />
+            <ThemedButton icon="chevron.left" title="" type="secondary" />
           </Link>
         }
         topLabel={game?.isPrivate ? "Partie Privée" : "Partie Rapide"}
@@ -97,7 +118,9 @@ export default function PlayScreen() {
             }}
             asChild
           >
-            <ThemedIconButton
+            <ThemedButton
+              title=""
+              type="secondary"
               onPress={() => {
                 console.log("PRESSED");
               }}
@@ -122,7 +145,7 @@ export default function PlayScreen() {
       >
         {!game.startedAt && <GameLobby game={game!} />}
         {game.startedAt && !game.finishedAt && currentTurn && (
-          <ActiveGame currentTurn={currentTurn} />
+          <ActiveGame currentTurn={currentTurn} participation={participation} />
         )}
         {game.finishedAt && <GameRecap />}
       </View>

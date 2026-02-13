@@ -20,6 +20,8 @@ import { Socket } from "socket.io"
 import GameService from "./services/game.service.js"
 import { fastifyMultipart } from "@fastify/multipart"
 import { MEGABYTE } from "./utils/helperVariables.js"
+import fastifyRedis from "@fastify/redis"
+import ItemService from "./services/item.service.js"
 
 export const server = Fastify()
 
@@ -79,6 +81,12 @@ export const initializeServer = async () => {
     {}
   )
 
+  // Redis
+  await server.register(fastifyRedis, {
+    host: process.env.REDIS_HOST || "localhost",
+    port: parseInt(process.env.REDIS_PORT || "6379"),
+  })
+
   // Authentication
   await server.register(fastifyAuth)
 
@@ -102,20 +110,35 @@ export const initializeServer = async () => {
     if (err) throw err
 
     const gameService = new GameService()
+    const itemService = new ItemService()
 
     // Start the sync service
     server.io.on("connect", (socket: Socket) => {
-      socket.on("game:join", async (gameId: string) => {
-        // Confirm that there is a participation before joining
-        await socket.join(`game:${gameId}`)
-        socket.emit("game:joined")
-      })
+      socket.on(
+        "game:join",
+        async ({ game, user }: { game: string; user: string }) => {
+          // Confirm that there is a participation before joining
+          await socket.join(`game:${game}`)
+          socket.emit("game:joined")
+
+          // Get the participation and emit it to the user
+          const participation = await gameService.getParticipation(user, game)
+          socket.emit("participation:updated", participation)
+        }
+      )
 
       socket.on("sync:request", async (gameId: string) => {
         // Send the current game state
         const currentTurn = await gameService.syncGame(gameId)
         socket.emit("turn:current", currentTurn)
       })
+
+      socket.on(
+        "item:use",
+        async ({ game, user }: { game: string; user: string }) => {
+          await itemService.useItem(user, game)
+        }
+      )
     })
   })
 }
