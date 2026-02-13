@@ -1,4 +1,3 @@
-import { Item } from "./../entities/item.entity.js"
 import { Game } from "./../entities/game.entity.js"
 import { Participation } from "./../entities/participation.entity.js"
 import { User } from "./../entities/user.entity.js"
@@ -28,110 +27,58 @@ export default class ItemService {
       return
     }
 
-    const item = await em.findOneOrFail(Item, {
-      uuid: participation.activeItem,
-    })
-
-    switch (item.name) {
+    switch (participation.activeItem) {
       /**
        * Immediately clears all debuffs currently applied to the participant and protects them from new ones
        * until the end of the turn.
        */
       case "Shield":
-        this.addStatus(participation, item)
-        await this.clearCurrentDebuffs(participation)
+        this.addStatus(participation, participation.activeItem)
+        this.clearCurrentDebuffs(participation)
         break
 
-      /**
-       * Immediately adds 1 point to the participant's score.
-       */
+      // Immediately adds 1 point to the participant's score.
       case "Coin":
         participation.score += 1
         break
 
+      // Immediately turns all debuffs into coins for the participant (1 point per debuff removed).
+      case "Turnaround":
+        this.clearCurrentDebuffs(participation, true)
+        break
+
       /**
-       * TODO:
-       * Immediately removes 2 wrong choices from the current question for the participant.
+       * Buffs
+       *
+       * (TODO:) Half: Immediately removes 2 wrong choices from the current question for the participant.
+       * (TODO:) Passthrough: During the turn, redirects all future attacks to another player ranked even higher. (Non stack)
+       * Boost: For the current turn, if the participant answers correctly, the points awarded will be doubled.
+       * (TODO:) Spy: For the current turn, the participant using the item will be able to see what the others are answering.
        */
       case "Half":
-        this.addStatus(participation, item)
+      case "Passthrough":
+      case "Boost":
+      case "Spy":
+        this.addStatus(participation, participation.activeItem)
         break
 
       /**
-       * TODO:
-       * Immediately turns all debuffs into coins for the participant (1 point per debuff removed).
-       */
-      case "Turnaround":
-        this.addStatus(participation, item)
-        break
-
-      /**
-       * Immediately scrambles the words in the question and choices for a random player ranked higher
-       * than the participant.
-       * Stackable on the target.
+       * Attacks
+       *
+       * All attacks target and random player ranked higher than the attacker.
+       *
+       * Scramble: Immediately scrambles the words in the question on the screen of the target.
+       * (TODO:) Hurry: Immediately removes 5 seconds from the timer of the target.
+       * Punishment: If the target answers incorrectly, they will lose 3 points.
+       * Lock: Prevents the target from using their item until the end of the turn.
+       * (TODO:) Hidden: Parts of the question will be hidden on the screen of the target.
        */
       case "Scramble":
-        await this.attackTarget(participation, item)
-        break
-
-      /**
-       * TODO:
-       * Immediately removes 5 seconds from the timer for a random player ranked higher than the participant.
-       * Stackable on the target.
-       */
       case "Hurry":
-        await this.attackTarget(participation, item)
-        break
-
-      /**
-       * Immediately, if a random player ranked higher than the participant answers incorrectly, they will lose 3 points.
-       * Stackable on the target.
-       */
       case "Punishment":
-        await this.attackTarget(participation, item)
-        break
-
-      /**
-       * Immediately prevents a random player ranked higher than the participant from using their item.
-       * Stackable on the target.
-       */
       case "Lock":
-        await this.attackTarget(participation, item)
-        break
-
-      /**
-       * TODO:
-       * During the turn, redirects all future attacks to another player ranked even higher.
-       * Cannot be stacked.
-       */
-      case "Passthrough":
-        this.addStatus(participation, item)
-        break
-
-      /**
-       * TODO:
-       * Immediately, a random player ranked higher than the participant will not be able to fully see
-       * the question and choices.
-       * Stackable on the target.
-       */
       case "Hidden":
-        await this.attackTarget(participation, item)
-        break
-
-      /**
-       * For the current turn, if the participant answers correctly, the points awarded will be doubled.
-       * Cannot be stacked.
-       */
-      case "Boost":
-        this.addStatus(participation, item)
-        break
-
-      /**
-       * TODO:
-       * For the current turn, the participant using the item will be able to see what the others are answering.
-       */
-      case "Spy":
-        this.addStatus(participation, item)
+        await this.attackTarget(participation, participation.activeItem)
         break
 
       default:
@@ -149,17 +96,23 @@ export default class ItemService {
 
   /**
    * Removes all the debuffs currently applied to the participant.
-   * @param participation
+   * @param participation The player to cleanse
+   * @param convertToCoins Add coins for each debuff removed (if the method is called by the Turnaround item)
    */
-  private clearCurrentDebuffs = async (participation: Participation) => {
-    const em = getEntityManager()
+  private clearCurrentDebuffs = (
+    participation: Participation,
+    convertToCoins = false
+  ) => {
+    const debuffs = ["Scramble", "Hurry", "Punishment", "Lock", "Hidden"]
+    const initialDebuffLength = participation.statuses.length
 
-    const debuffs = await em.find(Item, {
-      isDebuff: true,
-    })
     participation.statuses = participation.statuses.filter((status) => {
-      return !debuffs.some((debuff) => debuff.name === status.name)
+      return !debuffs.some((debuff) => debuff === status.name)
     })
+
+    if (convertToCoins) {
+      participation.score += initialDebuffLength - participation.statuses.length
+    }
 
     return participation
   }
@@ -170,16 +123,16 @@ export default class ItemService {
    * @param participation
    * @param item
    */
-  private addStatus = (participation: Participation, item: Item) => {
+  private addStatus = (participation: Participation, item: string) => {
     const existingStatus = participation.statuses.find(
-      (status) => status.name === item.name
+      (status) => status.name === item
     )
 
     if (existingStatus) {
       existingStatus.duration += 1
     } else {
       participation.statuses.push({
-        name: item.name,
+        name: item,
         duration: 1,
       })
     }
@@ -190,11 +143,11 @@ export default class ItemService {
   /**
    * Finds a random player ranked higher than the participant using the item to be the target of the item's effect.
    *
-   * TODO: Implement "Shield" and "Passthrough" effects.
+   * TODO: Implement "Passthrough" effect.
    * @param participation The player using the item
    * @returns
    */
-  private attackTarget = async (participation: Participation, item: Item) => {
+  private attackTarget = async (participation: Participation, item: string) => {
     const em = getEntityManager()
 
     // Random number between 1 and the rank of the participant
