@@ -462,7 +462,6 @@ export default class GameService {
           34 + this.getBonusItemCharge(topScore - participation.score)
 
         // If the participant is holding an item, the charge caps to 50%
-
         if (participation.activeItem) {
           participation.itemCharge = 50
         }

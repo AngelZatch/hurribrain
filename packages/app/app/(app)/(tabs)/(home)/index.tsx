@@ -23,7 +23,7 @@ export default function HomeScreen() {
         }}
       />
       <Link
-        href={participation ? `/play/${participation!.game!.uuid}` : "/menu"}
+        href={participation ? `/play/${participation!.game!.uuid}` : "/lobby"}
         style={{ width: "100%" }}
         asChild
       >
