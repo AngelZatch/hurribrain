@@ -10,6 +10,13 @@ export default function HubStack() {
           gestureEnabled: true,
         }}
       />
+      <Stack.Screen
+        name="settings"
+        options={{
+          presentation: "fullScreenModal",
+          gestureEnabled: true,
+        }}
+      />
       <Stack.Screen name="(tabs)" />
     </Stack>
   );
