@@ -400,7 +400,7 @@ export default class GameService {
         )
 
         // If the streak is a multiple of 5, add a bonus
-        if (participation.streak % 5 === 0) {
+        if (participation.streak > 0 && participation.streak % 5 === 0) {
           scoreReward += participation.streak / 5
         }
 
@@ -430,9 +430,6 @@ export default class GameService {
         }
       }
 
-      // Increase item charge by 34 regardless of the answer, to a maximum of 100
-      participation.itemCharge += 34
-
       em.persist(participation)
     })
 
@@ -460,17 +457,17 @@ export default class GameService {
           topScore = participation.score
         }
 
-        participation.itemCharge += this.getBonusItemCharge(
-          topScore - participation.score
-        )
+        // Increase item charge by 34 regardless of the circumstances + a bonus based on their distance to the top player
+        participation.itemCharge +=
+          34 + this.getBonusItemCharge(topScore - participation.score)
+
+        // If the participant is holding an item, the charge caps to 50%
+
+        if (participation.activeItem) {
+          participation.itemCharge = 50
+        }
 
         if (participation.itemCharge >= 100) {
-          // If the participant is holding an item, the charge caps to 50%
-          if (participation.activeItem) {
-            participation.itemCharge = 50
-            return
-          }
-
           // Grant item and remove 100 from the charge
           participation.activeItem = this.grantItemToParticipant(
             topScore - participation.score
@@ -496,7 +493,7 @@ export default class GameService {
         .emit("participation:updated", participation)
     })
 
-    const updatedTurn = await em.findOneOrFail(
+    const finishedTurn = await em.findOneOrFail(
       Turn,
       { uuid: targetTurn.uuid },
       {
@@ -518,7 +515,7 @@ export default class GameService {
     )
 
     // Update sockets
-    server.io.to(`game:${gameId}`).emit("turn:current", updatedTurn)
+    server.io.to(`game:${gameId}`).emit("turn:current", finishedTurn)
 
     // Job for the next turn in 15s
     gameQueue.add(
@@ -534,7 +531,7 @@ export default class GameService {
       }
     )
 
-    return updatedTurn
+    return finishedTurn
   }
 
   finishGame = async (gameId: string) => {
