@@ -4,9 +4,6 @@ import { server, initializeServer } from "./server.js"
 import SyncService from "./services/sync.service.js"
 const PORT = 8080
 
-server.get("/", async () => {
-  return { hello: "world" }
-})
 ;(async () => {
   try {
     const ormConfig = getOrmConfig()
@@ -19,7 +16,7 @@ server.get("/", async () => {
     const syncService = new SyncService()
     syncService.listen()
 
-    await server.listen({ port: PORT })
+    await server.listen({ host: "127.0.0.1", port: PORT })
     console.log(`Server is running at http://localhost:${PORT}`)
   } catch (err) {
     console.error(err)

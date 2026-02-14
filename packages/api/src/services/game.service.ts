@@ -90,8 +90,6 @@ export default class GameService {
   ): Promise<Participation | null> => {
     const em = getEntityManager()
 
-    console.log("Getting participation for user", userId, "in game", gameId)
-
     return em.findOne(
       Participation,
       {
