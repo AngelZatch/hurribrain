@@ -36,7 +36,7 @@ export default function PlayScreen() {
   );
 
   useEffect(() => {
-    if (!game?.uuid || !user) {
+    if (!game?.uuid || !me) {
       return;
     }
 
@@ -85,12 +85,14 @@ export default function PlayScreen() {
 
     // Clean up
     return () => {
-      socket.off("connect");
       socket.off("turn:current");
       socket.off("participation:updated");
+      socket.off("game:updated");
+      socket.off("game:joined");
+      socket.off("connect");
       socket.disconnect();
     };
-  }, [game?.uuid, user]);
+  }, [game?.uuid, me]);
 
   if (!game || !me || !participation) {
     return (
