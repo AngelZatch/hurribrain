@@ -8,8 +8,10 @@
   ],
   "lockFileMaintenance": {
     "enabled": true,
-    "automerge": true
+    "automerge": true,
+    "rebaseStalePrs": true
   },
+  "configMigration": true,
   "packageRules": [
     {
       "matchUpdateTypes": [
