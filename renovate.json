@@ -12,6 +12,7 @@
     "rebaseStalePrs": true
   },
   "configMigration": true,
+  "dependencyDashboard": true,
   "packageRules": [
     {
       "matchUpdateTypes": [
