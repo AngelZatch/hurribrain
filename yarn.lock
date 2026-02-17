@@ -1390,10 +1390,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo-google-fonts/exo@npm:^0.2.3":
-  version: 0.2.3
-  resolution: "@expo-google-fonts/exo@npm:0.2.3"
-  checksum: 10c0/e9126c092166364beb346aa8c6935cc17c766fd90ba42bf66cc4cceb1de654a5cc7b9636f713e0bb8e32328d92658ce67727e9be8044c1ea22d557ac9ebc0745
+"@expo-google-fonts/exo@npm:^0.4.0":
+  version: 0.4.2
+  resolution: "@expo-google-fonts/exo@npm:0.4.2"
+  checksum: 10c0/9ea281850f792c115e1221eb018b85bbc1edb7a3f69dde45f8ad43c85bc8a58e5df58ac113869729359d7d72a0081854db1ca98743103d46737e09bc21e0f04e
   languageName: node
   linkType: hard
 
@@ -4906,7 +4906,7 @@ __metadata:
   resolution: "app@workspace:packages/app"
   dependencies:
     "@babel/core": "npm:^7.25.2"
-    "@expo-google-fonts/exo": "npm:^0.2.3"
+    "@expo-google-fonts/exo": "npm:^0.4.0"
     "@expo/vector-icons": "npm:^14.0.2"
     "@react-native-async-storage/async-storage": "npm:^2.1.0"
     "@react-native-community/slider": "npm:^4.5.5"
