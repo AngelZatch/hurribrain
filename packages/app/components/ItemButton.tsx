@@ -45,7 +45,7 @@ export default function ItemButton({ participation }: ItemButtonProps) {
       tintColor={"#FFD700"}
       backgroundColor="#2F2F2F"
     >
-      {(fill) => (
+      {() => (
         <TouchableOpacity
           onPress={handleUseItem}
           disabled={!participation.activeItem || hasLock}

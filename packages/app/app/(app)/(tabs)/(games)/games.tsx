@@ -46,6 +46,7 @@ export default function GamesScreen() {
                 params: { id: game.uuid },
               }}
               style={{ width: "100%" }}
+              key={game.code}
             >
               <GameListItem key={game.uuid} game={game} />
             </Link>
