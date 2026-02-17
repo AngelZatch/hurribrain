@@ -15,7 +15,7 @@ export default function PlayerStatusList({
           name={status.name}
           duration={status.duration}
         />
-      ))}{" "}
+      ))}
     </View>
   );
 }

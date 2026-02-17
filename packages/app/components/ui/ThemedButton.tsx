@@ -94,24 +94,26 @@ export default function ThemedButton({
       }}
       onPress={rest.onPress}
     >
-      {rest.icon && (
-        <IconSymbol
-          color={textColorMap[`${type}:${variant}`] as ColorValue}
-          size={32}
-          name={rest.icon}
-        />
-      )}
-      {rest.title && (
-        <Text
-          style={{
-            color: textColorMap[`${type}:${variant}`],
-            fontFamily: "Exo_600SemiBold",
-            fontSize: size === "small" ? 12 : size === "medium" ? 14 : 16,
-          }}
-        >
-          {rest.title}
-        </Text>
-      )}
+      <>
+        {rest.icon && (
+          <IconSymbol
+            color={textColorMap[`${type}:${variant}`] as ColorValue}
+            size={32}
+            name={rest.icon}
+          />
+        )}
+        {rest.title && (
+          <Text
+            style={{
+              color: textColorMap[`${type}:${variant}`],
+              fontFamily: "Exo_600SemiBold",
+              fontSize: size === "small" ? 12 : size === "medium" ? 14 : 16,
+            }}
+          >
+            {rest.title}
+          </Text>
+        )}
+      </>
     </Pressable>
   );
 }
