@@ -1935,10 +1935,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fastify/deepmerge@npm:^2.0.0":
-  version: 2.0.2
-  resolution: "@fastify/deepmerge@npm:2.0.2"
-  checksum: 10c0/dfb30896d374c25a3f5bc0550cb19d2014946392b2858fadd5feb1486eb3c37751db1db24dcbf801bb11465435939d0d75fb7ee65501287e77b4df7022b3509a
+"@fastify/deepmerge@npm:^3.0.0":
+  version: 3.2.0
+  resolution: "@fastify/deepmerge@npm:3.2.0"
+  checksum: 10c0/c5ef2d683ad8817aca8528d9c62e1bc62b516270622bac0b732fd85b161cc213a90cb015b663627db81aa9c48b68e35f67a8c0a22dc3aa7736db191b9de42583
   languageName: node
   linkType: hard
 
@@ -1975,15 +1975,15 @@ __metadata:
   linkType: hard
 
 "@fastify/multipart@npm:^9.0.3":
-  version: 9.0.3
-  resolution: "@fastify/multipart@npm:9.0.3"
+  version: 9.4.0
+  resolution: "@fastify/multipart@npm:9.4.0"
   dependencies:
     "@fastify/busboy": "npm:^3.0.0"
-    "@fastify/deepmerge": "npm:^2.0.0"
+    "@fastify/deepmerge": "npm:^3.0.0"
     "@fastify/error": "npm:^4.0.0"
     fastify-plugin: "npm:^5.0.0"
-    secure-json-parse: "npm:^3.0.0"
-  checksum: 10c0/589571e71954e28b6445dcaeef3f4e978931f9a697cf259ef45327ee646f85db2195cd38fe4bf758aab3e0d61ceb30429b1389fd9e176f55a3c83b4186ebb20d
+    secure-json-parse: "npm:^4.0.0"
+  checksum: 10c0/4e82b59333dca720ef71b409249291db1955ac6fa7eb6769a83d22e08342fb48fd6e9ca28e553dc2222b58aaebc09392fcf8f680297f2fc259597a7bddd80243
   languageName: node
   linkType: hard
 
@@ -14475,10 +14475,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"secure-json-parse@npm:^3.0.0, secure-json-parse@npm:^3.0.1":
+"secure-json-parse@npm:^3.0.1":
   version: 3.0.2
   resolution: "secure-json-parse@npm:3.0.2"
   checksum: 10c0/4c9c005e7fdd8528df35fcdec41dc4e8e15820ce52de19f8102da808f9400a9ed8c0a28971e3efe24b001ee1e60296af553f12bbaab81a152f702dd00af2092d
+  languageName: node
+  linkType: hard
+
+"secure-json-parse@npm:^4.0.0":
+  version: 4.1.0
+  resolution: "secure-json-parse@npm:4.1.0"
+  checksum: 10c0/52b3f8125ea974db1333a5b63e6a1df550c36c0d5f9a263911d6732812bd02e938b30be324dcbbb9da3ef9bf5a84849e0dd911f56544003d3c09e8eee12504de
   languageName: node
   linkType: hard
 
