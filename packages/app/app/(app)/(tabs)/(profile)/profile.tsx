@@ -67,7 +67,7 @@ export default function ProfileScreen() {
         <ContainerView>
           <Image
             source={{
-              uri: "https://images.squarespace-cdn.com/content/v1/5c39e499697a984f8b163b5c/1689188407060-92YLPDG9ZPJ2CFWQIUIN/03+Y%27shtola.jpg",
+              uri: "https://static.wikia.nocookie.net/finalfantasy/images/5/58/Theatrhythm_CC_Y%E2%80%99shtola.png",
             }}
             style={{
               aspectRatio: 1,
