@@ -1982,7 +1982,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/vector-icons@npm:^14.0.2, @expo/vector-icons@npm:~14.0.4":
+"@expo/vector-icons@npm:^14.0.2":
+  version: 14.1.0
+  resolution: "@expo/vector-icons@npm:14.1.0"
+  peerDependencies:
+    expo-font: "*"
+    react: "*"
+    react-native: "*"
+  checksum: 10c0/f1dcea2c43c0808f48d1953395c6f8025ae5e811648e86b79158492c9ef8af7a40781e42844dfb1434242a08fcf6ab14886825eb2c79bad2a792aebd1eb5077c
+  languageName: node
+  linkType: hard
+
+"@expo/vector-icons@npm:~14.0.4":
   version: 14.0.4
   resolution: "@expo/vector-icons@npm:14.0.4"
   dependencies:
