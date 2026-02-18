@@ -61,6 +61,7 @@
     "@mikro-orm/mysql": "^6.3.13",
     "@mikro-orm/reflection": "^6.3.13",
     "@mikro-orm/seeder": "^6.3.13",
+    "@simplewebauthn/server": "^13.2.2",
     "@sinclair/typebox": "^0.34.0",
     "bcrypt": "^5.1.1",
     "bull": "^4.16.5",
