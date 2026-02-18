@@ -4,7 +4,11 @@ import { Turn } from "./../entities/turn.entity.js"
 import { Participation } from "./../entities/participation.entity.js"
 import { Game } from "./../entities/game.entity.js"
 import { Question } from "./../entities/question.entity.js"
-import { PlayableTurn, PlayedTurn } from "./../schemas/turn.schema.js"
+import {
+  PlayableTurn,
+  PlayedTurn,
+  PrePlayableTurn,
+} from "./../schemas/turn.schema.js"
 import { Choice } from "./../entities/choice.entity.js"
 import { UserStats } from "./../entities/userStats.entity.js"
 import { server } from "./../server.js"
@@ -12,19 +16,27 @@ import { server } from "./../server.js"
 import Queue from "bull"
 import { SECOND } from "./../utils/helperVariables.js"
 import { User } from "./../entities/user.entity.js"
+import { wrap } from "@mikro-orm/core"
 const gameQueue = new Queue("games")
 
 export default class GameService {
-  syncGame = async (
-    gameId: string
+  getCurrentTurn = async (
+    user: string,
+    game: string
   ): Promise<PlayableTurn | PlayedTurn | null> => {
     const em = getEntityManager()
+
+    const participant = await this.getParticipation(user, game)
+
+    if (!participant) {
+      return null
+    }
 
     // Getting the ongoing turn
     const currentTurn = await em.findOne(
       Turn,
       {
-        game: gameId,
+        game,
         startedAt: { $ne: null },
         finishedAt: null,
       },
@@ -40,17 +52,19 @@ export default class GameService {
           "question.difficulty",
           "question.choices.uuid",
           "question.choices.value",
+          "question.choices.isCorrect",
           "game",
         ],
+        cache: 1000, // Cached for 1s
       }
     )
 
     // If no ongoing turn, return the last finished turn
     if (!currentTurn) {
-      return em.findOne(
+      const lastTurn = await em.findOne(
         Turn,
         {
-          game: gameId,
+          game,
           startedAt: { $ne: null },
           finishedAt: { $ne: null },
         },
@@ -61,6 +75,7 @@ export default class GameService {
             "position",
             "startedAt",
             "finishedAt",
+            "speedRanking",
             "question.title",
             "question.successRate",
             "question.difficulty",
@@ -71,9 +86,37 @@ export default class GameService {
           ],
         }
       )
+
+      if (!lastTurn) {
+        return null
+      }
+
+      return wrap(lastTurn!).toObject()
     }
 
-    return currentTurn
+    const turnDTO: PrePlayableTurn = wrap(currentTurn).toObject()
+
+    const choices = turnDTO.question.choices
+    const availableChoices = []
+
+    if (this.hasStatus(participant, "Half")) {
+      availableChoices.push(
+        choices.filter((c) => c.isCorrect)[0],
+        choices.filter((c) => !c.isCorrect)[0]
+      )
+    }
+
+    if (this.hasStatus(participant, "Hidden")) {
+      const randomIndex = Math.floor(Math.random() * availableChoices.length)
+      if (availableChoices[randomIndex]) {
+        availableChoices[randomIndex].value = ""
+      }
+    }
+
+    turnDTO.question.choices =
+      availableChoices.length > 0 ? availableChoices : choices
+
+    return turnDTO
   }
 
   /**
@@ -207,10 +250,10 @@ export default class GameService {
    * @param gameId The identifier of the game
    * @returns a PlayableTurn object or null if the game is finished
    */
-  startNextTurn = async (gameId: string): Promise<PlayableTurn | null> => {
+  startNextTurn = async (gameId: string): Promise<void> => {
     const em = getEntityManager()
 
-    const nextTurn: PlayableTurn | null = await em.findOne(
+    const nextTurn = await em.findOne(
       Turn,
       {
         game: gameId,
@@ -218,31 +261,20 @@ export default class GameService {
       },
       {
         orderBy: { position: "ASC" },
-        fields: [
-          "uuid",
-          "position",
-          "startedAt",
-          "finishedAt",
-          "question.title",
-          "question.successRate",
-          "question.difficulty",
-          "question.choices.uuid",
-          "question.choices.value",
-          "game",
-        ],
       }
     )
 
     if (!nextTurn) {
       this.finishGame(gameId)
-      return null
+      return
     }
 
     nextTurn.startedAt = new Date()
-    await em.persistAndFlush(nextTurn)
+    em.persist(nextTurn)
+    await em.flush()
 
-    // Update sockets
-    server.io.to(`game:${gameId}`).emit("turn:current", nextTurn)
+    // Update sockets with no PlayableTurn as all players can have different statuses and thus need different choices
+    server.io.to(`game:${gameId}`).emit("turn:start")
 
     // 15s timer to play the turn
     gameQueue.add(
@@ -257,7 +289,8 @@ export default class GameService {
         removeOnComplete: true,
       }
     )
-    return nextTurn
+
+    return
   }
 
   /**
@@ -272,10 +305,7 @@ export default class GameService {
    * @param turnId The identifier of the turn to finish
    * @returns A PlayedTurn object
    */
-  finishCurrentTurn = async (
-    gameId: string,
-    turnId: string
-  ): Promise<PlayedTurn> => {
+  finishCurrentTurn = async (gameId: string, turnId: string): Promise<void> => {
     const em = getEntityManager()
 
     const targetTurn = await em.findOneOrFail(
@@ -514,7 +544,9 @@ export default class GameService {
     )
 
     // Update sockets
-    server.io.to(`game:${gameId}`).emit("turn:current", finishedTurn)
+    server.io
+      .to(`game:${gameId}`)
+      .emit("turn:finish", wrap(finishedTurn).toObject() satisfies PlayedTurn)
 
     // Job for the next turn in 15s
     gameQueue.add(
@@ -530,7 +562,7 @@ export default class GameService {
       }
     )
 
-    return finishedTurn
+    return
   }
 
   finishGame = async (gameId: string) => {
@@ -778,5 +810,14 @@ export default class GameService {
         { name: "Lock", min: 0.95, max: 1.0 }, // 5% lock
       ]
     }
+  }
+
+  private hasStatus(
+    participation: Participation,
+    statusToFind: string
+  ): boolean {
+    if (!participation.statuses) return false
+
+    return participation.statuses.some((status) => status.name === statusToFind)
   }
 }

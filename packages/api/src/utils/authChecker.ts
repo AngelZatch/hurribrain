@@ -20,7 +20,6 @@ export const verifyJWT = async (
     reply.statusCode = 401
     throw new Error("Unauthorized")
   }
-  console.log(decoded)
 
   request.user = decoded["uuid"]
 }

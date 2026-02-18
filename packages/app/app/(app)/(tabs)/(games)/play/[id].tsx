@@ -47,11 +47,13 @@ export default function PlayScreen() {
     });
 
     socket.on("game:joined", () => {
-      socket.emit("sync:request", game.uuid);
+      socket.emit("turn:request", {
+        game: game.uuid,
+        user: me!.uuid,
+      });
     });
 
     socket.on("game:updated", () => {
-      console.log("game:updated");
       queryClient.invalidateQueries({
         queryKey: ["games", gameId],
       });
@@ -62,17 +64,40 @@ export default function PlayScreen() {
      * new participation to the concerned player. We listen to this event to update the participation data in
      * real-time and reflect it in the UI (e.g. update the player's score, show that they answered, etc.)
      */
-    socket.on("participation:updated", (participation: Participation) => {
-      if (!participation || participation.user !== me?.uuid) {
+    socket.on("participation:updated", (newParticipation: Participation) => {
+      if (!newParticipation || newParticipation.user !== me?.uuid) {
         return;
       }
 
-      setParticipation(participation);
+      setParticipation((oldParticipation) => {
+        if (oldParticipation) {
+          const oldStatuses = oldParticipation.statuses || [];
+          const newStatuses = newParticipation.statuses || [];
+          const hasDifference =
+            oldStatuses.length !== newStatuses.length ||
+            oldStatuses.some((status) => !newStatuses.includes(status)) ||
+            newStatuses.some((status) => !oldStatuses.includes(status));
+          if (hasDifference) {
+            socket.emit("turn:request", { game: game.uuid, user: me!.uuid });
+          }
+        }
+        return newParticipation;
+      });
     });
 
-    // When the current turn changes, the server emits the new turn to all participants
+    socket.on("turn:start", () => {
+      socket.emit("turn:request", {
+        game: game.uuid,
+        user: me!.uuid,
+      });
+    });
+
+    socket.on("turn:finish", (turn: PlayedTurn) => {
+      setCurrentTurn(turn);
+    });
+
     socket.on("turn:current", (turn: PlayableTurn | PlayedTurn | null) => {
-      if (turn) {
+      if (turn && !turn.finishedAt) {
         const choices = turn.question.choices;
         for (let i = choices.length - 1; i >= 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
@@ -86,6 +111,8 @@ export default function PlayScreen() {
     // Clean up
     return () => {
       socket.off("turn:current");
+      socket.off("turn:finish");
+      socket.off("turn:start");
       socket.off("participation:updated");
       socket.off("game:updated");
       socket.off("game:joined");

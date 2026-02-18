@@ -109,9 +109,6 @@ const AuthController = async (fastify: FastifyInstance) => {
 
       em.persist(user)
 
-      const stats = new UserStats(user)
-      console.log(stats)
-
       em.persist(new UserStats(user))
 
       await em.flush()
