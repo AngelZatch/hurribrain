@@ -34,7 +34,7 @@ export default class ItemService {
        * until the end of the turn. Nullified by Super Quake
        */
       case "Shield":
-        this.addStatus(participation, participation.activeItem)
+        participation.addStatus(participation.activeItem)
         this.clearCurrentDebuffs(participation)
         break
 
@@ -58,7 +58,7 @@ export default class ItemService {
       case "Half":
       case "Hidden":
       case "Boost":
-        this.addStatus(participation, participation.activeItem)
+        participation.addStatus(participation.activeItem)
         break
 
       /**
@@ -94,9 +94,11 @@ export default class ItemService {
       case "Super Quake":
       case "Super Darkness":
       case "Super Scramble":
+        await this.attackEveryone(participation, participation.activeItem)
         break
 
       default:
+        console.error("No item found that could match")
         break
     }
 
@@ -133,44 +135,18 @@ export default class ItemService {
   }
 
   /**
-   * Add a status (buff or debuff) to a participant. If the participant already has the same status,
-   * its duration will be extended by one turn instead.
-   * @param participation
-   * @param item
-   */
-  private addStatus = (participation: Participation, item: ItemName) => {
-    const existingStatus = participation.statuses.find(
-      (status) => status.name === item
-    )
-
-    if (existingStatus) {
-      existingStatus.duration += 1
-    } else {
-      participation.statuses.push({
-        name: item,
-        duration: 1,
-      })
-    }
-
-    return participation
-  }
-
-  /**
    * Finds a random player ranked higher than the participant using the item to be the target of the item's effect.
    *
-   * @param participation The player using the item
+   * @param attacker The player using the item
    * @returns
    */
-  private attackTarget = async (
-    participation: Participation,
-    item: ItemName
-  ) => {
+  private attackTarget = async (attacker: Participation, item: ItemName) => {
     const em = getEntityManager()
 
     // Get all players ranked higher than the participant
     let potentialTargets = await em.find(Participation, {
-      game: { uuid: participation.game.uuid } as Game,
-      rank: { $lt: participation.rank },
+      game: { uuid: attacker.game.uuid } as Game,
+      rank: { $lt: attacker.rank },
     })
 
     // Exclude those with the "Hidden" status
@@ -191,13 +167,69 @@ export default class ItemService {
       return null
     }
 
-    this.addStatus(target, item)
+    target.addStatus(item)
+
+    em.persist(target)
+    await em.flush()
 
     // Notify the target
     server.io
-      .to(`game:${participation.game.uuid}`)
+      .to(`game:${attacker.game.uuid}`)
       .emit("participation:updated", target)
 
     return target
+  }
+
+  private attackEveryone = async (attacker: Participation, item: ItemName) => {
+    const em = getEntityManager()
+
+    let potentialTargets = await em.find(Participation, {
+      game: { uuid: attacker.game.uuid } as Game,
+      uuid: { $ne: attacker.uuid },
+    })
+
+    // Exclude those with the "Hidden" status
+    potentialTargets = potentialTargets.filter(
+      (p) => !p.statuses.some((status) => status.name === "Hidden")
+    )
+
+    if (potentialTargets.length === 0) {
+      return null
+    }
+
+    for (const target of potentialTargets) {
+      // If item is super, the Shield is nullified but the debuffs are not applied
+      if (
+        item === "Super Darkness" ||
+        item === "Super Quake" ||
+        item === "Super Scramble"
+      ) {
+        if (target.hasStatus("Shield")) {
+          target.removeStatus("Shield")
+        } else {
+          if (item === "Super Darkness") {
+            target.addStatus("Darkness")
+          }
+          if (item === "Super Scramble") {
+            target.addStatus("Scramble")
+          }
+          if (item === "Super Quake") {
+            target.removeStatus("Boost")
+            target.removeStatus("Half")
+          }
+        }
+      }
+
+      em.persist(target)
+
+      // Notify the target
+      server.io
+        .to(`game:${attacker.game.uuid}`)
+        .emit("participation:updated", target)
+    }
+
+    await em.flush()
+
+    return true
   }
 }

@@ -126,4 +126,50 @@ export class Participation {
     this.user = body.user
     this.game = body.game
   }
+
+  /**
+   * Checks if the player has a particular status
+   *
+   * @param statusToFind The status to find
+   * @returns A boolean
+   */
+  hasStatus(statusToFind: ItemName): boolean {
+    if (!this.statuses) return false
+
+    return this.statuses.some((status) => status.name === statusToFind)
+  }
+
+  /**
+   * Removes a status from a participant regardless of its duration.
+   *
+   * @param statusToRemove The status to remove
+   */
+  removeStatus(statusToRemove: ItemName): Participation {
+    this.statuses = this.statuses.filter((s) => s.name !== statusToRemove)
+
+    return this
+  }
+
+  /**
+   * Add a status (buff or debuff) to a participant. If the participant already has the same status,
+   * its duration will be extended by one turn instead.
+   * @param participation
+   * @param item
+   */
+  addStatus(statusToAdd: ItemName): Participation {
+    const existingStatus = this.statuses.find(
+      (status) => status.name === statusToAdd
+    )
+
+    if (existingStatus) {
+      existingStatus.duration += 1
+    } else {
+      this.statuses.push({
+        name: statusToAdd,
+        duration: 1,
+      })
+    }
+
+    return this
+  }
 }

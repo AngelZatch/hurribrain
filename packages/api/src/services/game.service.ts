@@ -100,14 +100,14 @@ export default class GameService {
     const choices = turnDTO.question.choices
     const availableChoices = []
 
-    if (this.hasStatus(participant, "Half")) {
+    if (participant.hasStatus("Half")) {
       availableChoices.push(
         choices.filter((c) => c.isCorrect)[0],
         choices.filter((c) => !c.isCorrect)[0]
       )
     }
 
-    if (this.hasStatus(participant, "Darkness")) {
+    if (participant.hasStatus("Darkness")) {
       const randomIndex = Math.floor(Math.random() * availableChoices.length)
       if (availableChoices[randomIndex]) {
         availableChoices[randomIndex].value = ""
@@ -818,14 +818,5 @@ export default class GameService {
         { name: "Super Darkness", min: 0.88, max: 1.0 }, // 13% Super Darkness
       ]
     }
-  }
-
-  private hasStatus(
-    participation: Participation,
-    statusToFind: string
-  ): boolean {
-    if (!participation.statuses) return false
-
-    return participation.statuses.some((status) => status.name === statusToFind)
   }
 }
