@@ -7,6 +7,22 @@ export enum ItemType {
   SUPPORT = "support",
 }
 
+export type ItemName =
+  | "Coin"
+  | "Half"
+  | "Boost"
+  | "Hidden"
+  | "Shield"
+  | "Turnaround"
+  | "Scramble"
+  | "Hurry"
+  | "Judge"
+  | "Lock"
+  | "Darkness"
+  | "Super Quake"
+  | "Super Scramble"
+  | "Super Darkness"
+
 @Entity()
 @Unique({ properties: ["name"] })
 export class Item {

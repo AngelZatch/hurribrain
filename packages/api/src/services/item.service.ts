@@ -1,3 +1,4 @@
+import { ItemName } from "./../entities/item.entity.js"
 import { Game } from "./../entities/game.entity.js"
 import { Participation } from "./../entities/participation.entity.js"
 import { User } from "./../entities/user.entity.js"
@@ -30,7 +31,7 @@ export default class ItemService {
     switch (participation.activeItem) {
       /**
        * Immediately clears all debuffs currently applied to the participant and protects them from new ones
-       * until the end of the turn.
+       * until the end of the turn. Nullified by Super Quake
        */
       case "Shield":
         this.addStatus(participation, participation.activeItem)
@@ -50,15 +51,13 @@ export default class ItemService {
       /**
        * Buffs
        *
-       * (TODO:) Half: Immediately removes 2 wrong choices from the current question for the participant.
-       * Passthrough: During the turn, redirects all future attacks to another player ranked even higher. (Non stack)
+       * Half: Immediately removes 2 wrong choices from the current question for the participant.
+       * Hidden: During the turn, redirects all future attacks to another player ranked even higher.
        * Boost: For the current turn, if the participant answers correctly, the points awarded will be doubled.
-       * (TODO:) Spy: For the current turn, the participant using the item will be able to see what the others are answering.
        */
       case "Half":
-      case "Passthrough":
+      case "Hidden":
       case "Boost":
-      case "Spy":
         this.addStatus(participation, participation.activeItem)
         break
 
@@ -69,16 +68,32 @@ export default class ItemService {
        *
        * Scramble: Immediately scrambles the words in the question on the screen of the target.
        * Hurry: Immediately removes 5 seconds from the timer of the target.
-       * Punishment: If the target answers incorrectly, they will lose 3 points.
+       * Judge: If the target answers incorrectly, they will lose 3 points.
        * Lock: Prevents the target from using their item until the end of the turn.
-       * (TODO:) Hidden: Parts of the question will be hidden on the screen of the target.
+       * Darkness: Hides the contents of one choice (it stays selectable).
        */
       case "Scramble":
       case "Hurry":
-      case "Punishment":
+      case "Judge":
       case "Lock":
-      case "Hidden":
+      case "Darkness":
         await this.attackTarget(participation, participation.activeItem)
+        break
+
+      /**
+       * Super Attacks
+       *
+       * The Super Attacks behave differently:
+       * - They attack EVERYONE, regardless of rank
+       * - They break Shields (a player having a Shield will not get the debuff but will lose the Shield)
+       *
+       * Super Quake: Removes all buffs from all players
+       * Super Darkness: Darkness for all players
+       * Super Scramble: Scramble for all players
+       */
+      case "Super Quake":
+      case "Super Darkness":
+      case "Super Scramble":
         break
 
       default:
@@ -103,7 +118,7 @@ export default class ItemService {
     participation: Participation,
     convertToCoins = false
   ) => {
-    const debuffs = ["Scramble", "Hurry", "Punishment", "Lock", "Hidden"]
+    const debuffs = ["Scramble", "Hurry", "Judge", "Lock", "Darnkess"]
     const initialDebuffLength = participation.statuses.length
 
     participation.statuses = participation.statuses.filter((status) => {
@@ -123,7 +138,7 @@ export default class ItemService {
    * @param participation
    * @param item
    */
-  private addStatus = (participation: Participation, item: string) => {
+  private addStatus = (participation: Participation, item: ItemName) => {
     const existingStatus = participation.statuses.find(
       (status) => status.name === item
     )
@@ -146,7 +161,10 @@ export default class ItemService {
    * @param participation The player using the item
    * @returns
    */
-  private attackTarget = async (participation: Participation, item: string) => {
+  private attackTarget = async (
+    participation: Participation,
+    item: ItemName
+  ) => {
     const em = getEntityManager()
 
     // Get all players ranked higher than the participant
@@ -155,9 +173,9 @@ export default class ItemService {
       rank: { $lt: participation.rank },
     })
 
-    // Exclude those with the "Passthrough" status
+    // Exclude those with the "Hidden" status
     potentialTargets = potentialTargets.filter(
-      (p) => !p.statuses.some((status) => status.name === "Passthrough")
+      (p) => !p.statuses.some((status) => status.name === "Hidden")
     )
 
     if (potentialTargets.length === 0) {

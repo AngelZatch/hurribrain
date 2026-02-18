@@ -9,7 +9,7 @@ import {
 import { v4 } from "uuid"
 import { User } from "./user.entity.js"
 import { Game } from "./game.entity.js"
-import { Item } from "./item.entity.js"
+import { ItemName } from "./item.entity.js"
 
 @Entity()
 @Unique({ properties: ["user", "game"] })
@@ -96,7 +96,7 @@ export class Participation {
    * have an active item.
    */
   @Property({ nullable: true })
-  activeItem: Item["name"] | null = null
+  activeItem: ItemName | null = null
 
   /**
    * The statuses represent the active status effects applied to the participant.
@@ -105,7 +105,7 @@ export class Participation {
    */
   @Property({ type: "json" })
   statuses: Array<{
-    name: Item["name"]
+    name: ItemName
     duration: number
   }> = []
 
