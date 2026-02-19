@@ -300,11 +300,11 @@ export default class GameService {
    * When a turn finishes:
    * - The score of every participant is updated based on their answer (correct or not, speed, streak, etc.)
    * - Ranks are recalculated for every participant based on their new score
-   * - TODO: Powerups must charged appropriately
+   * - Items are charged appropriately
    *
    * @param gameId The identifier of the game
    * @param turnId The identifier of the turn to finish
-   * @returns A PlayedTurn object
+   * @returns void
    */
   finishCurrentTurn = async (gameId: string, turnId: string): Promise<void> => {
     const em = getEntityManager()
@@ -435,9 +435,10 @@ export default class GameService {
           scoreReward += participation.streak / 5
         }
 
-        // If the player has a boost status, the score reward is doubled
-        if (participation.statuses.some((status) => status.name === "Boost")) {
+        // If the player has a boost status, the score reward is doubled and 20 points of item charge are awarded
+        if (participation.hasStatus("Boost")) {
           scoreReward *= 2
+          participation.itemCharge += 20
         }
 
         // Update score
@@ -447,7 +448,7 @@ export default class GameService {
         scoreReward -= 1
 
         // If the player has a Judge status, they will lose an additional 2 points
-        if (participation.statuses.some((status) => status.name === "Judge")) {
+        if (participation.hasStatus("Judge")) {
           scoreReward -= 2
         }
 
