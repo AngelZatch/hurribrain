@@ -3,7 +3,6 @@ import { socket } from "@/contexts/socket";
 import { TouchableOpacity, View } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { useEffect, useState } from "react";
-import { useAuth } from "@/contexts/auth.context";
 import ThemedText from "./ui/ThemedText";
 import { hasStatus } from "@/utils/gameUtils";
 
@@ -12,11 +11,13 @@ type ItemButtonProps = {
 };
 
 export default function ItemButton({ participation }: ItemButtonProps) {
-  const { user } = useAuth();
-
   const [heldItem, setHeldItem] = useState(participation.activeItem);
 
   const handleUseItem = () => {
+    if (hasLock) {
+      return null;
+    }
+
     socket.emit("item:use", {
       game: participation.game,
       user: participation.user,

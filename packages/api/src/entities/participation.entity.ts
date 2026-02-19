@@ -9,7 +9,7 @@ import {
 import { v4 } from "uuid"
 import { User } from "./user.entity.js"
 import { Game } from "./game.entity.js"
-import { Item } from "./item.entity.js"
+import { ItemName } from "./item.entity.js"
 
 @Entity()
 @Unique({ properties: ["user", "game"] })
@@ -96,7 +96,7 @@ export class Participation {
    * have an active item.
    */
   @Property({ nullable: true })
-  activeItem: Item["name"] | null = null
+  activeItem: ItemName | null = null
 
   /**
    * The statuses represent the active status effects applied to the participant.
@@ -105,7 +105,7 @@ export class Participation {
    */
   @Property({ type: "json" })
   statuses: Array<{
-    name: Item["name"]
+    name: ItemName
     duration: number
   }> = []
 
@@ -125,5 +125,55 @@ export class Participation {
   constructor(body: Pick<Participation, "user" | "game">) {
     this.user = body.user
     this.game = body.game
+  }
+
+  /**
+   * Checks if the player has a particular status
+   *
+   * @param statusToFind The status to find
+   * @returns A boolean
+   */
+  hasStatus(statusToFind: ItemName): boolean {
+    if (!this.statuses) return false
+
+    return this.statuses.some((status) => status.name === statusToFind)
+  }
+
+  /**
+   * Removes one or more statuses from a participant regardless of its duration.
+   *
+   * @param statusToRemove The status(es) to remove
+   */
+  removeStatus(statusesToRemove: ItemName[]): Participation {
+    this.statuses = this.statuses.filter((playerStatus) => {
+      return !statusesToRemove.some(
+        (statusToRemove) => statusToRemove === playerStatus.name
+      )
+    })
+
+    return this
+  }
+
+  /**
+   * Add a status (buff or debuff) to a participant. If the participant already has the same status,
+   * its duration will be extended by one turn instead.
+   * @param participation
+   * @param item
+   */
+  addStatus(statusToAdd: ItemName): Participation {
+    const existingStatus = this.statuses.find(
+      (status) => status.name === statusToAdd
+    )
+
+    if (existingStatus) {
+      existingStatus.duration += 1
+    } else {
+      this.statuses.push({
+        name: statusToAdd,
+        duration: 1,
+      })
+    }
+
+    return this
   }
 }

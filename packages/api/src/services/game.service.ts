@@ -4,7 +4,11 @@ import { Turn } from "./../entities/turn.entity.js"
 import { Participation } from "./../entities/participation.entity.js"
 import { Game } from "./../entities/game.entity.js"
 import { Question } from "./../entities/question.entity.js"
-import { PlayableTurn, PlayedTurn } from "./../schemas/turn.schema.js"
+import {
+  PlayableTurn,
+  PlayedTurn,
+  PrePlayableTurn,
+} from "./../schemas/turn.schema.js"
 import { Choice } from "./../entities/choice.entity.js"
 import { UserStats } from "./../entities/userStats.entity.js"
 import { server } from "./../server.js"
@@ -12,19 +16,28 @@ import { server } from "./../server.js"
 import Queue from "bull"
 import { SECOND } from "./../utils/helperVariables.js"
 import { User } from "./../entities/user.entity.js"
+import { wrap } from "@mikro-orm/core"
+import { ItemName } from "./../entities/item.entity.js"
 const gameQueue = new Queue("games")
 
 export default class GameService {
-  syncGame = async (
-    gameId: string
+  getCurrentTurn = async (
+    user: string,
+    game: string
   ): Promise<PlayableTurn | PlayedTurn | null> => {
     const em = getEntityManager()
+
+    const participant = await this.getParticipation(user, game)
+
+    if (!participant) {
+      return null
+    }
 
     // Getting the ongoing turn
     const currentTurn = await em.findOne(
       Turn,
       {
-        game: gameId,
+        game,
         startedAt: { $ne: null },
         finishedAt: null,
       },
@@ -40,17 +53,19 @@ export default class GameService {
           "question.difficulty",
           "question.choices.uuid",
           "question.choices.value",
+          "question.choices.isCorrect",
           "game",
         ],
+        cache: 1000, // Cached for 1s
       }
     )
 
     // If no ongoing turn, return the last finished turn
     if (!currentTurn) {
-      return em.findOne(
+      const lastTurn = await em.findOne(
         Turn,
         {
-          game: gameId,
+          game,
           startedAt: { $ne: null },
           finishedAt: { $ne: null },
         },
@@ -61,6 +76,7 @@ export default class GameService {
             "position",
             "startedAt",
             "finishedAt",
+            "speedRanking",
             "question.title",
             "question.successRate",
             "question.difficulty",
@@ -71,9 +87,37 @@ export default class GameService {
           ],
         }
       )
+
+      if (!lastTurn) {
+        return null
+      }
+
+      return wrap(lastTurn!).toObject()
     }
 
-    return currentTurn
+    const turnDTO: PrePlayableTurn = wrap(currentTurn).toObject()
+
+    const choices = turnDTO.question.choices
+    const availableChoices = []
+
+    if (participant.hasStatus("Half")) {
+      availableChoices.push(
+        choices.filter((c) => c.isCorrect)[0],
+        choices.filter((c) => !c.isCorrect)[0]
+      )
+    }
+
+    if (participant.hasStatus("Darkness")) {
+      const randomIndex = Math.floor(Math.random() * availableChoices.length)
+      if (availableChoices[randomIndex]) {
+        availableChoices[randomIndex].value = ""
+      }
+    }
+
+    turnDTO.question.choices =
+      availableChoices.length > 0 ? availableChoices : choices
+
+    return turnDTO
   }
 
   /**
@@ -207,10 +251,10 @@ export default class GameService {
    * @param gameId The identifier of the game
    * @returns a PlayableTurn object or null if the game is finished
    */
-  startNextTurn = async (gameId: string): Promise<PlayableTurn | null> => {
+  startNextTurn = async (gameId: string): Promise<void> => {
     const em = getEntityManager()
 
-    const nextTurn: PlayableTurn | null = await em.findOne(
+    const nextTurn = await em.findOne(
       Turn,
       {
         game: gameId,
@@ -218,31 +262,20 @@ export default class GameService {
       },
       {
         orderBy: { position: "ASC" },
-        fields: [
-          "uuid",
-          "position",
-          "startedAt",
-          "finishedAt",
-          "question.title",
-          "question.successRate",
-          "question.difficulty",
-          "question.choices.uuid",
-          "question.choices.value",
-          "game",
-        ],
       }
     )
 
     if (!nextTurn) {
       this.finishGame(gameId)
-      return null
+      return
     }
 
     nextTurn.startedAt = new Date()
-    await em.persistAndFlush(nextTurn)
+    em.persist(nextTurn)
+    await em.flush()
 
-    // Update sockets
-    server.io.to(`game:${gameId}`).emit("turn:current", nextTurn)
+    // Update sockets with no PlayableTurn as all players can have different statuses and thus need different choices
+    server.io.to(`game:${gameId}`).emit("turn:start")
 
     // 15s timer to play the turn
     gameQueue.add(
@@ -257,7 +290,8 @@ export default class GameService {
         removeOnComplete: true,
       }
     )
-    return nextTurn
+
+    return
   }
 
   /**
@@ -266,16 +300,13 @@ export default class GameService {
    * When a turn finishes:
    * - The score of every participant is updated based on their answer (correct or not, speed, streak, etc.)
    * - Ranks are recalculated for every participant based on their new score
-   * - TODO: Powerups must charged appropriately
+   * - Items are charged appropriately
    *
    * @param gameId The identifier of the game
    * @param turnId The identifier of the turn to finish
-   * @returns A PlayedTurn object
+   * @returns void
    */
-  finishCurrentTurn = async (
-    gameId: string,
-    turnId: string
-  ): Promise<PlayedTurn> => {
+  finishCurrentTurn = async (gameId: string, turnId: string): Promise<void> => {
     const em = getEntityManager()
 
     const targetTurn = await em.findOneOrFail(
@@ -404,9 +435,10 @@ export default class GameService {
           scoreReward += participation.streak / 5
         }
 
-        // If the player has a boost status, the score reward is doubled
-        if (participation.statuses.some((status) => status.name === "Boost")) {
+        // If the player has a boost status, the score reward is doubled and 20 points of item charge are awarded
+        if (participation.hasStatus("Boost")) {
           scoreReward *= 2
+          participation.itemCharge += 20
         }
 
         // Update score
@@ -415,10 +447,8 @@ export default class GameService {
         // Incorrect answer score penalty
         scoreReward -= 1
 
-        // If the player has a punishment status, they will lose an additional 2 points
-        if (
-          participation.statuses.some((status) => status.name === "Punishment")
-        ) {
+        // If the player has a Judge status, they will lose an additional 2 points
+        if (participation.hasStatus("Judge")) {
           scoreReward -= 2
         }
 
@@ -514,7 +544,9 @@ export default class GameService {
     )
 
     // Update sockets
-    server.io.to(`game:${gameId}`).emit("turn:current", finishedTurn)
+    server.io
+      .to(`game:${gameId}`)
+      .emit("turn:finish", wrap(finishedTurn).toObject() satisfies PlayedTurn)
 
     // Job for the next turn in 15s
     gameQueue.add(
@@ -530,7 +562,7 @@ export default class GameService {
       }
     )
 
-    return finishedTurn
+    return
   }
 
   finishGame = async (gameId: string) => {
@@ -696,7 +728,7 @@ export default class GameService {
    * @param pointsDifference The distance between the current participant and the top rank
    * @returns the uuid of the item to grant to the participant
    */
-  private grantItemToParticipant = (pointsDifference: number): string => {
+  private grantItemToParticipant = (pointsDifference: number): ItemName => {
     const probabilityDistribution =
       this.getProbabilityDistributionForItemGrant(pointsDifference)
 
@@ -712,70 +744,79 @@ export default class GameService {
   private getProbabilityDistributionForItemGrant = (
     pointsDifference: number
   ): Array<{
-    name: string
+    name: ItemName
     min: number
     max: number
   }> => {
     if (pointsDifference < 5) {
       return [
-        { name: "Shield", min: 0, max: 0.25 }, // 25% chance to get a shield
-        { name: "Coin", min: 0.26, max: 0.95 }, // 70% chance to get a coin
-        { name: "Half", min: 0.96, max: 1.0 }, // 5% chance to get a half
+        { name: "Coin", min: 0, max: 0.7 }, // 70% Coin
+        { name: "Half", min: 0.71, max: 0.75 }, // 5% Half
+        { name: "Shield", min: 0.76, max: 1.0 }, // 25% Shield
       ]
     } else if (pointsDifference < 10) {
       return [
-        { name: "Shield", min: 0, max: 0.15 }, // 15% chance to get a shield
-        { name: "Turnaround", min: 0.16, max: 0.25 }, // 10% chance to get a turnaround
-        { name: "Coin", min: 0.26, max: 0.55 }, // 30% chance to get a coin
-        { name: "Scramble", min: 0.56, max: 0.6 }, // 5% chance to get a scramble
-        { name: "Hurry", min: 0.61, max: 0.66 }, // 5% chance to get a hurry
-        { name: "Punishment", min: 0.67, max: 0.7 }, // 5% chance to get a punishment
-        { name: "Lock", min: 0.71, max: 0.8 }, // 10% chance to get a lock
-        { name: "Passthrough", min: 0.81, max: 0.85 }, // 5% chance to get a passthrough
-        { name: "Hidden", min: 0.86, max: 0.9 }, // 5% chance to get a hidden
-        { name: "Half", min: 0.91, max: 0.95 }, // 5% chance to get a half
-        { name: "Spy", min: 0.96, max: 1.0 }, // 5% chance to get a spy
+        { name: "Coin", min: 0, max: 0.35 }, // 35% Coin
+        { name: "Half", min: 0.36, max: 0.4 }, // 5% Half
+        { name: "Boost", min: 0.41, max: 0.45 }, // 5% Boost
+        { name: "Hidden", min: 0.46, max: 0.5 }, // 5% Hidden
+        { name: "Shield", min: 0.51, max: 0.65 }, // 15% Shield
+        { name: "Turnaround", min: 0.66, max: 0.7 }, // 5% Turnaround
+        { name: "Scramble", min: 0.71, max: 0.77 }, // 7% Scramble
+        { name: "Hurry", min: 0.78, max: 0.82 }, // 5% Hurry
+        { name: "Judge", min: 0.83, max: 0.9 }, // 8% Judge
+        { name: "Lock", min: 0.91, max: 1.0 }, // 10% Lock
       ]
     } else if (pointsDifference < 20) {
       return [
-        { name: "Shield", min: 0, max: 0.05 }, // 5% shield
-        { name: "Turnaround", min: 0.05, max: 0.15 }, // 10% turnaround
-        { name: "Scramble", min: 0.15, max: 0.25 }, // 10% scramble
-        { name: "Hurry", min: 0.25, max: 0.3 }, // 5% hurry
-        { name: "Punishment", min: 0.3, max: 0.4 }, // 10% punishment
-        { name: "Lock", min: 0.4, max: 0.5 }, // 10% lock
-        { name: "Passthrough", min: 0.5, max: 0.7 }, // 20% passthrough
-        { name: "Hidden", min: 0.7, max: 0.85 }, // 15% hidden
-        { name: "Half", min: 0.85, max: 0.95 }, // 10% half
-        { name: "Spy", min: 0.95, max: 1.0 }, // 5% spy
+        { name: "Coin", min: 0, max: 0.02 }, // 2% Coin
+        { name: "Half", min: 0.03, max: 0.17 }, // 15% Half
+        { name: "Boost", min: 0.18, max: 0.22 }, // 5% Boost
+        { name: "Hidden", min: 0.23, max: 0.37 }, // 15% Hidden
+        { name: "Shield", min: 0.38, max: 0.42 }, // 5% Shield
+        { name: "Turnaround", min: 0.43, max: 0.52 }, // 10% Turnaround
+        { name: "Scramble", min: 0.53, max: 0.6 }, // 8% Scramble
+        { name: "Hurry", min: 0.61, max: 0.71 }, // 11% Hurry
+        { name: "Judge", min: 0.72, max: 0.86 }, // 15% Judge
+        { name: "Lock", min: 0.87, max: 0.95 }, // 9% Lock
+        { name: "Darkness", min: 0.96, max: 1.0 }, // 5% Darkness
       ]
     } else if (pointsDifference < 50) {
       return [
-        { name: "Scramble", min: 0, max: 0.15 }, // 15% scramble
-        { name: "Boost", min: 0.15, max: 0.3 }, // 15% boost
-        { name: "Hurry", min: 0.3, max: 0.5 }, // 20% hurry
-        { name: "Punishment", min: 0.5, max: 0.65 }, // 15% punishment
-        { name: "Lock", min: 0.65, max: 0.75 }, // 10% lock
-        { name: "Passthrough", min: 0.75, max: 0.8 }, // 5% passthrough
-        { name: "Hidden", min: 0.8, max: 0.9 }, // 10% hidden
-        { name: "Spy", min: 0.9, max: 1.0 }, // 10% spy
+        { name: "Hurry", min: 0, max: 0.05 }, // 5% Hurry
+        { name: "Boost", min: 0.06, max: 0.17 }, // 12% Boost
+        { name: "Hidden", min: 0.18, max: 0.24 }, // 7% Hidden
+        { name: "Scramble", min: 0.25, max: 0.41 }, // 17% Scramble
+        { name: "Hurry", min: 0.42, max: 0.55 }, // 14% Hurry
+        { name: "Judge", min: 0.56, max: 0.69 }, // 14% Judge
+        { name: "Lock", min: 0.7, max: 0.77 }, // 8% Lock
+        { name: "Darkness", min: 0.78, max: 0.95 }, // 18% Darkness
+        { name: "Super Quake", min: 0.96, max: 0.98 }, // 3% Super Quake
+        { name: "Super Scramble", min: 0.99, max: 0.99 }, // 1% Super Scramble
+        { name: "Super Darkness", min: 1.0, max: 1.0 }, // 1% Super Darkness
       ]
     } else if (pointsDifference < 100) {
       return [
-        { name: "Scramble", min: 0, max: 0.2 }, // 20% scramble
-        { name: "Boost", min: 0.2, max: 0.35 }, // 15% boost
-        { name: "Hurry", min: 0.35, max: 0.5 }, // 15% hurry
-        { name: "Punishment", min: 0.5, max: 0.75 }, // 25% punishment
-        { name: "Lock", min: 0.75, max: 0.95 }, // 20% lock
-        { name: "Hidden", min: 0.95, max: 1.0 }, // 5% hidden
+        { name: "Boost", min: 0, max: 0.22 }, // 22% Boost
+        { name: "Scramble", min: 0.23, max: 0.37 }, // 15% Scramble
+        { name: "Hurry", min: 0.38, max: 0.48 }, // 11% Hurry
+        { name: "Judge", min: 0.49, max: 0.6 }, // 12% Judge
+        { name: "Lock", min: 0.61, max: 0.67 }, // 7% Lock
+        { name: "Darkness", min: 0.68, max: 0.77 }, // 10% Darkness
+        { name: "Super Quake", min: 0.78, max: 0.86 }, // 9% Super Quake
+        { name: "Super Scramble", min: 0.87, max: 0.93 }, // 7% Super Scramble
+        { name: "Super Darkness", min: 0.94, max: 1.0 }, // 7% Super Darkness
       ]
     } else {
       return [
-        { name: "Scramble", min: 0, max: 0.2 }, // 20% scramble
-        { name: "Boost", min: 0.2, max: 0.5 }, // 30% boost
-        { name: "Hurry", min: 0.5, max: 0.65 }, // 15% hurry
-        { name: "Punishment", min: 0.65, max: 0.95 }, // 30% punishment
-        { name: "Lock", min: 0.95, max: 1.0 }, // 5% lock
+        { name: "Boost", min: 0, max: 0.34 }, // 34% Boost
+        { name: "Scramble", min: 0.35, max: 0.39 }, // 5% Scramble
+        { name: "Hurry", min: 0.4, max: 0.48 }, // 9% Hurry
+        { name: "Judge", min: 0.49, max: 0.54 }, // 6% Judge
+        { name: "Darkness", min: 0.55, max: 0.61 }, // 7% Darkness
+        { name: "Super Quake", min: 0.62, max: 0.74 }, // 13% Super Quake
+        { name: "Super Scramble", min: 0.75, max: 0.87 }, // 13% Super Scramble
+        { name: "Super Darkness", min: 0.88, max: 1.0 }, // 13% Super Darkness
       ]
     }
   }

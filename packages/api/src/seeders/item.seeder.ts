@@ -21,7 +21,7 @@ export class ItemSeeder extends Seeder {
         isDebuff: true,
       },
       {
-        name: "Punishment",
+        name: "Judge",
         type: ItemType.ATTACK,
         description:
           "If a player ranked higher than you answers incorrectly, they will lose 3 points",

@@ -9,8 +9,6 @@ import { User } from "./../entities/user.entity.js"
 import { ErrorResponsesSchema } from "./../schemas/errors.schema.js"
 import { MyAnswerSchema } from "./../schemas/answer.schema.js"
 import { GameByIdParams } from "./../schemas/game.schema.js"
-import GameService from "./../services/game.service.js"
-import { PlayableTurn, PlayedTurn } from "@src/schemas/turn.schema.js"
 
 const TurnController = async (fastify: FastifyInstance) => {
   fastify.get<{
@@ -25,47 +23,6 @@ const TurnController = async (fastify: FastifyInstance) => {
       },
       { orderBy: { position: "ASC" }, populate: ["question"] }
     )
-  })
-
-  fastify.get<{
-    Params: GameByIdParams
-  }>("/current", async (request) => {
-    const em = request.em
-
-    return em.findOne(
-      Turn,
-      {
-        game: { uuid: request.params.gameId } as Game,
-        startedAt: { $ne: null },
-        finishedAt: null,
-      },
-      {
-        orderBy: { position: "ASC" },
-        populate: ["question"],
-      }
-    )
-  })
-
-  fastify.put<{
-    Params: { gameId: string; turnId: string }
-  }>("/:turnId/finish", async (request): Promise<PlayedTurn> => {
-    const { gameId, turnId } = request.params
-    const gameService = new GameService()
-
-    const updatedTurn = await gameService.finishCurrentTurn(gameId, turnId)
-
-    return updatedTurn
-  })
-
-  fastify.put<{
-    Params: GameByIdParams
-  }>("/next", async (request): Promise<PlayableTurn | null> => {
-    const { gameId } = request.params
-    const gameService = new GameService()
-
-    const currentTurn = await gameService.startNextTurn(gameId)
-
-    return currentTurn
   })
 
   fastify.post<{

@@ -1,3 +1,4 @@
+import { ItemName } from "./../entities/item.entity.js"
 import { Game } from "./../entities/game.entity.js"
 import { Participation } from "./../entities/participation.entity.js"
 import { User } from "./../entities/user.entity.js"
@@ -20,20 +21,17 @@ export default class ItemService {
       game: { uuid: gameId } as Game,
     })
 
-    if (
-      !participation.activeItem ||
-      participation.statuses.some((status) => status.name === "Lock")
-    ) {
+    if (!participation.activeItem || participation.hasStatus("Lock")) {
       return
     }
 
     switch (participation.activeItem) {
       /**
        * Immediately clears all debuffs currently applied to the participant and protects them from new ones
-       * until the end of the turn.
+       * until the end of the turn. Nullified by Super Quake
        */
       case "Shield":
-        this.addStatus(participation, participation.activeItem)
+        participation.addStatus(participation.activeItem)
         this.clearCurrentDebuffs(participation)
         break
 
@@ -50,16 +48,14 @@ export default class ItemService {
       /**
        * Buffs
        *
-       * (TODO:) Half: Immediately removes 2 wrong choices from the current question for the participant.
-       * Passthrough: During the turn, redirects all future attacks to another player ranked even higher. (Non stack)
+       * Half: Immediately removes 2 wrong choices from the current question for the participant.
+       * Hidden: During the turn, redirects all future attacks to another player ranked even higher.
        * Boost: For the current turn, if the participant answers correctly, the points awarded will be doubled.
-       * (TODO:) Spy: For the current turn, the participant using the item will be able to see what the others are answering.
        */
       case "Half":
-      case "Passthrough":
+      case "Hidden":
       case "Boost":
-      case "Spy":
-        this.addStatus(participation, participation.activeItem)
+        participation.addStatus(participation.activeItem)
         break
 
       /**
@@ -69,19 +65,37 @@ export default class ItemService {
        *
        * Scramble: Immediately scrambles the words in the question on the screen of the target.
        * Hurry: Immediately removes 5 seconds from the timer of the target.
-       * Punishment: If the target answers incorrectly, they will lose 3 points.
+       * Judge: If the target answers incorrectly, they will lose 3 points.
        * Lock: Prevents the target from using their item until the end of the turn.
-       * (TODO:) Hidden: Parts of the question will be hidden on the screen of the target.
+       * Darkness: Hides the contents of one choice (it stays selectable).
        */
       case "Scramble":
       case "Hurry":
-      case "Punishment":
+      case "Judge":
       case "Lock":
-      case "Hidden":
+      case "Darkness":
         await this.attackTarget(participation, participation.activeItem)
         break
 
+      /**
+       * Super Attacks
+       *
+       * The Super Attacks behave differently:
+       * - They attack EVERYONE, regardless of rank
+       * - They break Shields (a player having a Shield will not get the debuff but will lose the Shield)
+       *
+       * Super Quake: Removes all buffs from all players
+       * Super Darkness: Darkness for all players
+       * Super Scramble: Scramble for all players
+       */
+      case "Super Quake":
+      case "Super Darkness":
+      case "Super Scramble":
+        await this.attackEveryone(participation, participation.activeItem)
+        break
+
       default:
+        console.error("No item found that could match")
         break
     }
 
@@ -103,12 +117,15 @@ export default class ItemService {
     participation: Participation,
     convertToCoins = false
   ) => {
-    const debuffs = ["Scramble", "Hurry", "Punishment", "Lock", "Hidden"]
     const initialDebuffLength = participation.statuses.length
 
-    participation.statuses = participation.statuses.filter((status) => {
-      return !debuffs.some((debuff) => debuff === status.name)
-    })
+    participation.removeStatus([
+      "Scramble",
+      "Hurry",
+      "Judge",
+      "Lock",
+      "Darkness",
+    ])
 
     if (convertToCoins) {
       participation.score += initialDebuffLength - participation.statuses.length
@@ -118,46 +135,23 @@ export default class ItemService {
   }
 
   /**
-   * Add a status (buff or debuff) to a participant. If the participant already has the same status,
-   * its duration will be extended by one turn instead.
-   * @param participation
-   * @param item
-   */
-  private addStatus = (participation: Participation, item: string) => {
-    const existingStatus = participation.statuses.find(
-      (status) => status.name === item
-    )
-
-    if (existingStatus) {
-      existingStatus.duration += 1
-    } else {
-      participation.statuses.push({
-        name: item,
-        duration: 1,
-      })
-    }
-
-    return participation
-  }
-
-  /**
    * Finds a random player ranked higher than the participant using the item to be the target of the item's effect.
    *
-   * @param participation The player using the item
+   * @param attacker The player using the item
    * @returns
    */
-  private attackTarget = async (participation: Participation, item: string) => {
+  private attackTarget = async (attacker: Participation, item: ItemName) => {
     const em = getEntityManager()
 
     // Get all players ranked higher than the participant
     let potentialTargets = await em.find(Participation, {
-      game: { uuid: participation.game.uuid } as Game,
-      rank: { $lt: participation.rank },
+      game: { uuid: attacker.game.uuid } as Game,
+      rank: { $lt: attacker.rank },
     })
 
-    // Exclude those with the "Passthrough" status
+    // Exclude those with the "Hidden" status
     potentialTargets = potentialTargets.filter(
-      (p) => !p.statuses.some((status) => status.name === "Passthrough")
+      (p) => !p.statuses.some((status) => status.name === "Hidden")
     )
 
     if (potentialTargets.length === 0) {
@@ -173,13 +167,68 @@ export default class ItemService {
       return null
     }
 
-    this.addStatus(target, item)
+    target.addStatus(item)
+
+    em.persist(target)
+    await em.flush()
 
     // Notify the target
     server.io
-      .to(`game:${participation.game.uuid}`)
+      .to(`game:${attacker.game.uuid}`)
       .emit("participation:updated", target)
 
     return target
+  }
+
+  private attackEveryone = async (attacker: Participation, item: ItemName) => {
+    const em = getEntityManager()
+
+    let potentialTargets = await em.find(Participation, {
+      game: { uuid: attacker.game.uuid } as Game,
+      uuid: { $ne: attacker.uuid },
+    })
+
+    // Exclude those with the "Hidden" status
+    potentialTargets = potentialTargets.filter(
+      (p) => !p.statuses.some((status) => status.name === "Hidden")
+    )
+
+    if (potentialTargets.length === 0) {
+      return null
+    }
+
+    for (const target of potentialTargets) {
+      // If item is super, the Shield is nullified but the debuffs are not applied
+      if (
+        item === "Super Darkness" ||
+        item === "Super Quake" ||
+        item === "Super Scramble"
+      ) {
+        if (target.hasStatus("Shield")) {
+          target.removeStatus(["Shield"])
+        } else {
+          if (item === "Super Darkness") {
+            target.addStatus("Darkness")
+          }
+          if (item === "Super Scramble") {
+            target.addStatus("Scramble")
+          }
+          if (item === "Super Quake") {
+            target.removeStatus(["Boost", "Half"])
+          }
+        }
+      }
+
+      em.persist(target)
+
+      // Notify the target
+      server.io
+        .to(`game:${attacker.game.uuid}`)
+        .emit("participation:updated", target)
+    }
+
+    await em.flush()
+
+    return true
   }
 }
