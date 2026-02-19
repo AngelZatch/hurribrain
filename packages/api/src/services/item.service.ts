@@ -21,10 +21,7 @@ export default class ItemService {
       game: { uuid: gameId } as Game,
     })
 
-    if (
-      !participation.activeItem ||
-      participation.statuses.some((status) => status.name === "Lock")
-    ) {
+    if (!participation.activeItem || participation.hasStatus("Lock")) {
       return
     }
 
@@ -120,12 +117,15 @@ export default class ItemService {
     participation: Participation,
     convertToCoins = false
   ) => {
-    const debuffs = ["Scramble", "Hurry", "Judge", "Lock", "Darnkess"]
     const initialDebuffLength = participation.statuses.length
 
-    participation.statuses = participation.statuses.filter((status) => {
-      return !debuffs.some((debuff) => debuff === status.name)
-    })
+    participation.removeStatus([
+      "Scramble",
+      "Hurry",
+      "Judge",
+      "Lock",
+      "Darkness",
+    ])
 
     if (convertToCoins) {
       participation.score += initialDebuffLength - participation.statuses.length
@@ -205,7 +205,7 @@ export default class ItemService {
         item === "Super Scramble"
       ) {
         if (target.hasStatus("Shield")) {
-          target.removeStatus("Shield")
+          target.removeStatus(["Shield"])
         } else {
           if (item === "Super Darkness") {
             target.addStatus("Darkness")
@@ -214,8 +214,7 @@ export default class ItemService {
             target.addStatus("Scramble")
           }
           if (item === "Super Quake") {
-            target.removeStatus("Boost")
-            target.removeStatus("Half")
+            target.removeStatus(["Boost", "Half"])
           }
         }
       }

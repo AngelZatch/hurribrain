@@ -140,12 +140,16 @@ export class Participation {
   }
 
   /**
-   * Removes a status from a participant regardless of its duration.
+   * Removes one or more statuses from a participant regardless of its duration.
    *
-   * @param statusToRemove The status to remove
+   * @param statusToRemove The status(es) to remove
    */
-  removeStatus(statusToRemove: ItemName): Participation {
-    this.statuses = this.statuses.filter((s) => s.name !== statusToRemove)
+  removeStatus(statusesToRemove: ItemName[]): Participation {
+    this.statuses = this.statuses.filter((playerStatus) => {
+      return !statusesToRemove.some(
+        (statusToRemove) => statusToRemove === playerStatus.name
+      )
+    })
 
     return this
   }
