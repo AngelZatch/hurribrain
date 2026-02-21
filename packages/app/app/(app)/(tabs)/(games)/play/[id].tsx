@@ -160,7 +160,9 @@ export default function PlayScreen() {
       />
       <View
         style={{
-          padding: 8,
+          paddingVertical: 12,
+          paddingHorizontal: 8,
+          gap: 10,
           flex: 1,
           width: "100%",
           backgroundColor: Colors[colorScheme ?? "light"].containerBackground,
@@ -174,7 +176,11 @@ export default function PlayScreen() {
       >
         {!game.startedAt && <GameLobby game={game!} />}
         {game.startedAt && !game.finishedAt && currentTurn && (
-          <ActiveGame currentTurn={currentTurn} participation={participation} />
+          <ActiveGame
+            game={game}
+            currentTurn={currentTurn}
+            participation={participation}
+          />
         )}
         {game.finishedAt && <GameRecap />}
       </View>

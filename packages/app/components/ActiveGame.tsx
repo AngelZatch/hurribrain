@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import ThemedText from "./ui/ThemedText";
-import PlayerRanking from "./PlayerRanking";
-import CurrentQuestionIndicator from "./CurrentQuestionIndicator";
+import PlayerScoreDisplay from "./PlayerRanking";
+import CurrentQuestionDisplay from "./CurrentQuestionIndicator";
 import ActiveTurnTimer from "./ActiveTurnTimer";
 import React, { useEffect, useState } from "react";
 import ActivePlayableTurn from "./ActivePlayableTurn";
@@ -9,13 +9,16 @@ import TurnRecap from "./TurnRecap";
 import { Item, Participation, PlayableTurn, PlayedTurn } from "@/api/play.api";
 import PlayerStatusList from "./PlayerStatusList";
 import { hasStatus, scrambleSentence } from "@/utils/gameUtils";
+import { Game } from "@/api/games.api";
 
 type ActiveTurnProps = {
+  game: Game;
   currentTurn: PlayableTurn | PlayedTurn;
   participation: Participation;
 };
 
 export default function ActiveGame({
+  game,
   currentTurn,
   participation,
 }: ActiveTurnProps) {
@@ -79,13 +82,13 @@ export default function ActiveGame({
           }}
         >
           <View style={{ flex: 1 }}>
-            <CurrentQuestionIndicator
-              difficulty={currentTurn.question.difficulty!}
+            <CurrentQuestionDisplay
               position={currentTurn.position}
+              length={game.length}
             />
           </View>
           <View style={{ flex: 1 }}>
-            <PlayerRanking player={participation!} />
+            <PlayerScoreDisplay score={participation!.score} />
           </View>
         </View>
         {!currentTurn.finishedAt && (
