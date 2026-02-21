@@ -1,12 +1,12 @@
 import { View } from "react-native";
 import ThemedText from "./ui/ThemedText";
-import PlayerScoreDisplay from "./PlayerRanking";
-import CurrentQuestionDisplay from "./CurrentQuestionIndicator";
+import PlayerScoreDisplay from "./PlayerScoreDisplay";
+import CurrentQuestionDisplay from "./CurrentQuestionDisplay";
 import ActiveTurnTimer from "./ActiveTurnTimer";
 import React, { useEffect, useState } from "react";
 import ActivePlayableTurn from "./ActivePlayableTurn";
 import TurnRecap from "./TurnRecap";
-import { Item, Participation, PlayableTurn, PlayedTurn } from "@/api/play.api";
+import { Participation, PlayableTurn, PlayedTurn } from "@/api/play.api";
 import PlayerStatusList from "./PlayerStatusList";
 import { hasStatus, scrambleSentence } from "@/utils/gameUtils";
 import { Game } from "@/api/games.api";
