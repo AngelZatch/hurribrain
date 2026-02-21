@@ -10,7 +10,7 @@ export const useRegister = () => {
     }) => {
       const response = await axios.post(
         "http://localhost:8080/auth/register",
-        data
+        data,
       );
       return response.data;
     },
@@ -22,7 +22,7 @@ export const useLogin = () => {
     mutationFn: async (data: { email: string; password: String }) => {
       const response = await axios.post(
         "http://localhost:8080/auth/login",
-        data
+        data,
       );
       return response.data;
     },

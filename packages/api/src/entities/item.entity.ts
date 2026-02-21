@@ -23,6 +23,11 @@ export type ItemName =
   | "Super Scramble"
   | "Super Darkness"
 
+export type StatusName = Omit<
+  ItemName,
+  "Super Quake" | "Super Scramble" | "Super Darnkess"
+>
+
 @Entity()
 @Unique({ properties: ["name"] })
 export class Item {

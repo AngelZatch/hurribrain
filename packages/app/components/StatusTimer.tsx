@@ -1,9 +1,9 @@
 import { View } from "react-native";
 import ThemedText from "./ui/ThemedText";
-import { Item } from "@/api/play.api";
+import { StatusName } from "@/api/play.api";
 
 type StatusTimerProps = {
-  name: string;
+  name: StatusName;
   duration: number;
 };
 

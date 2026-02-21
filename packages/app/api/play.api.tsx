@@ -19,9 +19,9 @@ export type Participation = {
 
   // ITEM AND STATUSES
   itemCharge: number;
-  activeItem: string | null; // Loaded by the client
+  activeItem: ItemName | null; // Loaded by the client
   statuses: Array<{
-    name: string; // Loaded by the client
+    name: StatusName; // Loaded by the client
     duration: number;
   }>;
 
@@ -103,6 +103,25 @@ export type Item = {
   description: string;
   type: "attack" | "defense" | "support";
 };
+
+export type StatusName =
+  | "Coin"
+  | "Half"
+  | "Boost"
+  | "Hidden"
+  | "Shield"
+  | "Turnaround"
+  | "Scramble"
+  | "Hurry"
+  | "Judge"
+  | "Lock"
+  | "Darkness";
+
+export type ItemName =
+  | StatusName
+  | "Super Quake"
+  | "Super Scramble"
+  | "Super Darkness";
 
 // Utility function to check if the user has a current participation so they can quickly resume
 export const hasACurrentParticipation = (token: string) => {

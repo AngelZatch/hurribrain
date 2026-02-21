@@ -11,7 +11,7 @@ export default function PlayerStatusList({
     <View style={{ flexDirection: "row", gap: 8 }}>
       {participation.statuses.map((status) => (
         <StatusTimer
-          key={status.name}
+          key={status.name.toString()}
           name={status.name}
           duration={status.duration}
         />

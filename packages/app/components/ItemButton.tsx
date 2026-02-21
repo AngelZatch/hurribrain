@@ -15,7 +15,7 @@ export default function ItemButton({ participation }: ItemButtonProps) {
 
   const handleUseItem = () => {
     if (hasLock) {
-      return null;
+      return;
     }
 
     socket.emit("item:use", {
@@ -26,9 +26,7 @@ export default function ItemButton({ participation }: ItemButtonProps) {
   };
 
   useEffect(() => {
-    if (participation.activeItem) {
-      setHeldItem(participation.activeItem || null);
-    }
+    setHeldItem(participation.activeItem || null);
   }, [participation.activeItem]);
 
   const [hasLock, setHasLock] = useState(false);
