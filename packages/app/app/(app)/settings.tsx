@@ -13,7 +13,7 @@ export default function Settings() {
     <PageContainer>
       <TopNavigation
         leftElement={
-          <Link href={"/"} asChild>
+          <Link href={"../"} asChild>
             <ThemedButton icon="xmark" size="large" title="" type="secondary" />
           </Link>
         }

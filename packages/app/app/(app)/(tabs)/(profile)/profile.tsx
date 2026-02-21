@@ -18,7 +18,7 @@ export default function ProfileScreen() {
 
   const { data, isLoading, isError } = useGetMeWithStats(user);
 
-  if (isLoading) {
+  if (!data || isLoading) {
     return <Text>Loading...</Text>;
   }
 
@@ -35,28 +35,9 @@ export default function ProfileScreen() {
       <View
         style={{
           display: "flex",
-          flexDirection: "row",
-          alignSelf: "flex-end",
-          gap: 10,
-          paddingHorizontal: 0,
-          paddingVertical: 10,
-        }}
-      >
-        <Link href="/settings">
-          <ThemedButton
-            icon="gearshape.fill"
-            size="large"
-            title=""
-            type="secondary"
-          />
-        </Link>
-      </View>
-      <View
-        style={{
-          display: "flex",
           flexDirection: "column",
           alignItems: "flex-start",
-          gap: 16,
+          gap: 6,
           flexGrow: 1,
           flexShrink: 0,
           flexBasis: 0,
@@ -92,7 +73,7 @@ export default function ProfileScreen() {
                 fontFamily: "Exo_700Bold",
               }}
             >
-              {data?.name}
+              {data.name}
             </ThemedText>
             <Text
               style={{
@@ -104,12 +85,31 @@ export default function ProfileScreen() {
               Master of the Quiz
             </Text>
             <ExperienceBar
-              current={data!.stats.experiencePoints}
-              level={data!.stats.level}
-            />
-            <ThemedButton title="Modifier le Profil" size="medium" />
+              current={data.stats.experiencePoints}
+              level={data.stats.level}
+            />{" "}
           </View>
         </ContainerView>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            gap: 10,
+            paddingHorizontal: 0,
+            paddingVertical: 10,
+            width: "100%",
+          }}
+        >
+          <ThemedButton title="Modifier le Profil" size="medium" fullWidth />
+          <Link href="/settings" asChild>
+            <ThemedButton
+              icon="gearshape.fill"
+              size="large"
+              title=""
+              type="secondary"
+            />
+          </Link>
+        </View>
         <ContainerView
           style={{
             flexDirection: "column",
@@ -123,7 +123,7 @@ export default function ProfileScreen() {
               Parties jouées
             </ThemedText>
             <ThemedText style={styles.statValue} colorType="main">
-              {data?.stats.gamesPlayed}
+              {data.stats.gamesPlayed}
             </ThemedText>
           </View>
           <View style={styles.statRow}>
@@ -131,7 +131,7 @@ export default function ProfileScreen() {
               Première partie
             </ThemedText>
             <ThemedText style={styles.statValue} colorType="main">
-              {data?.stats.firstGamePlayed}
+              {new Date(data.stats.firstGamePlayed).toLocaleDateString()}
             </ThemedText>
           </View>
           <Divider orientation="horizontal" size="100%" />
@@ -140,7 +140,7 @@ export default function ProfileScreen() {
               Parties gagnées
             </ThemedText>
             <ThemedText style={styles.statValue} colorType="main">
-              {data?.stats.gamesWon}
+              {data.stats.gamesWon}
             </ThemedText>
           </View>
           <View style={styles.statRow}>
@@ -148,7 +148,7 @@ export default function ProfileScreen() {
               Première victoire
             </ThemedText>
             <ThemedText style={styles.statValue} colorType="main">
-              {data?.stats.firstGameWon}
+              {new Date(data.stats.firstGameWon).toLocaleDateString()}
             </ThemedText>
           </View>
           <Divider orientation="horizontal" size="100%" />
@@ -157,7 +157,7 @@ export default function ProfileScreen() {
               Taux de victoire
             </ThemedText>
             <ThemedText style={styles.statValue} colorType="main">
-              {computeWinRate(data!.stats.gamesPlayed, data!.stats.gamesWon)} %
+              {computeWinRate(data.stats.gamesPlayed, data.stats.gamesWon)} %
             </ThemedText>
           </View>
           {/* 
@@ -193,7 +193,7 @@ export default function ProfileScreen() {
               Arrivée
             </ThemedText>
             <ThemedText style={styles.statValue} colorType="main">
-              {data?.createdAt}
+              {new Date(data.createdAt).toLocaleDateString()}
             </ThemedText>
           </View>
         </ContainerView>
