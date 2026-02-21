@@ -83,12 +83,19 @@ export type PlayedTurn = {
   finishedAt: Date;
 };
 
+export type QuestionDifficulty =
+  | "easy"
+  | "medium"
+  | "hard"
+  | "expert"
+  | "unknown";
+
 export type Question = {
   uuid: string;
   title: string;
   choices: Array<Choice>;
   successRate: number | null;
-  difficulty?: "easy" | "medium" | "hard" | "expert" | "unknown";
+  difficulty?: QuestionDifficulty;
 };
 
 export type Choice = {

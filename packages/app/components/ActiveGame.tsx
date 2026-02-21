@@ -69,28 +69,33 @@ export default function ActiveGame({
         paddingTop: 0,
       }}
     >
-      <View
-        style={{
-          justifyContent: "space-between",
-          alignContent: "center",
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
-        <View style={{ flex: 1 }}>
-          <CurrentQuestionIndicator
+      <View>
+        <View
+          style={{
+            justifyContent: "space-between",
+            alignContent: "center",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <View style={{ flex: 1 }}>
+            <CurrentQuestionIndicator
+              difficulty={currentTurn.question.difficulty!}
+              position={currentTurn.position}
+            />
+          </View>
+          <View style={{ flex: 1 }}>
+            <PlayerRanking player={participation!} />
+          </View>
+        </View>
+        {!currentTurn.finishedAt && (
+          <ActiveTurnTimer
+            timeLeft={timeLeft}
             difficulty={currentTurn.question.difficulty!}
-            position={currentTurn.position}
           />
-        </View>
-        <View style={{ flex: 1, alignItems: "center" }}>
-          {!currentTurn.finishedAt && <ActiveTurnTimer timeLeft={timeLeft} />}
-        </View>
-        <View style={{ flex: 1 }}>
-          <PlayerRanking player={participation!} />
-        </View>
+        )}
+        <PlayerStatusList participation={participation} />
       </View>
-      <PlayerStatusList participation={participation} />
       <View
         style={{
           alignContent: "center",
