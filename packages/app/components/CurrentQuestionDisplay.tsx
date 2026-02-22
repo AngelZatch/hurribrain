@@ -26,6 +26,12 @@ export default function CurrentQuestionDisplay({
           fontFamily: "Exo_700Bold",
           fontSize: 16,
           letterSpacing: 1.2,
+          textShadowColor: "#00000033",
+          textShadowOffset: {
+            height: 2,
+            width: 2,
+          },
+          textShadowRadius: 3,
         }}
       >
         {position}
@@ -35,6 +41,12 @@ export default function CurrentQuestionDisplay({
           fontSize: 12,
           fontFamily: "Exo_400Regular",
           letterSpacing: 1.2,
+          textShadowColor: "#00000033",
+          textShadowOffset: {
+            height: 2,
+            width: 2,
+          },
+          textShadowRadius: 3,
         }}
       >
         {"/"}

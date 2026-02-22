@@ -1,4 +1,4 @@
-import { Item, Participation } from "@/api/play.api";
+import { Participation } from "@/api/play.api";
 import { View } from "react-native";
 import StatusTimer from "./StatusTimer";
 

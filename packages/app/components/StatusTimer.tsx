@@ -1,6 +1,9 @@
-import { View } from "react-native";
+import { ImageBackground, View } from "react-native";
 import ThemedText from "./ui/ThemedText";
 import { StatusName } from "@/api/play.api";
+import buffImage from "@/assets/images/items/buff-shape.png";
+import debuffImage from "@/assets/images/items/debuff-shape.png";
+import { useEffect, useState } from "react";
 
 type StatusTimerProps = {
   name: StatusName;
@@ -8,27 +11,50 @@ type StatusTimerProps = {
 };
 
 export default function StatusTimer({ name, duration }: StatusTimerProps) {
+  const buffs: Array<StatusName> = ["Boost", "Half", "Hidden", "Shield"];
+
+  const [isBuff, setIsBuff] = useState(false);
+
+  useEffect(() => {
+    setIsBuff(buffs.includes(name));
+  }, [name]);
+
   return (
     <View
       style={{
-        flexDirection: "row",
+        width: 40,
+        height: 67,
+        overflow: "hidden",
         alignItems: "center",
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        borderRadius: 9999,
-        backgroundColor: "#2F2F2F",
+        justifyContent: "center",
       }}
     >
-      <ThemedText
+      <ImageBackground
+        source={isBuff ? buffImage : debuffImage}
+        resizeMode="cover"
         style={{
-          fontSize: 12,
-          lineHeight: 16,
-          fontFamily: "Exo_400Regular",
-          color: "#FFFFFF",
+          width: "100%",
+          height: "100%",
+          top: isBuff ? -7 : 7,
+        }}
+      />
+      <View
+        style={{
+          position: "absolute",
+          flexDirection: "row",
+          gap: 4,
         }}
       >
-        {name} ({duration})
-      </ThemedText>
+        <ThemedText
+          style={{
+            fontFamily: "Exo_800ExtraBold",
+            fontSize: 14,
+            color: "#FFFFFF",
+          }}
+        >
+          {duration}
+        </ThemedText>
+      </View>
     </View>
   );
 }

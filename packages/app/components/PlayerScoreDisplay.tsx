@@ -20,6 +20,12 @@ export default function PlayerScoreDisplay({ score }: PlayerRankingProps) {
           fontFamily: "Exo_700Bold",
           fontSize: 16,
           letterSpacing: 1.2,
+          textShadowColor: "#00000033",
+          textShadowOffset: {
+            height: 2,
+            width: -2,
+          },
+          textShadowRadius: 3,
         }}
       >
         {score}
@@ -29,6 +35,12 @@ export default function PlayerScoreDisplay({ score }: PlayerRankingProps) {
           fontSize: 12,
           fontFamily: "Exo_400Regular",
           letterSpacing: 1.2,
+          textShadowColor: "#00000033",
+          textShadowOffset: {
+            height: 2,
+            width: -2,
+          },
+          textShadowRadius: 3,
         }}
       >
         {"pts"}
