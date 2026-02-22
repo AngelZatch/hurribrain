@@ -1,21 +1,25 @@
 import { View } from "react-native";
 import ThemedText from "./ui/ThemedText";
-import PlayerRanking from "./PlayerRanking";
-import CurrentQuestionIndicator from "./CurrentQuestionIndicator";
-import ActiveTurnTimer from "./ActiveTurnTimer";
+import PlayerScoreDisplay from "./PlayerScoreDisplay";
+import CurrentQuestionDisplay from "./CurrentQuestionDisplay";
+import TurnTimer from "./TurnTimer";
 import React, { useEffect, useState } from "react";
 import ActivePlayableTurn from "./ActivePlayableTurn";
 import TurnRecap from "./TurnRecap";
-import { Item, Participation, PlayableTurn, PlayedTurn } from "@/api/play.api";
+import { Participation, PlayableTurn, PlayedTurn } from "@/api/play.api";
 import PlayerStatusList from "./PlayerStatusList";
 import { hasStatus, scrambleSentence } from "@/utils/gameUtils";
+import { Game } from "@/api/games.api";
+import PlayerRankDisplay from "./PlayerRankDisplay";
 
 type ActiveTurnProps = {
+  game: Game;
   currentTurn: PlayableTurn | PlayedTurn;
   participation: Participation;
 };
 
 export default function ActiveGame({
+  game,
   currentTurn,
   participation,
 }: ActiveTurnProps) {
@@ -69,28 +73,38 @@ export default function ActiveGame({
         paddingTop: 0,
       }}
     >
-      <View
-        style={{
-          justifyContent: "space-between",
-          alignContent: "center",
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
-        <View style={{ flex: 1 }}>
-          <CurrentQuestionIndicator
+      <View>
+        <View
+          style={{
+            justifyContent: "space-between",
+            alignContent: "center",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <View style={{ flex: 1 }}>
+            <CurrentQuestionDisplay
+              position={currentTurn.position}
+              length={game.length}
+            />
+          </View>
+          <View>
+            {participation.rank > 0 && (
+              <PlayerRankDisplay rank={participation.rank} />
+            )}
+          </View>
+          <View style={{ flex: 1 }}>
+            <PlayerScoreDisplay score={participation!.score} />
+          </View>
+        </View>
+        {!currentTurn.finishedAt && (
+          <TurnTimer
+            timeLeft={timeLeft}
             difficulty={currentTurn.question.difficulty!}
-            position={currentTurn.position}
           />
-        </View>
-        <View style={{ flex: 1, alignItems: "center" }}>
-          {!currentTurn.finishedAt && <ActiveTurnTimer timeLeft={timeLeft} />}
-        </View>
-        <View style={{ flex: 1 }}>
-          <PlayerRanking player={participation!} />
-        </View>
+        )}
+        <PlayerStatusList participation={participation} />
       </View>
-      <PlayerStatusList participation={participation} />
       <View
         style={{
           alignContent: "center",

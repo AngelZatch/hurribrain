@@ -20,7 +20,7 @@ export const Colors = {
     icon: '#687076',
     tabIconDefault: '#687076',
     tabIconSelected: tintColorLight,
-    backgroundGradient: "linear-gradient(#3C73FF, #BFEAEC)",
+    backgroundGradient: "linear-gradient(#a5bdfd, #a1ecf0)",
     containerBackground: "#ffffff33",
     secondaryText: "#0F2969",
     disabled: "#5F5F5F",
