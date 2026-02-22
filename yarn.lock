@@ -2107,12 +2107,12 @@ __metadata:
   linkType: hard
 
 "@fastify/auth@npm:^5.0.2":
-  version: 5.0.2
-  resolution: "@fastify/auth@npm:5.0.2"
+  version: 5.0.4
+  resolution: "@fastify/auth@npm:5.0.4"
   dependencies:
     fastify-plugin: "npm:^5.0.0"
     reusify: "npm:^1.0.4"
-  checksum: 10c0/4dc2466cedbc05d8ff003ad2b12d62880ba0d80c90513bcbf4d8fe71b5c4f736b2539e9b72c1b86ea84ab55a4b7511e9b2632866b684884cbb49bf3ddf0fe754
+  checksum: 10c0/72c165951aa64919ee3aa6e853615bfccc168f508acb42c62a0d68c1ff2215bbf71fd2b299c56f6ede59969b6fdecbc8531db366b609161dd05a11791bfc1736
   languageName: node
   linkType: hard
 
