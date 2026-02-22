@@ -10,6 +10,7 @@ import { Participation, PlayableTurn, PlayedTurn } from "@/api/play.api";
 import PlayerStatusList from "./PlayerStatusList";
 import { hasStatus, scrambleSentence } from "@/utils/gameUtils";
 import { Game } from "@/api/games.api";
+import PlayerRankDisplay from "./PlayerRankDisplay";
 
 type ActiveTurnProps = {
   game: Game;
@@ -86,6 +87,9 @@ export default function ActiveGame({
               position={currentTurn.position}
               length={game.length}
             />
+          </View>
+          <View>
+            <PlayerRankDisplay rank={participation.rank} />
           </View>
           <View style={{ flex: 1 }}>
             <PlayerScoreDisplay score={participation!.score} />

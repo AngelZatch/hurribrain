@@ -1,11 +1,11 @@
 import { View } from "react-native";
 import ThemedText from "./ui/ThemedText";
 
-type PlayerRankingProps = {
+type PlayerScoreDisplayProps = {
   score: number;
 };
 
-export default function PlayerScoreDisplay({ score }: PlayerRankingProps) {
+export default function PlayerScoreDisplay({ score }: PlayerScoreDisplayProps) {
   return (
     <View
       style={{
