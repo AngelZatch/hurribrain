@@ -8,7 +8,7 @@ export default function PlayerStatusList({
   participation: Participation;
 }) {
   return (
-    <View style={{ flexDirection: "row", gap: 8 }}>
+    <View style={{ flexDirection: "row", gap: 8, justifyContent: "center" }}>
       {participation.statuses.map((status) => (
         <StatusTimer
           key={status.name.toString()}
