@@ -54,7 +54,7 @@ export type OutlinedTextProps = {
   children?: React.ReactNode | undefined;
 };
 
-const buildFillGradient = (fillColor: string) => {
+const buildFillGradient = (fillColor: string, gradientId: string) => {
   const match = fillColor.match(/^linear-gradient\(([^,]+),(.+)\)$/i);
 
   // If fillColor contains "linear-gradient", then iterate on it and build a gradient
@@ -72,7 +72,7 @@ const buildFillGradient = (fillColor: string) => {
   }
 
   return (
-    <LinearGradient id="grad" x1="0.50" y1="0" x2="0.50" y2="1">
+    <LinearGradient id={"grad-" + gradientId} x1="0.50" y1="0" x2="0.50" y2="1">
       {colors.map((color, index) => {
         return (
           <Stop key={index} offset={index} stopColor={color} stopOpacity={1} />
@@ -138,6 +138,9 @@ export function OutlinedText({
   // Contents
   children,
 }: OutlinedTextProps) {
+  // Random uuid so that multiple instances of this component can be used at once
+  const gradientId = crypto.randomUUID();
+
   const computedX =
     textAnchor === "start" ? 0 : textAnchor === "end" ? width : width / 2;
   const computedY = 30;
@@ -161,7 +164,7 @@ export function OutlinedText({
       <Svg width={width} height={height ?? 100}>
         <Defs>
           {/* Linear Gradient for the text color. If only one color is given, then there's only one line. */}
-          {buildFillGradient(fillColor)}
+          {buildFillGradient(fillColor, gradientId)}
         </Defs>
         {/* Blur shadow layers */}
         {blurLayers.map((layer, layerIndex) => (
@@ -188,7 +191,7 @@ export function OutlinedText({
           </Text>
         )}
         {/* Fill Text */}
-        <Text fill="url(#grad)" {...baseTextProps}>
+        <Text fill={`url(#grad-${gradientId})`} {...baseTextProps}>
           {children}
         </Text>
       </Svg>

@@ -21,7 +21,10 @@ const formatSeconds = (seconds: number): string => {
   return `${mins.toString().padStart(0, "0")}:${secs.toString().padStart(2, "0")}`;
 };
 
-export default function TurnTimer({ timeLeft, difficulty }: TurnTimerProps) {
+export default function TurnTimer({
+  timeLeft,
+  difficulty = "unknown",
+}: TurnTimerProps) {
   const difficultyColorMap: DifficultyColorMap = {
     easy: {
       fillColor: "linear-gradient(to bottom, #3dc96c, #5df48e)",
@@ -56,7 +59,7 @@ export default function TurnTimer({ timeLeft, difficulty }: TurnTimerProps) {
         alignContent: "center",
       }}
     >
-      <SideLines colors={difficultyColorMap[difficulty!]} />
+      <SideLines colors={difficultyColorMap[difficulty]} />
       <View
         style={{
           gap: 0,
@@ -68,8 +71,8 @@ export default function TurnTimer({ timeLeft, difficulty }: TurnTimerProps) {
           fontSize={24}
           fontFamily="Exo_700Bold"
           fontWeight="700"
-          fillColor={difficultyColorMap[difficulty!].fillColor}
-          strokeColor={difficultyColorMap[difficulty!].stroke}
+          fillColor={difficultyColorMap[difficulty].fillColor}
+          strokeColor={difficultyColorMap[difficulty].stroke}
           strokeWidth={2}
           height={40}
           width={80}
@@ -83,7 +86,7 @@ export default function TurnTimer({ timeLeft, difficulty }: TurnTimerProps) {
           {formatSeconds(timeLeft)}
         </OutlinedText>
       </View>
-      <SideLines colors={difficultyColorMap[difficulty!]} />
+      <SideLines colors={difficultyColorMap[difficulty]} />
     </View>
   );
 }
