@@ -74,7 +74,9 @@ const buildFillGradient = (fillColor: string) => {
   return (
     <LinearGradient id="grad" x1="0.50" y1="0" x2="0.50" y2="1">
       {colors.map((color, index) => {
-        return <Stop offset={index} stopColor={color} stopOpacity={1} />;
+        return (
+          <Stop key={index} offset={index} stopColor={color} stopOpacity={1} />
+        );
       })}
     </LinearGradient>
   );

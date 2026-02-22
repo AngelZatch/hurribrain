@@ -2,7 +2,7 @@ import { View } from "react-native";
 import ThemedText from "./ui/ThemedText";
 import PlayerScoreDisplay from "./PlayerScoreDisplay";
 import CurrentQuestionDisplay from "./CurrentQuestionDisplay";
-import ActiveTurnTimer from "./ActiveTurnTimer";
+import TurnTimer from "./TurnTimer";
 import React, { useEffect, useState } from "react";
 import ActivePlayableTurn from "./ActivePlayableTurn";
 import TurnRecap from "./TurnRecap";
@@ -89,14 +89,16 @@ export default function ActiveGame({
             />
           </View>
           <View>
-            <PlayerRankDisplay rank={participation.rank} />
+            {participation.rank > 0 && (
+              <PlayerRankDisplay rank={participation.rank} />
+            )}
           </View>
           <View style={{ flex: 1 }}>
             <PlayerScoreDisplay score={participation!.score} />
           </View>
         </View>
         {!currentTurn.finishedAt && (
-          <ActiveTurnTimer
+          <TurnTimer
             timeLeft={timeLeft}
             difficulty={currentTurn.question.difficulty!}
           />
