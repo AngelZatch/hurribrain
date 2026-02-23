@@ -14,7 +14,8 @@ type ThemedTextProps = TextProps & {
     | "link"
     | "smallTitle"
     | "label"
-    | "helper";
+    | "helper"
+    | "settingsSectionTitle";
 };
 
 export default function ThemedText({
@@ -27,7 +28,7 @@ export default function ThemedText({
 }: ThemedTextProps) {
   const color = useThemeColor(
     { light: lightColor, dark: darkColor },
-    colorType
+    colorType,
   );
 
   return (
@@ -42,6 +43,9 @@ export default function ThemedText({
         type === "smallTitle" ? styles.smallTitle : undefined,
         type === "label" ? styles.label : undefined,
         type === "helper" ? styles.helper : undefined,
+        type === "settingsSectionTitle"
+          ? styles.settingsSectionTitle
+          : undefined,
         style,
       ]}
       {...rest}
@@ -69,6 +73,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: "Exo_500Medium",
     letterSpacing: 1,
+  },
+  settingsSectionTitle: {
+    fontSize: 24,
+    fontFamily: "Exo_600SemiBold",
   },
   smallTitle: {
     fontSize: 32,

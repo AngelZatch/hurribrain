@@ -17,6 +17,8 @@ const MAPPING = {
   "chevron.right": "chevron-right",
   "chevron.left": "chevron-left",
   "gearshape.fill": "settings",
+  "shield.fill": "shield",
+  logout: "logout",
   minus: "remove",
   plus: "add",
   "arrow.forward.square": "input",
