@@ -1,6 +1,5 @@
 import { ImageBackground, View, type ViewProps } from "react-native";
 
-import backgroundPicture from "@/assets/images/background_waves.png";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
 
@@ -9,7 +8,7 @@ export function BackgroundView({ style, ...otherProps }: ViewProps) {
 
   return (
     <ImageBackground
-      source={backgroundPicture}
+      source={require("@/assets/images/background_waves.png")}
       resizeMode="cover"
       style={[
         {
