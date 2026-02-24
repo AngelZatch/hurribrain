@@ -34,7 +34,7 @@ export default function Settings() {
         />
         <Divider orientation="horizontal" size="auto" />
         <SettingsOption
-          icon="logout"
+          icon="door.left.hand.open"
           label="Déconnexion"
           onClick={() => {
             logout();
