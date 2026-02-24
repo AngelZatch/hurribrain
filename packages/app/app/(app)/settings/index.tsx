@@ -6,10 +6,11 @@ import SettingsOption from "@/components/ui/SettingsOption";
 import ThemedButton from "@/components/ui/ThemedButton";
 import ThemedText from "@/components/ui/ThemedText";
 import { useAuth } from "@/contexts/auth.context";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 
 export default function Settings() {
   const { logout } = useAuth();
+  const router = useRouter();
 
   return (
     <PageContainer>
@@ -30,7 +31,9 @@ export default function Settings() {
         <SettingsOption
           icon="shield.fill"
           label="Sécurité et Connexion"
-          onClick={() => {}}
+          onClick={() => {
+            router.navigate("/settings/security");
+          }}
         />
         <Divider orientation="horizontal" size="auto" />
         <SettingsOption
