@@ -14,6 +14,9 @@ import { verifyJWT } from "../utils/authChecker.js"
 import { UserStats } from "../entities/userStats.entity.js"
 import { Participation } from "../entities/participation.entity.js"
 import { GetParticipationReplySchema } from "../schemas/player.schema.js"
+import AuthService from "./../services/auth.service.js"
+
+const authService = new AuthService()
 
 const AuthController = async (fastify: FastifyInstance) => {
   fastify.post<{
@@ -32,45 +35,38 @@ const AuthController = async (fastify: FastifyInstance) => {
       },
     },
     async (request, reply) => {
-      const em = request.em
       const { email, password } = request.body
 
-      const user = await em.findOneOrFail(
-        User,
-        { email },
-        {
-          fields: ["uuid", "email", "name", "role", "password"],
-          filters: { notDeleted: true, notBanned: true },
-          failHandler: () => {
-            reply.statusCode = 401
-            return new Error("Invalid credentials")
+      try {
+        const user = await authService.checkCredentials(email, password)
+
+        // TODO: Send another error that can be used to recover account
+        if (!user.deletedAt) {
+          reply.statusCode = 401
+          return new Error("Invalid credentials")
+        }
+
+        const accessToken = jwt.sign(
+          {
+            uuid: user.uuid,
+            email: user.email,
+            name: user.name,
+            role: user.role,
           },
+          "changeSecretIntoEnvVariable",
+          {
+            expiresIn: "7d",
+          }
+        )
+
+        return {
+          accessToken,
+          refreshToken: "",
         }
-      )
-
-      const match = await bcrypt.compare(password, user.password)
-
-      if (!match) {
+      } catch (error) {
+        console.error(error)
         reply.statusCode = 401
-        return new Error("Invalid credentials (password)")
-      }
-
-      const accessToken = jwt.sign(
-        {
-          uuid: user.uuid,
-          email: user.email,
-          name: user.name,
-          role: user.role,
-        },
-        "changeSecretIntoEnvVariable",
-        {
-          expiresIn: "7d",
-        }
-      )
-
-      return {
-        accessToken,
-        refreshToken: "",
+        return new Error("Invalid credentials")
       }
     }
   )
@@ -228,35 +224,21 @@ const AuthController = async (fastify: FastifyInstance) => {
     async (request, reply) => {
       const em = request.em
       const { email, password } = request.body
+      try {
+        const user = await authService.checkCredentials(email, password)
 
-      // Check if the user exists
-      const existingUser = await em.findOneOrFail(
-        User,
-        { email },
-        {
-          failHandler: () => {
-            reply.statusCode = 401
-            return new Error("Invalid credentials")
-          },
-        }
-      )
+        // If they do, flag them for deletion by setting their deletedAt Date 24 hours into the future
+        user.deletedAt = new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
+        em.persist(user)
 
-      const match = await bcrypt.compare(password, existingUser.password)
+        await em.flush()
 
-      if (!match) {
+        return reply.status(200).send(true)
+      } catch (error) {
+        console.error(error)
         reply.statusCode = 401
-        return new Error("Invalid credentials (password)")
+        return new Error("Invalid credentials")
       }
-
-      // If they do, flag them for deletion by setting their deletedAt Date 24 hours into the future
-      existingUser.deletedAt = new Date(
-        new Date().getTime() + 24 * 60 * 60 * 1000
-      )
-      em.persist(existingUser)
-
-      await em.flush()
-
-      return reply.status(200)
     }
   )
 }
