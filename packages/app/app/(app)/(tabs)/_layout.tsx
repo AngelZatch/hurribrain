@@ -1,4 +1,4 @@
-import { Redirect, Stack, Tabs, useSegments } from "expo-router";
+import { Redirect, Tabs, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 
 import React from "react";
@@ -25,7 +25,7 @@ export default function AppLayout() {
     return <Redirect href="/welcome" />;
   }
 
-  const hideTab = segments.includes("play");
+  const hideTab = segments.includes("play" as never);
 
   return (
     <Tabs

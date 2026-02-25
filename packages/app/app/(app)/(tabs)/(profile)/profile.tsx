@@ -87,7 +87,7 @@ export default function ProfileScreen() {
             <ExperienceBar
               current={data.stats.experiencePoints}
               level={data.stats.level}
-            />{" "}
+            />
           </View>
         </ContainerView>
         <View
