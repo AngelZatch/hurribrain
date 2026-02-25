@@ -1,6 +1,7 @@
-import { View } from "react-native";
+import { useColorScheme, View } from "react-native";
 import ThemedText from "./ui/ThemedText";
 import ThemedButton from "./ui/ThemedButton";
+import { Colors } from "@/constants/Colors";
 
 type RecoverAccountModalProps = {
   onRequestCancel: () => void;
@@ -11,6 +12,8 @@ export default function RecoverAccountModal({
   onRequestCancel,
   onRequestProceed,
 }: RecoverAccountModalProps) {
+  const backgroundColor = useColorScheme() ?? "light";
+
   return (
     <View
       style={{
@@ -26,14 +29,16 @@ export default function RecoverAccountModal({
     >
       <View
         style={{
-          backgroundColor: "#FFF",
+          backgroundImage: Colors[backgroundColor].backgroundGradient,
           padding: 20,
           gap: 20,
+          height: "auto",
           flexDirection: "column",
           alignContent: "center",
           alignItems: "stretch",
           justifyContent: "center",
           borderRadius: 20,
+          boxShadow: "0px 5px 15px #00000066",
         }}
       >
         <View

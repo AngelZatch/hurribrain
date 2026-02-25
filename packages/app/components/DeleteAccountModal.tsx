@@ -1,4 +1,4 @@
-import { Modal, ModalProps, View } from "react-native";
+import { useColorScheme, View } from "react-native";
 import { InputContainer } from "./ui/InputContainer";
 import ThemedText from "./ui/ThemedText";
 import { Controller, useForm } from "react-hook-form";
@@ -7,7 +7,7 @@ import ThemedButton from "./ui/ThemedButton";
 import { useDeleteAccount } from "@/api/auth.api";
 import { useAuth } from "@/contexts/auth.context";
 import { router } from "expo-router";
-import { PageContainer } from "@/components/ui/PageContainer";
+import { Colors } from "@/constants/Colors";
 
 type FormData = {
   email: string;
@@ -21,6 +21,8 @@ type DeleteAccountModal = {
 export default function DeleteAccountModal({
   onRequestClose,
 }: DeleteAccountModal) {
+  const backgroundColor = useColorScheme() ?? "light";
+
   const {
     control,
     handleSubmit,
@@ -60,14 +62,16 @@ export default function DeleteAccountModal({
     >
       <View
         style={{
-          backgroundColor: "#FFF",
+          backgroundImage: Colors[backgroundColor].backgroundGradient,
           padding: 20,
           gap: 20,
+          height: "auto",
           flexDirection: "column",
           alignContent: "center",
           alignItems: "stretch",
           justifyContent: "center",
           borderRadius: 20,
+          boxShadow: "0px 5px 15px #00000066",
         }}
       >
         <View
