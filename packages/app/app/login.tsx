@@ -7,8 +7,11 @@ import { useForm, Controller } from "react-hook-form";
 import ThemedTextInput from "@/components/ui/ThemedTextInput";
 import { InputContainer } from "@/components/ui/InputContainer";
 import { useAuth } from "@/contexts/auth.context";
-import { useLogin } from "@/api/auth.api";
+import { useAuthCheck, useAuthRecover, useLogin } from "@/api/auth.api";
 import { router } from "expo-router";
+import RecoverAccountModal from "@/components/RecoverAccountModal";
+import { useState } from "react";
+import { Modal } from "react-native";
 
 type FormData = {
   email: string;
@@ -16,7 +19,11 @@ type FormData = {
 };
 
 export default function LoginScreen() {
-  const { mutateAsync: signIn, error } = useLogin();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const { mutateAsync: checkAuth } = useAuthCheck();
+  const { mutateAsync: signIn, error: signInError } = useLogin();
+  const { mutateAsync: recoverAuth, error: authRecoveryError } =
+    useAuthRecover();
   const { login } = useAuth();
 
   const {
@@ -32,7 +39,26 @@ export default function LoginScreen() {
 
   const onSubmit = async (data: FormData) => {
     try {
-      const tokens = await signIn(data);
+      const result = await checkAuth(data);
+
+      if (result === 1) {
+        setIsModalVisible(true);
+      }
+
+      if (result === 0) {
+        const tokens = await signIn(data);
+        login(tokens.accessToken);
+        router.replace("/");
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const onRecover = async (data: FormData) => {
+    console.log("ON RECOVER", data);
+    try {
+      const tokens = await recoverAuth(data);
       login(tokens.accessToken);
       router.replace("/");
     } catch (e) {
@@ -48,9 +74,9 @@ export default function LoginScreen() {
     >
       <TopNavigation />
       <BodyContainer>
-        <ThemedText type="smallTitle">Welcome back!</ThemedText>
+        <ThemedText type="smallTitle">Bon retour !</ThemedText>
         <InputContainer>
-          <ThemedText type="label">Email address</ThemedText>
+          <ThemedText type="label">Adresse mail</ThemedText>
           <Controller
             control={control}
             rules={{
@@ -71,7 +97,7 @@ export default function LoginScreen() {
         </InputContainer>
         {errors.email && <ThemedText>This field is required</ThemedText>}
         <InputContainer>
-          <ThemedText type="label">Password</ThemedText>
+          <ThemedText type="label">Mot de Passe</ThemedText>
           <Controller
             control={control}
             rules={{
@@ -98,8 +124,20 @@ export default function LoginScreen() {
           onPress={handleSubmit(onSubmit)}
           disabled={!isValid}
         />
-        {error && <ThemedText>{error.message}</ThemedText>}
+        {signInError && <ThemedText>{signInError.message}</ThemedText>}
       </BodyContainer>
+      <Modal
+        presentationStyle="pageSheet"
+        animationType="slide"
+        visible={isModalVisible}
+        transparent
+        onRequestClose={() => setIsModalVisible(false)}
+      >
+        <RecoverAccountModal
+          onRequestCancel={() => setIsModalVisible(false)}
+          onRequestProceed={handleSubmit(onRecover)}
+        />
+      </Modal>
     </PageContainer>
   );
 }

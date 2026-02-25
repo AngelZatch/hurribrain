@@ -5,8 +5,8 @@ import ThemedButton from "@/components/ui/ThemedButton";
 import ThemedText from "@/components/ui/ThemedText";
 import { Link } from "expo-router";
 import { Modal, View } from "react-native";
-import DeleteAccountModal from "./deleteAccountModal";
 import { useState } from "react";
+import DeleteAccountModal from "@/components/DeleteAccountModal";
 
 export default function SecurityAndConnectionScreen() {
   const [isModalVisible, setIsModalVisible] = useState(false);

@@ -3,6 +3,7 @@ import { FastifyInstance } from "fastify"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import {
+  AuthCheckResponseSchema,
   AuthErrorResponsesSchema,
   AuthResponseSchema,
   LoginRequestBody,
@@ -19,6 +20,40 @@ import AuthService from "./../services/auth.service.js"
 const authService = new AuthService()
 
 const AuthController = async (fastify: FastifyInstance) => {
+  fastify.post<{
+    Body: LoginRequestBody
+  }>(
+    "/check",
+    {
+      schema: {
+        tags: ["Authentication"],
+        summary: "Checks if the account can authenticate",
+        body: LoginRequestSchema,
+        response: {
+          200: AuthCheckResponseSchema,
+          ...AuthErrorResponsesSchema,
+        },
+      },
+    },
+    async (request, reply) => {
+      const { email, password } = request.body
+
+      try {
+        const user = await authService.checkCredentials(email, password)
+
+        if (user.deletedAt) {
+          return reply.status(200).send(1)
+        }
+
+        return reply.status(200).send(0)
+      } catch (error) {
+        console.error(error)
+        reply.statusCode = 401
+        return new Error("Invalid credentials")
+      }
+    }
+  )
+
   fastify.post<{
     Body: LoginRequestBody
   }>(
@@ -40,10 +75,75 @@ const AuthController = async (fastify: FastifyInstance) => {
       try {
         const user = await authService.checkCredentials(email, password)
 
-        // TODO: Send another error that can be used to recover account
-        if (!user.deletedAt) {
-          reply.statusCode = 401
-          return new Error("Invalid credentials")
+        const accessToken = jwt.sign(
+          {
+            uuid: user.uuid,
+            email: user.email,
+            name: user.name,
+            role: user.role,
+          },
+          "changeSecretIntoEnvVariable",
+          {
+            expiresIn: "7d",
+          }
+        )
+
+        return {
+          accessToken,
+          refreshToken: "",
+        }
+      } catch (error) {
+        console.error(error)
+        reply.statusCode = 401
+        return new Error("Invalid credentials")
+      }
+    }
+  )
+
+  fastify.post<{
+    Body: LoginRequestBody
+  }>(
+    "/recover",
+    {
+      schema: {
+        tags: ["Authentication", "User"],
+        summary: "Recovers an account from deletion flag",
+        body: LoginRequestSchema,
+        response: {
+          200: AuthResponseSchema,
+          ...AuthErrorResponsesSchema,
+        },
+      },
+    },
+    async (request, reply) => {
+      const em = request.em
+      const { email, password } = request.body
+
+      try {
+        const user = await em.findOneOrFail(
+          User,
+          {
+            email,
+          },
+          {
+            fields: ["uuid", "email", "name", "role", "password", "deletedAt"],
+            filters: { notDeleted: false },
+            failHandler: () => {
+              reply.statusCode = 401
+              return new Error("Invalid credentials")
+            },
+          }
+        )
+
+        user.deletedAt = undefined
+        em.persist(user)
+
+        await em.flush()
+
+        const match = await bcrypt.compare(password, user.password)
+
+        if (!match) {
+          throw new Error("Invalid credentials")
         }
 
         const accessToken = jwt.sign(
@@ -140,9 +240,19 @@ const AuthController = async (fastify: FastifyInstance) => {
         summary: "Get active session user details",
       },
     },
-    async (request) => {
+    async (request, reply) => {
       const em = request.em
-      const user = await em.findOneOrFail(User, { uuid: request.user })
+      const user = await em.findOneOrFail(
+        User,
+        { uuid: request.user },
+        {
+          filters: { notDeleted: true },
+          failHandler: () => {
+            reply.statusCode = 401
+            return new Error("Invalid Credentials")
+          },
+        }
+      )
 
       const userStats = await em.findOneOrFail(UserStats, { user })
 
@@ -169,7 +279,17 @@ const AuthController = async (fastify: FastifyInstance) => {
     async (request, reply) => {
       const em = request.em
 
-      const user = await em.findOneOrFail(User, { uuid: request.user })
+      const user = await em.findOneOrFail(
+        User,
+        { uuid: request.user },
+        {
+          filters: { notDeleted: true },
+          failHandler: () => {
+            reply.statusCode = 401
+            return new Error("Invalid Credentials")
+          },
+        }
+      )
 
       const activeParticipation = await em.findOne(
         Participation,

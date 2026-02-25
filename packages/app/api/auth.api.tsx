@@ -29,6 +29,30 @@ export const useLogin = () => {
   });
 };
 
+export const useAuthCheck = () => {
+  return useMutation({
+    mutationFn: async (data: { email: string; password: string }) => {
+      const response = await axios.post(
+        "http://localhost:8080/auth/check",
+        data,
+      );
+      return response.data;
+    },
+  });
+};
+
+export const useAuthRecover = () => {
+  return useMutation({
+    mutationFn: async (data: { email: string; password: string }) => {
+      const response = await axios.post(
+        "http://localhost:8080/auth/recover",
+        data,
+      );
+      return response.data;
+    },
+  });
+};
+
 export const useGetMe = (token: string) => {
   return useQuery({
     queryKey: ["me"],

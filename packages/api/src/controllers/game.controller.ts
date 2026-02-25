@@ -134,7 +134,11 @@ const GameController = async (fastify: FastifyInstance) => {
     },
     async (request, reply) => {
       const em = request.em
-      const user = await em.findOneOrFail(User, { uuid: request.user })
+      const user = await em.findOneOrFail(
+        User,
+        { uuid: request.user },
+        { filters: { notDeleted: true } }
+      )
 
       const { length, difficulty, tags, isPrivate = false } = request.body
 

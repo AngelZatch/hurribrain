@@ -1,9 +1,9 @@
 import { Modal, ModalProps, View } from "react-native";
-import { InputContainer } from "../../../../../../components/ui/InputContainer";
-import ThemedText from "../../../../../../components/ui/ThemedText";
+import { InputContainer } from "./ui/InputContainer";
+import ThemedText from "./ui/ThemedText";
 import { Controller, useForm } from "react-hook-form";
-import ThemedTextInput from "../../../../../../components/ui/ThemedTextInput";
-import ThemedButton from "../../../../../../components/ui/ThemedButton";
+import ThemedTextInput from "./ui/ThemedTextInput";
+import ThemedButton from "./ui/ThemedButton";
 import { useDeleteAccount } from "@/api/auth.api";
 import { useAuth } from "@/contexts/auth.context";
 import { router } from "expo-router";
@@ -79,7 +79,12 @@ export default function DeleteAccountModal({
           }}
         >
           <ThemedText type="modalHead">Suppression du Compte</ThemedText>
-          <ThemedButton type="secondary" icon="xmark" title="" />
+          <ThemedButton
+            type="secondary"
+            icon="xmark"
+            title=""
+            onPress={onRequestClose}
+          />
         </View>
         <View style={{ gap: 20 }}>
           <ThemedText type="default">

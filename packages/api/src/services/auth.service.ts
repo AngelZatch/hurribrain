@@ -33,7 +33,7 @@ export default class AuthService {
     const match = await bcrypt.compare(password, user.password)
 
     if (!match) {
-      throw new Error("Invalid credentials (password)")
+      throw new Error("Invalid credentials")
     }
 
     return user
