@@ -208,5 +208,56 @@ const AuthController = async (fastify: FastifyInstance) => {
       return activeParticipation
     }
   )
+
+  fastify.post<{
+    Body: LoginRequestBody
+  }>(
+    "/delete",
+    {
+      preHandler: [fastify.auth([verifyJWT])],
+      schema: {
+        tags: ["User", "Authentication"],
+        summary: "Allows a user to flag their account for deletion",
+        body: LoginRequestSchema,
+        response: {
+          200: true,
+          ...AuthErrorResponsesSchema,
+        },
+      },
+    },
+    async (request, reply) => {
+      const em = request.em
+      const { email, password } = request.body
+
+      // Check if the user exists
+      const existingUser = await em.findOneOrFail(
+        User,
+        { email },
+        {
+          failHandler: () => {
+            reply.statusCode = 401
+            return new Error("Invalid credentials")
+          },
+        }
+      )
+
+      const match = await bcrypt.compare(password, existingUser.password)
+
+      if (!match) {
+        reply.statusCode = 401
+        return new Error("Invalid credentials (password)")
+      }
+
+      // If they do, flag them for deletion by setting their deletedAt Date 24 hours into the future
+      existingUser.deletedAt = new Date(
+        new Date().getTime() + 24 * 60 * 60 * 1000
+      )
+      em.persist(existingUser)
+
+      await em.flush()
+
+      return reply.status(200)
+    }
+  )
 }
 export default AuthController
