@@ -4,9 +4,13 @@ import { PageContainer } from "@/components/ui/PageContainer";
 import ThemedButton from "@/components/ui/ThemedButton";
 import ThemedText from "@/components/ui/ThemedText";
 import { Link } from "expo-router";
-import { View } from "react-native";
+import { Modal, View } from "react-native";
+import DeleteAccountModal from "./deleteAccountModal";
+import { useState } from "react";
 
 export default function SecurityAndConnectionScreen() {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
   return (
     <PageContainer>
       <TopNavigation
@@ -37,9 +41,23 @@ export default function SecurityAndConnectionScreen() {
             Tu seras retiré.e de toutes les parties en cours. Cette action est
             irréversible.
           </ThemedText>
-          <ThemedButton title="Suppression de compte" fullWidth type="danger" />
+          <ThemedButton
+            title="Suppression de compte"
+            fullWidth
+            type="danger"
+            onPress={() => setIsModalVisible(true)}
+          />
         </View>
       </ContainerView>
+      <Modal
+        presentationStyle="pageSheet"
+        animationType="slide"
+        visible={isModalVisible}
+        transparent
+        onRequestClose={() => setIsModalVisible(false)}
+      >
+        <DeleteAccountModal onRequestClose={() => setIsModalVisible(false)} />
+      </Modal>
     </PageContainer>
   );
 }

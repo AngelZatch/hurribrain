@@ -15,7 +15,8 @@ type ThemedTextProps = TextProps & {
     | "smallTitle"
     | "label"
     | "helper"
-    | "settingsSectionTitle";
+    | "settingsSectionTitle"
+    | "modalHead";
 };
 
 export default function ThemedText({
@@ -43,6 +44,7 @@ export default function ThemedText({
         type === "smallTitle" ? styles.smallTitle : undefined,
         type === "label" ? styles.label : undefined,
         type === "helper" ? styles.helper : undefined,
+        type === "modalHead" ? styles.modalHead : undefined,
         type === "settingsSectionTitle"
           ? styles.settingsSectionTitle
           : undefined,
@@ -96,5 +98,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 19,
     fontFamily: "Exo_400Regular",
+  },
+  modalHead: {
+    fontSize: 18,
+    fontFamily: "Exo_700Bold",
   },
 });

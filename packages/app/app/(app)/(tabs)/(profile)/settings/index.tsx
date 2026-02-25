@@ -17,7 +17,12 @@ export default function Settings() {
       <TopNavigation
         leftElement={
           <Link href={"../"} asChild>
-            <ThemedButton icon="xmark" size="large" title="" type="secondary" />
+            <ThemedButton
+              icon="chevron.left"
+              size="large"
+              title=""
+              type="secondary"
+            />
           </Link>
         }
         topLabel="Paramètres"
