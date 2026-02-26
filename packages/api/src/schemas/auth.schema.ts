@@ -7,6 +7,9 @@ import {
   InternalServerErrorResponseSchema,
 } from "./errors.schema.js"
 
+// Account Check Schema
+export const AuthCheckResponseSchema = Type.Number()
+
 // Auth Schema
 export const AuthResponseSchema = Type.Object({
   accessToken: Type.String(),

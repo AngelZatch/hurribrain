@@ -14,7 +14,9 @@ type ThemedTextProps = TextProps & {
     | "link"
     | "smallTitle"
     | "label"
-    | "helper";
+    | "helper"
+    | "settingsSectionTitle"
+    | "modalHead";
 };
 
 export default function ThemedText({
@@ -27,7 +29,7 @@ export default function ThemedText({
 }: ThemedTextProps) {
   const color = useThemeColor(
     { light: lightColor, dark: darkColor },
-    colorType
+    colorType,
   );
 
   return (
@@ -42,6 +44,10 @@ export default function ThemedText({
         type === "smallTitle" ? styles.smallTitle : undefined,
         type === "label" ? styles.label : undefined,
         type === "helper" ? styles.helper : undefined,
+        type === "modalHead" ? styles.modalHead : undefined,
+        type === "settingsSectionTitle"
+          ? styles.settingsSectionTitle
+          : undefined,
         style,
       ]}
       {...rest}
@@ -70,6 +76,10 @@ const styles = StyleSheet.create({
     fontFamily: "Exo_500Medium",
     letterSpacing: 1,
   },
+  settingsSectionTitle: {
+    fontSize: 24,
+    fontFamily: "Exo_600SemiBold",
+  },
   smallTitle: {
     fontSize: 32,
     fontFamily: "Exo_600SemiBold",
@@ -88,5 +98,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 19,
     fontFamily: "Exo_400Regular",
+  },
+  modalHead: {
+    fontSize: 18,
+    fontFamily: "Exo_700Bold",
   },
 });

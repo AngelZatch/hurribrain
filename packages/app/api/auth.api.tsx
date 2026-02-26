@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 export const useRegister = () => {
@@ -19,9 +19,33 @@ export const useRegister = () => {
 
 export const useLogin = () => {
   return useMutation({
-    mutationFn: async (data: { email: string; password: String }) => {
+    mutationFn: async (data: { email: string; password: string }) => {
       const response = await axios.post(
         "http://localhost:8080/auth/login",
+        data,
+      );
+      return response.data;
+    },
+  });
+};
+
+export const useAuthCheck = () => {
+  return useMutation({
+    mutationFn: async (data: { email: string; password: string }) => {
+      const response = await axios.post(
+        "http://localhost:8080/auth/check",
+        data,
+      );
+      return response.data;
+    },
+  });
+};
+
+export const useAuthRecover = () => {
+  return useMutation({
+    mutationFn: async (data: { email: string; password: string }) => {
+      const response = await axios.post(
+        "http://localhost:8080/auth/recover",
         data,
       );
       return response.data;
@@ -72,6 +96,23 @@ export const useGetMeWithStats = (token: string) => {
           Authorization: `Bearer ${token}`,
         },
       });
+      return response.data;
+    },
+  });
+};
+
+export const useDeleteAccount = (token: string) => {
+  return useMutation({
+    mutationFn: async (data: { email: string; password: string }) => {
+      const response = await axios.post(
+        "http://localhost:8080/auth/delete",
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
       return response.data;
     },
   });

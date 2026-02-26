@@ -61,10 +61,11 @@ export default function TopNavigation({
         {topLabel && (
           <ThemedText
             style={{
-              fontSize: 12,
-              lineHeight: 16,
+              fontSize: 16,
+              lineHeight: 21,
               fontFamily: "Exo_600SemiBold",
-              color: Colors[colorScheme ?? "light"].disabled,
+              color: Colors[colorScheme ?? "light"].text,
+              letterSpacing: 0.8,
             }}
           >
             {topLabel}
@@ -73,11 +74,10 @@ export default function TopNavigation({
         {subLabel && (
           <ThemedText
             style={{
-              fontSize: 16,
-              lineHeight: 21,
+              fontSize: 12,
+              lineHeight: 16,
               fontFamily: "Exo_600SemiBold",
-              color: Colors[colorScheme ?? "light"].text,
-              letterSpacing: 0.8,
+              color: Colors[colorScheme ?? "light"].disabled,
             }}
           >
             {subLabel}
