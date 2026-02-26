@@ -26,7 +26,6 @@ export const Colors = {
     disabled: "#5F5F5F",
     inheritDisabledTextColor: "#5F5F5F",
     fadedWhite: "#00000066"
-
   },
   dark: {
     main: "#0A99FF",
@@ -46,6 +45,24 @@ export const Colors = {
     inheritDisabledTextColor: "#5F5F5F",
     fadedWhite: "#FFFFFF66"
   },
+  unspecified: {
+    main: "#0A99FF",
+    text: '#0F2969',
+    inheritText: '#0F2969',
+    background: 'transparent',
+    disabledBackground: "#BDBDBD",
+    error: "#D36F6F",
+    tint: tintColorLight,
+    icon: '#687076',
+    tabIconDefault: '#687076',
+    tabIconSelected: tintColorLight,
+    backgroundGradient: "linear-gradient(#a5bdfd, #a1ecf0)",
+    containerBackground: "#ffffff33",
+    secondaryText: "#0F2969",
+    disabled: "#5F5F5F",
+    inheritDisabledTextColor: "#5F5F5F",
+    fadedWhite: "#00000066"
+  }
 };
 
 export const MyLightTheme = {

@@ -74,9 +74,9 @@ export default function ItemButton({ participation }: ItemButtonProps) {
       rotation={0}
       tintColor={"#00d9ff"}
       backgroundColor="#bdbdbd"
-      style={{
-        boxShadow: "0px 0px 7px #00d9ffFF;",
-      }}
+      // style={{
+      //   boxShadow: "0px 0px 7px #00d9ffFF",
+      // }}
     >
       {() => (
         <TouchableOpacity
@@ -94,7 +94,7 @@ export default function ItemButton({ participation }: ItemButtonProps) {
               backgroundImage: heldItem
                 ? "linear-gradient(to bottom, #0061ff,#4a8af4)"
                 : "linear-gradient(to bottom, #7b7b7b,#c6c6c6)",
-              boxShadow: "0px 2px 1px 1px #00000033;",
+              boxShadow: "0px 2px 1px 1px #00000033",
             },
           ]}
         >
