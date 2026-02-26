@@ -37,6 +37,7 @@ export type Leaderboard = Array<Participation>;
 export type Turn = {
   uuid: string;
   position: number;
+  isGold: boolean;
   question: Question;
   game: Game["uuid"];
   startedAt: Date | null;
@@ -58,6 +59,7 @@ export type PlayableTurn = {
       },
     ];
   };
+  isGold: Turn["isGold"];
   game: Turn["game"];
   startedAt: Date;
   finishedAt: null;
@@ -66,6 +68,7 @@ export type PlayableTurn = {
 export type PlayedTurn = {
   uuid: Turn["uuid"];
   position: Turn["position"];
+  isGold: Turn["isGold"];
   question: {
     title: Question["title"];
     difficulty: Question["difficulty"];
