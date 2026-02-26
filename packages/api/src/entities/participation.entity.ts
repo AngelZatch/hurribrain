@@ -95,7 +95,7 @@ export class Participation {
    * won't be able to get another item until they use the one they have, since the item charge won't increase while they
    * have an active item.
    */
-  @Property({ nullable: true })
+  @Property({ nullable: true, type: String })
   activeItem: ItemName | null = null
 
   /**

@@ -227,11 +227,16 @@ export default class GameService {
       .slice(0, game.length)
 
     // Create all turns
+    // The probability for a turn to be gold is different depending on how late the turn is in the game.
+    // In the last stretch (last 20% of the turns), the probability jumps from 4% to 20%.
+    const lastStretch = pickedQuestions.length - 0.2 * pickedQuestions.length
     pickedQuestions.forEach(async (question, index) => {
+      const probabilityFactor = index + 1 > lastStretch ? 0.2 : 0.04
       const turn = new Turn({
         question: { uuid: question } as Question,
         game,
         position: index + 1,
+        isGold: Math.random() < probabilityFactor,
       })
       em.persist(turn)
     })
@@ -441,19 +446,25 @@ export default class GameService {
           participation.itemCharge += 20
         }
 
+        // If the turn is gold, the score reward is doubled and 20 more points of item charge are awarded
+        if (targetTurn.isGold) {
+          scoreReward *= 2
+          participation.itemCharge += 20
+        }
+
         // Update score
         participation.score += scoreReward
       } else {
-        // Incorrect answer score penalty
-        scoreReward -= 1
+        // Streak and Score penalties (nullified is turn is gold)
+        if (!targetTurn.isGold) {
+          scoreReward -= 1
+          participation.streak = 0
+        }
 
         // If the player has a Judge status, they will lose an additional 2 points
         if (participation.hasStatus("Judge")) {
           scoreReward -= 2
         }
-
-        // Reset streak
-        participation.streak = 0
 
         if (incorrectAnswersByParticipationId[participation.uuid]) {
           participation.score = Math.max(participation.score + scoreReward, 0)

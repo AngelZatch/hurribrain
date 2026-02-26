@@ -21,6 +21,15 @@ export class Turn {
   @Property()
   position: number
 
+  /**
+   * A Gold Turn is a rare variant of the turn with several effects:
+   * - Points gained are doubled
+   * - No points are lost by answering incorrectly (this does not nullify Judge)
+   * - Streaks are kept if they were to be reset
+   */
+  @Property({ type: Boolean, default: false })
+  isGold!: boolean
+
   // The question asked in this turn
   @ManyToOne({ entity: () => Question })
   question: Rel<Question>
@@ -47,9 +56,10 @@ export class Turn {
   @Property({ onUpdate: () => new Date() })
   updatedAt: Date = new Date()
 
-  constructor(body: Pick<Turn, "game" | "question" | "position">) {
+  constructor(body: Pick<Turn, "game" | "question" | "position" | "isGold">) {
     this.game = body.game
     this.question = body.question
     this.position = body.position
+    this.isGold = body.isGold ?? false
   }
 }
