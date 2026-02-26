@@ -2,6 +2,7 @@ import { Loaded } from "@mikro-orm/core"
 import { User } from "./../entities/user.entity.js"
 import { getEntityManager } from "./../middlewares/entityManager.middleware.js"
 import bcrypt from "bcrypt"
+import { Participation } from "./../entities/participation.entity.js"
 
 export default class AuthService {
   checkCredentials = async (
@@ -37,5 +38,23 @@ export default class AuthService {
     }
 
     return user
+  }
+
+  deletedFlaggedAccounts = async () => {
+    const em = getEntityManager()
+
+    const flaggedAccounts = (
+      await em.find(User, {}, { filters: { notDeleted: false } })
+    ).map((flaggedAccount) => flaggedAccount.uuid)
+
+    if (flaggedAccounts.length === 0) {
+      return
+    }
+
+    // Delete all participations, just in case (there should be none but you never know)
+    await em.nativeDelete(Participation, { user: { $in: flaggedAccounts } })
+
+    // Delete all accounts
+    await em.nativeDelete(User, { uuid: { $in: flaggedAccounts } })
   }
 }
