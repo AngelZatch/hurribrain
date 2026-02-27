@@ -6,6 +6,7 @@ import { Turn } from "@src/entities/turn.entity.js"
 export type PlayableTurn = {
   uuid: Turn["uuid"]
   position: Turn["position"]
+  isGold: Turn["isGold"]
   game: {
     uuid: Game["uuid"]
   }
@@ -22,6 +23,7 @@ export type PlayableTurn = {
 export type PlayedTurn = {
   uuid: Turn["uuid"]
   position: Turn["position"]
+  isGold: Turn["isGold"]
   game: {
     uuid: Game["uuid"]
   }
@@ -39,6 +41,7 @@ export type PlayedTurn = {
 export type PrePlayableTurn = {
   uuid: Turn["uuid"]
   position: Turn["position"]
+  isGold: Turn["isGold"]
   game: {
     uuid: Game["uuid"]
   }

@@ -8,7 +8,7 @@ import ActivePlayableTurn from "./ActivePlayableTurn";
 import TurnRecap from "./TurnRecap";
 import { Participation, PlayableTurn, PlayedTurn } from "@/api/play.api";
 import PlayerStatusList from "./PlayerStatusList";
-import { hasStatus, scrambleSentence } from "@/utils/gameUtils";
+import { hasStatus } from "@/utils/gameUtils";
 import { Game } from "@/api/games.api";
 import PlayerRankDisplay from "./PlayerRankDisplay";
 
@@ -23,18 +23,6 @@ export default function ActiveGame({
   currentTurn,
   participation,
 }: ActiveTurnProps) {
-  const [questionTitle, setQuestionTitle] = useState(
-    currentTurn.question.title,
-  );
-
-  useEffect(() => {
-    if (hasStatus(participation, "scramble")) {
-      setQuestionTitle(scrambleSentence(currentTurn.question.title));
-    } else {
-      setQuestionTitle(currentTurn.question.title);
-    }
-  }, [participation, currentTurn.question.title]);
-
   // Timer
   const [timeLeft, setTimeLeft] = useState(getInitialTimeLeft());
 
@@ -117,7 +105,7 @@ export default function ActiveGame({
             textAlign: "center",
           }}
         >
-          {questionTitle}
+          {currentTurn.question.title}
         </ThemedText>
       </View>
       {!currentTurn.finishedAt ? (

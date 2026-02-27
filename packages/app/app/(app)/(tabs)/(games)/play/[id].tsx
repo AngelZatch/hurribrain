@@ -159,20 +159,30 @@ export default function PlayScreen() {
         }
       />
       <View
-        style={{
-          paddingVertical: 12,
-          paddingHorizontal: 8,
-          gap: 10,
-          flex: 1,
-          width: "100%",
-          backgroundColor: Colors[colorScheme ?? "light"].containerBackground,
-          borderRadius: 20,
-          borderWidth: 1,
-          borderStyle: "solid",
-          backdropFilter: "blur(5px)",
-          borderColor:
-            "linear-gradient(45deg, rgba(255, 255, 255, 1) 0%, rgba(218, 191, 224, 0.1) 33%, rgba(176, 130, 193, 0.3) 67%, rgba(176, 130, 193, 0.5) 100%)",
-        }}
+        style={[
+          {
+            paddingVertical: 12,
+            paddingHorizontal: 8,
+            gap: 10,
+            flex: 1,
+            width: "100%",
+            borderRadius: 20,
+            borderWidth: 1,
+            borderStyle: "solid",
+            backdropFilter: "blur(5px)",
+            borderColor:
+              "linear-gradient(45deg, rgba(255, 255, 255, 1) 0%, rgba(218, 191, 224, 0.1) 33%, rgba(176, 130, 193, 0.3) 67%, rgba(176, 130, 193, 0.5) 100%)",
+            backgroundColor: Colors[colorScheme ?? "light"].containerBackground,
+          },
+          currentTurn?.isGold && {
+            backgroundImage:
+              "linear-gradient(to bottom, #a3591c 0%,#fdf6a7 50%,#a3591c 75%,#fdf6a7 100%)",
+            boxShadow: "0px 0px 20px 6px #0000004D",
+            borderColor:
+              "border-color: linear-gradient(to bottom, #a3591c 0%,#cca34f 46%,#fefad3 67%,#cca34f 84%,#a3591c 100%)",
+            borderWidth: 3,
+          },
+        ]}
       >
         {!game.startedAt && <GameLobby game={game!} />}
         {game.startedAt && !game.finishedAt && currentTurn && (

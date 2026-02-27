@@ -930,6 +930,17 @@
           "length": null,
           "mappedType": "integer"
         },
+        "is_gold": {
+          "name": "is_gold",
+          "type": "tinyint(1)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 1,
+          "default": "false",
+          "mappedType": "boolean"
+        },
         "question_uuid": {
           "name": "question_uuid",
           "type": "varchar(255)",
