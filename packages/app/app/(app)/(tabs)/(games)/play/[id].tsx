@@ -147,14 +147,7 @@ export default function PlayScreen() {
             }}
             asChild
           >
-            <ThemedButton
-              title=""
-              type="secondary"
-              onPress={() => {
-                console.log("PRESSED");
-              }}
-              icon="person.fill"
-            />
+            <ThemedButton title="" type="secondary" icon="person.fill" />
           </Link>
         }
       />

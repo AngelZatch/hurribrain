@@ -6,7 +6,8 @@ export default function HubStack() {
       <Stack.Screen
         name="lobby"
         options={{
-          presentation: "fullScreenModal",
+          presentation: "formSheet",
+          sheetGrabberVisible: true,
           gestureEnabled: true,
         }}
       />
