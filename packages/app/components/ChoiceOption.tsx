@@ -21,7 +21,7 @@ export default function ChoiceOption({
         style={[
           {
             paddingHorizontal: 0,
-            paddingVertical: 16,
+            paddingVertical: 12,
             alignItems: "center",
             justifyContent: "center",
             width: "100%",
@@ -30,6 +30,7 @@ export default function ChoiceOption({
             borderStyle: "solid",
             borderColor: "#94CED080",
             backgroundColor: "transparent",
+            minHeight: 50,
           },
           isSelected && { backgroundColor: "#94CED080" },
           isSent && { backgroundColor: "#0A99FF" },

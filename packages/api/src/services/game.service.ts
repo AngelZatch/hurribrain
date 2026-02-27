@@ -111,6 +111,8 @@ export default class GameService {
         choices.filter((c) => c.isCorrect)[0],
         choices.filter((c) => !c.isCorrect)[0]
       )
+    } else {
+      availableChoices.push(...choices)
     }
 
     if (participant.hasStatus("Darkness")) {
@@ -120,17 +122,13 @@ export default class GameService {
       }
     }
 
-    turnDTO.question.choices =
-      availableChoices.length > 0 ? availableChoices : choices
-
     // Remove isCorrect
-    const playableChoices: PlayableTurn["question"]["choices"] =
-      turnDTO.question.choices.map((choice) => {
-        return {
-          uuid: choice.uuid,
-          value: choice.value,
-        }
-      })
+    const playableChoices = availableChoices.map((choice) => {
+      return {
+        uuid: choice.uuid,
+        value: choice.value,
+      }
+    })
 
     return {
       ...turnDTO,
