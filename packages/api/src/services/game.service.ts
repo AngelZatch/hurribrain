@@ -123,7 +123,22 @@ export default class GameService {
     turnDTO.question.choices =
       availableChoices.length > 0 ? availableChoices : choices
 
-    return turnDTO
+    // Remove isCorrect
+    const playableChoices: PlayableTurn["question"]["choices"] =
+      turnDTO.question.choices.map((choice) => {
+        return {
+          uuid: choice.uuid,
+          value: choice.value,
+        }
+      })
+
+    return {
+      ...turnDTO,
+      question: {
+        ...turnDTO.question,
+        choices: playableChoices,
+      },
+    } satisfies PlayableTurn
   }
 
   /**
