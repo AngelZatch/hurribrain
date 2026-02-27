@@ -174,14 +174,15 @@ export default function PlayScreen() {
               "linear-gradient(45deg, rgba(255, 255, 255, 1) 0%, rgba(218, 191, 224, 0.1) 33%, rgba(176, 130, 193, 0.3) 67%, rgba(176, 130, 193, 0.5) 100%)",
             backgroundColor: Colors[colorScheme ?? "light"].containerBackground,
           },
-          currentTurn?.isGold && {
-            backgroundImage:
-              "linear-gradient(to bottom, #a3591c 0%,#fdf6a7 50%,#a3591c 75%,#fdf6a7 100%)",
-            boxShadow: "0px 0px 20px 6px #0000004D",
-            borderColor:
-              "border-color: linear-gradient(to bottom, #a3591c 0%,#cca34f 46%,#fefad3 67%,#cca34f 84%,#a3591c 100%)",
-            borderWidth: 3,
-          },
+          currentTurn?.isGold &&
+            !game.finishedAt && {
+              backgroundImage:
+                "linear-gradient(to bottom, #a3591c 0%,#fdf6a7 50%,#a3591c 75%,#fdf6a7 100%)",
+              boxShadow: "0px 0px 20px 6px #0000004D",
+              borderColor:
+                "border-color: linear-gradient(to bottom, #a3591c 0%,#cca34f 46%,#fefad3 67%,#cca34f 84%,#a3591c 100%)",
+              borderWidth: 3,
+            },
         ]}
       >
         {!game.startedAt && <GameLobby game={game!} />}

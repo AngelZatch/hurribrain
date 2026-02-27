@@ -62,7 +62,7 @@ export default function ActivePlayableTurn({
     <>
       <View
         style={{
-          gap: 24,
+          gap: 12,
         }}
       >
         {currentTurn.question.choices.map((choice) => (
