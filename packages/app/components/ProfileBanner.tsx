@@ -14,8 +14,6 @@ export default function ProfileBanner() {
     return <Redirect href="/welcome" />;
   }
 
-  console.log(user);
-
   const { data, isLoading, isError } = useGetMeWithStats(user);
 
   if (isLoading) {
