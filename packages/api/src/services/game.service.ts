@@ -99,6 +99,10 @@ export default class GameService {
 
     const turnDTO: PrePlayableTurn = wrap(currentTurn).toObject()
 
+    if (participant.hasStatus("Scramble")) {
+      turnDTO.question.title = this.scrambleSentence(turnDTO.question.title)
+    }
+
     const choices = turnDTO.question.choices
     const availableChoices = []
 
@@ -544,6 +548,7 @@ export default class GameService {
           "position",
           "startedAt",
           "finishedAt",
+          "isGold",
           "question.title",
           "question.successRate",
           "question.difficulty",
@@ -832,5 +837,23 @@ export default class GameService {
         { name: "Super Darkness", min: 0.88, max: 1.0 }, // 13% Super Darkness
       ]
     }
+  }
+
+  /**
+   * Shuffles letters of each word in a sentence.
+   * @param sentence The sentence to scramble.
+   * @returns The sentence with the words in a random order.
+   */
+  private scrambleSentence(sentence: string): string {
+    const scrambleWord = (word: string): string => {
+      const chars = word.split("")
+      for (let i = chars.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[chars[i], chars[j]] = [chars[j], chars[i]]
+      }
+      return chars.join("")
+    }
+
+    return sentence.split(" ").map(scrambleWord).join(" ")
   }
 }
