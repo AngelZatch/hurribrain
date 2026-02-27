@@ -7,7 +7,7 @@ export default function GameRecap() {
   const router = useRouter();
 
   const navigateToHome = () => {
-    router.dismissAll();
+    router.replace("/games");
     router.replace("/");
   };
 
