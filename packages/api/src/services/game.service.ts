@@ -46,6 +46,7 @@ export default class GameService {
         fields: [
           "uuid",
           "position",
+          "isGold",
           "startedAt",
           "finishedAt",
           "question.title",
@@ -74,6 +75,7 @@ export default class GameService {
           fields: [
             "uuid",
             "position",
+            "isGold",
             "startedAt",
             "finishedAt",
             "speedRanking",
