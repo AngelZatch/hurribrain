@@ -5123,9 +5123,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"admin@workspace:packages/admin":
+"admin@workspace:apps/admin":
   version: 0.0.0-use.local
-  resolution: "admin@workspace:packages/admin"
+  resolution: "admin@workspace:apps/admin"
   dependencies:
     "@headlessui/react": "npm:^2.2.0"
     "@heroicons/react": "npm:^2.1.5"
@@ -5327,9 +5327,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"api@workspace:packages/api":
+"api@workspace:apps/api":
   version: 0.0.0-use.local
-  resolution: "api@workspace:packages/api"
+  resolution: "api@workspace:apps/api"
   dependencies:
     "@eslint/js": "npm:^9.12.0"
     "@faker-js/faker": "npm:^9.0.3"
@@ -5382,9 +5382,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"app@workspace:packages/app":
+"app@workspace:apps/app":
   version: 0.0.0-use.local
-  resolution: "app@workspace:packages/app"
+  resolution: "app@workspace:apps/app"
   dependencies:
     "@babel/core": "npm:^7.25.2"
     "@expo-google-fonts/exo": "npm:^0.4.0"

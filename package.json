@@ -6,7 +6,7 @@
   "author": "Andréas Pinbouen <pinbouen.andreas@gmail.com>",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "apps/*"
   ],
   "scripts": {
     "api:start": "yarn workspace api start",
