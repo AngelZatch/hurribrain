@@ -1,11 +1,28 @@
 import { View } from "react-native";
 import ThemedText from "./ui/ThemedText";
+import { useEffect, useState } from "react";
 
 type PlayerScoreDisplayProps = {
   score: number;
 };
-
 export default function PlayerScoreDisplay({ score }: PlayerScoreDisplayProps) {
+  const [displayedScore, setDisplayedScore] = useState(score);
+
+  // Score change animation
+  useEffect(() => {
+    if (displayedScore === score) return;
+
+    const timerId = setInterval(() => {
+      setDisplayedScore((previousScore) => {
+        if (previousScore < score) return previousScore + 1;
+        if (previousScore > score) return previousScore - 1;
+        return previousScore;
+      });
+    }, 50);
+
+    return () => clearInterval(timerId);
+  }, [score]);
+
   return (
     <View
       style={{
@@ -28,7 +45,7 @@ export default function PlayerScoreDisplay({ score }: PlayerScoreDisplayProps) {
           textShadowRadius: 3,
         }}
       >
-        {score}
+        {displayedScore}
       </ThemedText>
       <ThemedText
         style={{
