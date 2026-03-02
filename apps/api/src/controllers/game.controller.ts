@@ -160,7 +160,7 @@ const GameController = async (fastify: FastifyInstance) => {
       )
       wrap(game).assign({ tags: matchingTags })
 
-      await em.persistAndFlush(game)
+      await em.persist(game).flush()
 
       const createdGame = await em.findOne(
         Game,

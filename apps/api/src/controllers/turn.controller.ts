@@ -117,7 +117,7 @@ const TurnController = async (fastify: FastifyInstance) => {
         playerAnswer.speed = speedOfAnswer
       }
 
-      await em.persistAndFlush(playerAnswer)
+      await em.persist(playerAnswer).flush()
 
       return true
     }

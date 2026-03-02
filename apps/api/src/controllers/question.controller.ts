@@ -236,7 +236,7 @@ const QuestionController = async (fastify: FastifyInstance) => {
       )
       wrap(question).assign({ tags: matchingTags })
 
-      await em.persistAndFlush(question)
+      await em.persist(question).flush()
 
       return reply.code(200).send(question)
     }

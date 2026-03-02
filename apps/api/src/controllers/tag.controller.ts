@@ -98,7 +98,7 @@ const TagController = async (fastify: fastify.FastifyInstance) => {
         name: request.body.name,
       })
 
-      await em.persistAndFlush(tag)
+      await em.persist(tag).flush()
 
       return reply.code(201).send(tag)
     }
@@ -130,7 +130,7 @@ const TagController = async (fastify: fastify.FastifyInstance) => {
       tag.name = request.body.name ?? tag.name
       tag.description = request.body.description ?? tag.description
 
-      await em.persistAndFlush(tag)
+      await em.persist(tag).flush()
 
       return reply.code(200).send(tag)
     }
