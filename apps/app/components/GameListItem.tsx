@@ -4,7 +4,6 @@ import TagChip from "./TagChip";
 import Avatar from "./Avatar";
 import DifficultyChip from "./DifficultyChip";
 import { Game } from "@/api/games.api";
-import { useColorScheme } from "@/hooks/useColorScheme.web";
 import PlayerCount from "./PlayerCount";
 
 interface GameListItemProps {
@@ -12,8 +11,6 @@ interface GameListItemProps {
 }
 
 export default function GameListItem({ game }: GameListItemProps) {
-  const colorScheme = useColorScheme();
-
   return (
     <View
       style={{
@@ -34,6 +31,7 @@ export default function GameListItem({ game }: GameListItemProps) {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
+          gap: 8,
         }}
       >
         <Avatar />

@@ -213,11 +213,17 @@ const GameController = async (fastify: FastifyInstance) => {
       })
 
       if (!userHasParticipation) {
+        // If the game already has 12 players, new ones cannot join
+        if (game.playerCount === 12) {
+          reply.statusCode = 403
+          return new Error("Player limit reached")
+        }
+
         const participation = new Participation({
           user: { uuid: request.user } as User,
           game,
         })
-        await em.persistAndFlush(participation)
+        await em.persist(participation).flush()
       }
 
       return reply.code(201).send(game)
