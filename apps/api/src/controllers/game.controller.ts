@@ -48,6 +48,7 @@ const GameController = async (fastify: FastifyInstance) => {
           Participation,
           {
             game: { isPrivate: true, finishedAt: null },
+            user: request.user,
           },
           { populate: ["game"] }
         )
