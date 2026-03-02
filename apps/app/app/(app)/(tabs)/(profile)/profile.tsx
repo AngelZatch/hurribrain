@@ -75,7 +75,7 @@ export default function ProfileScreen() {
             >
               {data.name}
             </ThemedText>
-            <Text
+            {/* <Text
               style={{
                 fontFamily: "Exo_500Medium",
                 fontSize: 16,
@@ -83,7 +83,7 @@ export default function ProfileScreen() {
               }}
             >
               Master of the Quiz
-            </Text>
+            </Text> */}
             <ExperienceBar
               current={data.stats.experiencePoints}
               level={data.stats.level}
@@ -115,14 +115,14 @@ export default function ProfileScreen() {
             flexDirection: "column",
           }}
         >
-          <ThemedText style={styles.statSectionTitle} colorType="main">
+          <ThemedText style={styles.statSectionTitle} colorType="text">
             Statistiques de Jeu
           </ThemedText>
           <View style={styles.statRow}>
             <ThemedText style={styles.statTitle} colorType="secondaryText">
               Parties jouées
             </ThemedText>
-            <ThemedText style={styles.statValue} colorType="main">
+            <ThemedText style={styles.statValue} colorType="text">
               {data.stats.gamesPlayed}
             </ThemedText>
           </View>
@@ -130,7 +130,7 @@ export default function ProfileScreen() {
             <ThemedText style={styles.statTitle} colorType="secondaryText">
               Première partie
             </ThemedText>
-            <ThemedText style={styles.statValue} colorType="main">
+            <ThemedText style={styles.statValue} colorType="text">
               {new Date(data.stats.firstGamePlayed).toLocaleDateString()}
             </ThemedText>
           </View>
@@ -139,7 +139,7 @@ export default function ProfileScreen() {
             <ThemedText style={styles.statTitle} colorType="secondaryText">
               Parties gagnées
             </ThemedText>
-            <ThemedText style={styles.statValue} colorType="main">
+            <ThemedText style={styles.statValue} colorType="text">
               {data.stats.gamesWon}
             </ThemedText>
           </View>
@@ -147,7 +147,7 @@ export default function ProfileScreen() {
             <ThemedText style={styles.statTitle} colorType="secondaryText">
               Première victoire
             </ThemedText>
-            <ThemedText style={styles.statValue} colorType="main">
+            <ThemedText style={styles.statValue} colorType="text">
               {new Date(data.stats.firstGameWon).toLocaleDateString()}
             </ThemedText>
           </View>
@@ -156,7 +156,7 @@ export default function ProfileScreen() {
             <ThemedText style={styles.statTitle} colorType="secondaryText">
               Taux de victoire
             </ThemedText>
-            <ThemedText style={styles.statValue} colorType="main">
+            <ThemedText style={styles.statValue} colorType="text">
               {computeWinRate(data.stats.gamesPlayed, data.stats.gamesWon)} %
             </ThemedText>
           </View>
@@ -185,14 +185,14 @@ export default function ProfileScreen() {
             flexDirection: "column",
           }}
         >
-          <ThemedText style={styles.statSectionTitle} colorType="main">
+          <ThemedText style={styles.statSectionTitle} colorType="text">
             Statistiques de Compte
           </ThemedText>
           <View style={styles.statRow}>
             <ThemedText style={styles.statTitle} colorType="secondaryText">
               Arrivée
             </ThemedText>
-            <ThemedText style={styles.statValue} colorType="main">
+            <ThemedText style={styles.statValue} colorType="text">
               {new Date(data.createdAt).toLocaleDateString()}
             </ThemedText>
           </View>
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
   statTitle: {
     fontSize: 16,
     fontFamily: "Exo_400Regular",
-    // color: "#0F2969",
+    color: "#5e74a9",
   },
   statValue: {
     fontSize: 20,

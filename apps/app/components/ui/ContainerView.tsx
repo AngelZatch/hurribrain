@@ -18,6 +18,10 @@ export function ContainerView({ style, ...otherProps }: ViewProps) {
           gap: 10,
           padding: 16,
           borderRadius: 20,
+          outlineColor: "#8a8888",
+          outlineWidth: 2,
+          outlineOffset: -2,
+          outlineStyle: "solid",
         },
         style,
       ]}
