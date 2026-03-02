@@ -11,14 +11,31 @@ export default function PlayerCount({ count }: PlayerCountProps) {
     <View
       style={{
         display: "flex",
-        padding: 8,
+        paddingVertical: 4,
+        paddingRight: 8,
+        paddingLeft: 12,
         gap: 6,
         justifyContent: "center",
         alignItems: "center",
         flexDirection: "row",
+        borderRadius: 9999,
+        backgroundColor: "#0000000A",
       }}
     >
-      <ThemedText style={{ fontSize: 18 }}>{count}</ThemedText>
+      <View
+        style={{
+          display: "flex",
+          gap: 0,
+          flexDirection: "row",
+        }}
+      >
+        <ThemedText style={{ fontSize: 14, fontFamily: "Exo_800ExtraBold" }}>
+          {count}
+        </ThemedText>
+        <ThemedText
+          style={{ fontSize: 10, color: "#5e74a9" }}
+        >{`/12`}</ThemedText>
+      </View>
       <IconSymbol name="person.fill" size={24} />
     </View>
   );
