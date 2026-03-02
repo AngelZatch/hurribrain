@@ -1,4 +1,4 @@
-import { EntityManager } from "@mikro-orm/mysql"
+import { EntityManager } from "@mikro-orm/postgresql"
 import { Socket } from "socket.io"
 
 declare module "fastify" {

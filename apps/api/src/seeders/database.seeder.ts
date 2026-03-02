@@ -1,4 +1,4 @@
-import { EntityManager } from "@mikro-orm/mysql"
+import { EntityManager } from "@mikro-orm/postgresql"
 import { Seeder } from "@mikro-orm/seeder"
 import { QuestionSeeder } from "./question.seeder.js"
 import { ItemSeeder } from "./item.seeder.js"

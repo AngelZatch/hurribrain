@@ -1,16 +1,15 @@
 services:
   database:
-    image: mysql:9
+    image: postgres:16
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: hurribrain
-      MYSQL_USER: neuron
-      MYSQL_PASSWORD: synapse
+      POSTGRES_DB: hurribrain
+      POSTGRES_USER: neuron
+      POSTGRES_PASSWORD: synapse
     ports:
-      - "3306:3306"
-    container_name: hurribrain-mysql
+      - "5432:5432"
+    container_name: hurribrain-postgres
     volumes:
-      - mysql_data:/var/lib/mysql
+      - pg_data:/var/lib/postgresql/data
     restart: unless-stopped
 
   redis:
@@ -21,4 +20,4 @@ services:
     restart: unless-stopped
 
 volumes:
-  mysql_data:
+  pg_data:
