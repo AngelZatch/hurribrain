@@ -1,4 +1,4 @@
-import { MikroORM, Options } from "@mikro-orm/mysql"
+import { MikroORM, Options } from "@mikro-orm/postgresql"
 
 export const database = {} as {
   orm: MikroORM

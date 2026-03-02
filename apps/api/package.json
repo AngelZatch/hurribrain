@@ -57,7 +57,7 @@
     "@fastify/swagger-ui": "^5.2.5",
     "@mikro-orm/core": "^6.3.13",
     "@mikro-orm/migrations": "^6.3.13",
-    "@mikro-orm/mysql": "^6.3.13",
+    "@mikro-orm/postgresql": "^6.3.13",
     "@mikro-orm/reflection": "^6.3.13",
     "@mikro-orm/seeder": "^6.3.13",
     "@sinclair/typebox": "^0.34.0",

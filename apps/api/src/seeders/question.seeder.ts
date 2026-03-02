@@ -1,4 +1,4 @@
-import { EntityManager } from "@mikro-orm/mysql"
+import { EntityManager } from "@mikro-orm/postgresql"
 import { Seeder } from "@mikro-orm/seeder"
 import { TagFactory } from "./../factories/tag.factory.js"
 import { QuestionFactory } from "./../factories/question.factory.js"

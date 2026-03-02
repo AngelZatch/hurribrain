@@ -1,4 +1,4 @@
-import { EntityManager } from "@mikro-orm/mysql"
+import { EntityManager } from "@mikro-orm/postgresql"
 import { database } from "./../database.js"
 
 export const getEntityManager = (): EntityManager => {

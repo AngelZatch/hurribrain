@@ -1,5 +1,5 @@
 import { Migrator } from "@mikro-orm/migrations"
-import { MySqlDriver, Options } from "@mikro-orm/mysql"
+import { PostgreSqlDriver, Options } from "@mikro-orm/postgresql"
 import { TsMorphMetadataProvider } from "@mikro-orm/reflection"
 import { SeedManager } from "@mikro-orm/seeder"
 
@@ -14,7 +14,7 @@ export function getOrmConfig(): Options {
     baseDir: process.cwd(),
     metadataProvider: TsMorphMetadataProvider,
     debug: true,
-    driver: MySqlDriver,
+    driver: PostgreSqlDriver,
     migrations: {
       path: "./dist/migrations",
       pathTs: "./src/migrations",
