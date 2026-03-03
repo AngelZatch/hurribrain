@@ -16,7 +16,7 @@ import { UserStats } from "../entities/userStats.entity.js"
 import { Participation } from "../entities/participation.entity.js"
 import { GetParticipationReplySchema } from "../schemas/player.schema.js"
 import AuthService from "./../services/auth.service.js"
-import { HOUR } from "@src/utils/helperVariables.js"
+import { HOUR } from "./../utils/helperVariables.js"
 
 const authService = new AuthService()
 
