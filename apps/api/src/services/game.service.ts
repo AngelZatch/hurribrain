@@ -14,7 +14,7 @@ import { UserStats } from "./../entities/userStats.entity.js"
 import { server } from "./../server.js"
 
 import Queue from "bull"
-import { SECOND } from "./../utils/helperVariables.js"
+import { MINUTE, SECOND } from "./../utils/helperVariables.js"
 import { User } from "./../entities/user.entity.js"
 import { wrap } from "@mikro-orm/core"
 import { ItemName } from "./../entities/item.entity.js"
@@ -664,6 +664,41 @@ export default class GameService {
     server.io.to(`game:${gameId}`).emit("game:updated", game)
 
     return game
+  }
+
+  /**
+   * Finds all games with a finishedAt value and deletes them.
+   * To keep everything clean, will also delete every turns, answers and participations to the game
+   *
+   * Once finished, a game has a 15-minute grace period to allow users time to look at the leaderboard,
+   * their own stats or w/e they want.
+   */
+  deleteFinishedGames = async () => {
+    const em = getEntityManager()
+    const gameTtl = new Date(new Date().getTime() + 15 * MINUTE)
+
+    const gamesToDelete = (
+      await em.find(
+        Game,
+        {
+          finishedAt: { $gte: gameTtl },
+        },
+        {
+          fields: ["uuid"],
+        }
+      )
+    ).map((game) => game.uuid)
+
+    const turnsToDelete = (
+      await em.find(Turn, {
+        game: { $in: gamesToDelete },
+      })
+    ).map((turn) => turn.uuid)
+
+    await em.nativeDelete(Answer, { turn: { $in: turnsToDelete } })
+    await em.nativeDelete(Turn, { uuid: { $in: turnsToDelete } })
+    await em.nativeDelete(Participation, { game: { $in: gamesToDelete } })
+    await em.nativeDelete(Game, { uuid: { $in: gamesToDelete } })
   }
 
   /**

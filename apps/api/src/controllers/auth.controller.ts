@@ -16,6 +16,7 @@ import { UserStats } from "../entities/userStats.entity.js"
 import { Participation } from "../entities/participation.entity.js"
 import { GetParticipationReplySchema } from "../schemas/player.schema.js"
 import AuthService from "./../services/auth.service.js"
+import { HOUR } from "@src/utils/helperVariables.js"
 
 const authService = new AuthService()
 
@@ -348,7 +349,7 @@ const AuthController = async (fastify: FastifyInstance) => {
         const user = await authService.checkCredentials(email, password)
 
         // If they do, flag them for deletion by setting their deletedAt Date 24 hours into the future
-        user.deletedAt = new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
+        user.deletedAt = new Date(new Date().getTime() + 24 * HOUR)
         em.persist(user)
 
         await em.flush()
