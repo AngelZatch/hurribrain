@@ -301,7 +301,10 @@ export default class GameService {
     // Update sockets with no PlayableTurn as all players can have different statuses and thus need different choices
     server.io.to(`game:${gameId}`).emit("turn:start")
 
-    // 15s timer to play the turn
+    /**
+     * 16s timer to play the turn so users can clearly see the 0:00 displayed on their screen and feel like the turn
+     * lasted for 15 seconds.
+     */
     gameQueue.add(
       {
         gameId,
@@ -309,7 +312,7 @@ export default class GameService {
         order: "finish",
       },
       {
-        delay: 15 * SECOND,
+        delay: 16 * SECOND,
         attempts: 3,
         removeOnComplete: true,
       }
