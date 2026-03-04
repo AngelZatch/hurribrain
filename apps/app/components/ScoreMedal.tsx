@@ -1,4 +1,11 @@
-import { View, StyleSheet, Image, ImageSourcePropType } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Image,
+  ImageSourcePropType,
+  StyleProp,
+  TextStyle,
+} from "react-native";
 import ThemedText from "./ui/ThemedText";
 import { MedalName } from "@/api/play.api";
 
@@ -7,15 +14,13 @@ type ScoreMedalProps = {
 };
 
 export default function ScoreMedal({ medal }: ScoreMedalProps) {
-  const shadowStyle = {
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
-    // textShadowColor:
-    //   type === "correct"
-    //     ? "#2AD89A"
-    //     : type === "incorrect"
-    //       ? "#F1425F"
-    //       : "#FF7B1B",
+  const textShadowStyle: {
+    [key: string]: string;
+  } = {
+    base: "#2AD89A",
+    bonus: "#FF7B1B",
+    penalty: "#F1425F",
+    shield: "#7b6ff9",
   };
 
   const MEDAL_PROFILES: Array<{
@@ -24,7 +29,8 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
     typeLabel: string;
     label: string;
     imagePath: ImageSourcePropType;
-    points: string;
+    bonusPoints?: string;
+    bonusCharge?: string;
   }> = [
     {
       type: "base",
@@ -32,7 +38,7 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
       typeLabel: "Récompense de base",
       label: "Bonne réponse",
       imagePath: require("@/assets/images/medals/base_correct.png"),
-      points: "+1",
+      bonusPoints: "+1",
     },
     {
       type: "bonus",
@@ -40,7 +46,7 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
       typeLabel: "Bonus de difficulté",
       label: "Question difficile !",
       imagePath: require("@/assets/images/medals/bonus_difficulty.png"),
-      points: "+1",
+      bonusPoints: "+1",
     },
     {
       type: "bonus",
@@ -48,7 +54,7 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
       typeLabel: "Bonus de difficulté",
       label: "Question très difficile !!",
       imagePath: require("@/assets/images/medals/bonus_difficulty.png"),
-      points: "+2",
+      bonusPoints: "+2",
     },
     {
       type: "bonus",
@@ -56,7 +62,7 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
       typeLabel: "Bonus de difficulté",
       label: "Question experte !!!",
       imagePath: require("@/assets/images/medals/bonus_difficulty.png"),
-      points: "+3",
+      bonusPoints: "+3",
     },
     {
       type: "bonus",
@@ -64,7 +70,7 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
       typeLabel: "Bonus de chaîne",
       label: "5 à la suite !",
       imagePath: require("@/assets/images/medals/bonus_chain.png"),
-      points: "+1",
+      bonusPoints: "+1",
     },
     {
       type: "bonus",
@@ -72,7 +78,7 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
       typeLabel: "Bonus de chaîne",
       label: "10 à la suite !",
       imagePath: require("@/assets/images/medals/bonus_chain.png"),
-      points: "+2",
+      bonusPoints: "+2",
     },
     {
       type: "bonus",
@@ -80,7 +86,7 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
       typeLabel: "Bonus de chaîne",
       label: "15 à la suite !",
       imagePath: require("@/assets/images/medals/bonus_chain.png"),
-      points: "+3",
+      bonusPoints: "+3",
     },
     {
       type: "bonus",
@@ -88,7 +94,7 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
       typeLabel: "Bonus de chaîne",
       label: "20 à la suite !",
       imagePath: require("@/assets/images/medals/bonus_chain.png"),
-      points: "+4",
+      bonusPoints: "+4",
     },
     {
       type: "bonus",
@@ -96,7 +102,7 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
       typeLabel: "Bonus de chaîne",
       label: "25 à la suite !",
       imagePath: require("@/assets/images/medals/bonus_chain.png"),
-      points: "+5",
+      bonusPoints: "+5",
     },
     {
       type: "bonus",
@@ -104,7 +110,7 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
       typeLabel: "Bonus de chaîne",
       label: "30 à la suite !",
       imagePath: require("@/assets/images/medals/bonus_chain.png"),
-      points: "+6",
+      bonusPoints: "+6",
     },
     {
       type: "bonus",
@@ -112,7 +118,7 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
       typeLabel: "Bonus de chaîne",
       label: "35 à la suite !",
       imagePath: require("@/assets/images/medals/bonus_chain.png"),
-      points: "+7",
+      bonusPoints: "+7",
     },
     {
       type: "bonus",
@@ -120,7 +126,7 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
       typeLabel: "Bonus de chaîne",
       label: "40 à la suite !",
       imagePath: require("@/assets/images/medals/bonus_chain.png"),
-      points: "+8",
+      bonusPoints: "+8",
     },
     {
       type: "bonus",
@@ -128,7 +134,7 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
       typeLabel: "Bonus de chaîne",
       label: "45 à la suite !",
       imagePath: require("@/assets/images/medals/bonus_chain.png"),
-      points: "+9",
+      bonusPoints: "+9",
     },
     {
       type: "bonus",
@@ -136,7 +142,7 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
       typeLabel: "Bonus de chaîne",
       label: "50 à la suite !",
       imagePath: require("@/assets/images/medals/bonus_chain.png"),
-      points: "+10",
+      bonusPoints: "+10",
     },
     {
       type: "bonus",
@@ -144,7 +150,7 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
       typeLabel: "Bonus de rapidité",
       label: "Réponse la plus rapide !!!",
       imagePath: require("@/assets/images/medals/bonus_speed.png"),
-      points: "+3",
+      bonusPoints: "+3",
     },
     {
       type: "bonus",
@@ -152,7 +158,7 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
       typeLabel: "Bonus de rapidité",
       label: "Réponse très rapide !!",
       imagePath: require("@/assets/images/medals/bonus_speed.png"),
-      points: "+2",
+      bonusPoints: "+2",
     },
     {
       type: "bonus",
@@ -160,7 +166,7 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
       typeLabel: "Bonus de rapidité",
       label: "Réponse rapide !",
       imagePath: require("@/assets/images/medals/bonus_speed.png"),
-      points: "+1",
+      bonusPoints: "+1",
     },
     {
       type: "bonus",
@@ -168,7 +174,8 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
       typeLabel: "Bonus de Boost",
       label: "Boost !!",
       imagePath: require("@/assets/images/medals/base_correct.png"),
-      points: "x2",
+      bonusPoints: "x2",
+      bonusCharge: "+20",
     },
     {
       type: "bonus",
@@ -176,7 +183,8 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
       typeLabel: "Bonus de Tour",
       label: "Tour doré !!",
       imagePath: require("@/assets/images/medals/base_correct.png"),
-      points: "x2",
+      bonusPoints: "x2",
+      bonusCharge: "+20",
     },
     {
       type: "shield",
@@ -184,7 +192,6 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
       typeLabel: "Protection contre les pénalités",
       label: "Tour doré",
       imagePath: require("@/assets/images/medals/base_correct.png"),
-      points: "",
     },
     {
       type: "base",
@@ -192,7 +199,7 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
       typeLabel: "Pénalité",
       label: "Mauvaise réponse",
       imagePath: require("@/assets/images/medals/base_wrong.png"),
-      points: "-1",
+      bonusPoints: "-1",
     },
     {
       type: "penalty",
@@ -200,7 +207,7 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
       typeLabel: "Pénalité",
       label: "Pénalité du Juge",
       imagePath: require("@/assets/images/medals/base_wrong.png"),
-      points: "-2",
+      bonusPoints: "-2",
     },
   ];
 
@@ -208,10 +215,14 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
     (profile) => profile.name === medal,
   );
 
+  if (!currentMedalProfile) {
+    return null;
+  }
+
   return (
     <View style={{ flexDirection: "row", width: "100%", gap: 10 }}>
       <Image
-        source={currentMedalProfile?.imagePath}
+        source={currentMedalProfile.imagePath}
         style={{ height: 40, width: 40 }}
       />
       <View
@@ -229,19 +240,46 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
             flexGrow: 1,
           }}
         >
-          <ThemedText style={[styles.typeLabel, shadowStyle]}>
-            {currentMedalProfile?.typeLabel}
+          <ThemedText
+            style={{
+              textShadowColor: textShadowStyle[currentMedalProfile.type],
+              ...styles.typeLabel,
+            }}
+          >
+            {currentMedalProfile.typeLabel}
           </ThemedText>
-          <ThemedText style={[styles.bonusLabel, shadowStyle]}>
-            {currentMedalProfile?.label}
+          <ThemedText
+            style={{
+              textShadowColor: textShadowStyle[currentMedalProfile.type],
+              ...styles.bonusLabel,
+            }}
+          >
+            {currentMedalProfile.label}
           </ThemedText>
         </View>
-        <View style={{ flexDirection: "row", gap: 5 }}>
-          <ThemedText style={[styles.bonusLabel, shadowStyle]}>
-            {currentMedalProfile?.points}
-          </ThemedText>
-          <ThemedText style={shadowStyle}>pt</ThemedText>
-        </View>
+        {currentMedalProfile.bonusPoints && (
+          <View
+            style={{ flexDirection: "row", gap: 5, alignItems: "baseline" }}
+          >
+            <ThemedText
+              style={{
+                textShadowColor: textShadowStyle[currentMedalProfile.type],
+                ...styles.bonusLabel,
+              }}
+            >
+              {currentMedalProfile.bonusPoints}
+            </ThemedText>
+            <ThemedText
+              style={{
+                textShadowColor: textShadowStyle[currentMedalProfile.type],
+                ...styles.typeLabel,
+                fontStyle: "normal",
+              }}
+            >
+              pts
+            </ThemedText>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -253,12 +291,16 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     fontStyle: "italic",
     fontFamily: "Exo_400Regular",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 7,
+    color: "#ffffff",
   },
   bonusLabel: {
     fontSize: 16,
     lineHeight: 21,
     fontFamily: "Exo_700Bold",
     textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
+    textShadowRadius: 7,
+    color: "#ffffff",
   },
 });
