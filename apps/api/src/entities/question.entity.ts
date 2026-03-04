@@ -62,7 +62,7 @@ export class Question {
   successRate: number | null = null
 
   @Property({ persist: false })
-  get difficulty(): string {
+  get difficulty(): "unknown" | "easy" | "medium" | "hard" | "expert" {
     const rate = this.successRate
     if (rate === null) {
       return "unknown"

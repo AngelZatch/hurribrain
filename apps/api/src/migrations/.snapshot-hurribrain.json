@@ -60,7 +60,7 @@
           "length": 255,
           "precision": null,
           "scale": null,
-          "nullable": false,
+          "nullable": true,
           "default": null,
           "unsigned": false,
           "autoincrement": false,
@@ -117,6 +117,22 @@
           "unique": false,
           "enumItems": [],
           "mappedType": "datetime"
+        },
+        "medals": {
+          "name": "medals",
+          "type": "jsonb",
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "nullable": false,
+          "default": null,
+          "unsigned": false,
+          "autoincrement": false,
+          "comment": null,
+          "primary": false,
+          "unique": false,
+          "enumItems": [],
+          "mappedType": "json"
         }
       },
       "name": "answer",
@@ -157,7 +173,7 @@
             "uuid"
           ],
           "updateRule": "cascade",
-          "deleteRule": "no action"
+          "deleteRule": "set null"
         },
         "answer_participation_uuid_foreign": {
           "columnNames": [

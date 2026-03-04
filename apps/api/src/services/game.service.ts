@@ -1,5 +1,5 @@
 import { getEntityManager } from "./../middlewares/entityManager.middleware.js"
-import { Answer } from "./../entities/answer.entity.js"
+import { Answer, MedalName } from "./../entities/answer.entity.js"
 import { Turn } from "./../entities/turn.entity.js"
 import { Participation } from "./../entities/participation.entity.js"
 import { Game } from "./../entities/game.entity.js"
@@ -359,30 +359,21 @@ export default class GameService {
       isCorrect: true,
     })
 
-    const turnAnswers = await em.find(
+    const turnAnswers: Array<Answer> = await em.find(
       Answer,
       {
         turn: { uuid: targetTurn.uuid } as Turn,
       },
       {
         orderBy: { speed: "ASC" },
-        fields: ["uuid", "participation.uuid", "choice.uuid"],
       }
     )
 
-    const correctAnswers: Array<{
-      uuid: string
-      participation: { uuid: string }
-      choice: { uuid: string }
-    }> = []
-    const incorrectAnswers: Array<{
-      uuid: string
-      participation: { uuid: string }
-      choice: { uuid: string }
-    }> = []
+    const correctAnswers: Array<Answer> = []
+    const incorrectAnswers: Array<Answer> = []
 
     turnAnswers.forEach((answer) => {
-      if (answer.choice.uuid === correctChoice!.uuid) {
+      if (answer.choice!.uuid === correctChoice!.uuid) {
         correctAnswers.push(answer)
       } else {
         incorrectAnswers.push(answer)
@@ -395,26 +386,16 @@ export default class GameService {
     em.persist(targetTurn.question)
 
     const correctAnswersByParticipationId = correctAnswers.reduce<{
-      [key: string]: {
-        uuid: string
-        participation: { uuid: string }
-        choice: { uuid: string }
-        rank: number
-      }
+      [key: string]: { answer: Answer; rank: number }
     }>((accumulator, answer, index) => {
-      accumulator[answer.participation.uuid] = { ...answer, rank: index }
+      accumulator[answer.participation.uuid] = { answer, rank: index }
       return accumulator
     }, {})
 
     const incorrectAnswersByParticipationId = incorrectAnswers.reduce<{
-      [key: string]: {
-        uuid: string
-        participation: { uuid: string }
-        choice: { uuid: string }
-        rank: number
-      }
+      [key: string]: { answer: Answer; rank: number }
     }>((accumulator, answer, index) => {
-      accumulator[answer.participation.uuid] = { ...answer, rank: index }
+      accumulator[answer.participation.uuid] = { answer, rank: index }
       return accumulator
     }, {})
 
@@ -432,14 +413,22 @@ export default class GameService {
       // Update previous score
       participation.previousScore = participation.score
       let scoreReward = 0
+      const medals: Array<MedalName> = []
 
       // Correct answer
       if (correctAnswersByParticipationId[participation.uuid]) {
         // Correct answer base reward
         scoreReward += 1
+        medals.push("correct")
 
         // Difficulty bonus
-        scoreReward += questionDifficultyBonus
+        if (
+          targetTurn.question.difficulty !== "easy" &&
+          targetTurn.question.difficulty !== "unknown"
+        ) {
+          scoreReward += questionDifficultyBonus
+          medals.push(`difficulty:${targetTurn.question.difficulty}`)
+        }
 
         //  Speed bonus for the fastest correct answers
         if (correctAnswersByParticipationId[participation.uuid].rank < 3) {
@@ -448,6 +437,16 @@ export default class GameService {
             0
           )
           targetTurn.speedRanking.push(participation.uuid)
+
+          if (correctAnswersByParticipationId[participation.uuid].rank === 3) {
+            medals.push("speed:fast")
+          } else if (
+            correctAnswersByParticipationId[participation.uuid].rank === 2
+          ) {
+            medals.push("speed:faster")
+          } else {
+            medals.push("speed:fastest")
+          }
         }
 
         // Update streak
@@ -460,37 +459,78 @@ export default class GameService {
         // If the streak is a multiple of 5, add a bonus
         if (participation.streak > 0 && participation.streak % 5 === 0) {
           scoreReward += participation.streak / 5
+          medals.push(`streak:${participation.streak}` as MedalName)
         }
 
         // If the player has a boost status, the score reward is doubled and 20 points of item charge are awarded
         if (participation.hasStatus("Boost")) {
           scoreReward *= 2
           participation.itemCharge += 20
+          medals.push("boost")
         }
 
         // If the turn is gold, the score reward is doubled and 20 more points of item charge are awarded
         if (targetTurn.isGold) {
           scoreReward *= 2
           participation.itemCharge += 20
+          medals.push("gold")
         }
 
         // Update score
         participation.score += scoreReward
-      } else {
-        // Streak and Score penalties (nullified is turn is gold)
-        if (!targetTurn.isGold) {
+
+        correctAnswersByParticipationId[participation.uuid].answer.medals.push(
+          ...medals
+        )
+        em.persist(correctAnswersByParticipationId[participation.uuid].answer)
+      } else if (incorrectAnswersByParticipationId[participation.uuid]) {
+        // Incorrect answer
+        // Streak and Score penalties (nullified if turn is gold)
+        if (targetTurn.isGold) {
+          medals.push("gold")
+        } else {
           scoreReward -= 1
           participation.streak = 0
+          medals.push("incorrect")
         }
 
         // If the player has a Judge status, they will lose an additional 2 points
         if (participation.hasStatus("Judge")) {
           scoreReward -= 2
+          medals.push("judge")
         }
 
-        if (incorrectAnswersByParticipationId[participation.uuid]) {
-          participation.score = Math.max(participation.score + scoreReward, 0)
+        participation.score = Math.max(participation.score + scoreReward, 0)
+
+        incorrectAnswersByParticipationId[
+          participation.uuid
+        ].answer.medals.push(...medals)
+        em.persist(incorrectAnswersByParticipationId[participation.uuid].answer)
+      } else {
+        // No answer
+        // Streak penalty (nullified if turn is gold)
+        if (targetTurn.isGold) {
+          medals.push("gold")
+        } else {
+          participation.streak = 0
         }
+
+        if (participation.hasStatus("Judge")) {
+          scoreReward -= 2
+          medals.push("judge")
+        }
+
+        participation.score = Math.max(participation.score + scoreReward, 0)
+
+        em.persist(
+          new Answer({
+            participation,
+            turn: targetTurn,
+            choice: null,
+            speed: 0,
+            medals: medals,
+          })
+        )
       }
 
       em.persist(participation)
@@ -705,11 +745,11 @@ export default class GameService {
   }
 
   /**
-   * Reference method to get the points awarded by a question based on its difficulty:
-   * - 1 point for easy questions
-   * - 2 points for medium questions
-   * - 3 points for hard questions
-   * - 4 points for expert questions
+   * Reference method to get the bonus points awarded by a question based on its difficulty:
+   * - +1 point for medium questions
+   * - +2 points for hard questions
+   * - +3 points for expert questions
+   * - +0 points for easy questions or questions with no confirmed difficulty
    * @param difficulty The difficulty of the question
    * @returns one of the 4 possible values
    */

@@ -20,6 +20,7 @@ export const MyAnswerSchema = Type.Object(
       }),
       value: Type.String({ description: "Text of the choice" }),
     }),
+    medals: Type.Array(Type.String({})),
   },
   {
     $id: "Answer",

@@ -111,6 +111,7 @@ const TurnController = async (fastify: FastifyInstance) => {
           turn,
           choice,
           speed: speedOfAnswer,
+          medals: [],
         })
       } else {
         playerAnswer.choice = choice
