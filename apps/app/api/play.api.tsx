@@ -133,6 +133,39 @@ export type ItemName =
   | "Super Scramble"
   | "Super Darkness";
 
+export type MedalName =
+  | "correct"
+  | "difficulty:medium"
+  | "difficulty:hard"
+  | "difficulty:expert"
+  | "streak:5"
+  | "streak:10"
+  | "streak:15"
+  | "streak:20"
+  | "streak:25"
+  | "streak:30"
+  | "streak:35"
+  | "streak:40"
+  | "streak:45"
+  | "streak:50"
+  | "speed:fast"
+  | "speed:faster"
+  | "speed:fastest"
+  | "boost"
+  | "gold:boost"
+  | "gold:shield"
+  | "incorrect"
+  | "judge";
+
+export type Answer = {
+  uuid: string;
+  participation: Participation;
+  turn: Turn;
+  choice: Choice;
+  speed: number;
+  medals: Array<MedalName>;
+};
+
 // Utility function to check if the user has a current participation so they can quickly resume
 export const hasACurrentParticipation = (token: string) => {
   return useQuery({
@@ -246,7 +279,7 @@ export const useGetMyAnswer = (
   gameId: string,
   turnId: string,
 ) => {
-  return useQuery({
+  return useQuery<Answer>({
     queryKey: ["my-answer", gameId, turnId],
     queryFn: async () => {
       const response = await axios.get(

@@ -473,7 +473,7 @@ export default class GameService {
         if (targetTurn.isGold) {
           scoreReward *= 2
           participation.itemCharge += 20
-          medals.push("gold")
+          medals.push("gold:boost")
         }
 
         // Update score
@@ -487,7 +487,7 @@ export default class GameService {
         // Incorrect answer
         // Streak and Score penalties (nullified if turn is gold)
         if (targetTurn.isGold) {
-          medals.push("gold")
+          medals.push("gold:shield")
         } else {
           scoreReward -= 1
           participation.streak = 0
@@ -510,7 +510,7 @@ export default class GameService {
         // No answer
         // Streak penalty (nullified if turn is gold)
         if (targetTurn.isGold) {
-          medals.push("gold")
+          medals.push("gold:shield")
         } else {
           participation.streak = 0
         }

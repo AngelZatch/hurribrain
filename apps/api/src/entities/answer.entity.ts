@@ -30,7 +30,8 @@ export type MedalName =
   | "speed:faster"
   | "speed:fastest"
   | "boost"
-  | "gold"
+  | "gold:boost"
+  | "gold:shield"
   | "incorrect"
   | "judge"
 

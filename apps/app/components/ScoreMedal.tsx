@@ -1,146 +1,211 @@
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image, ImageSourcePropType } from "react-native";
 import ThemedText from "./ui/ThemedText";
-export type BaseMedal = "wrong" | "correct" | "none";
-export type DifficultyMedal = "medium" | "hard" | "expert";
-
-const BaseCorrectMedal = require("@/assets/images/medals/base_correct.png");
-
-type MedalType =
-  | {
-      type: "base";
-      value: BaseMedal;
-    }
-  | {
-      type: "difficulty";
-      value: DifficultyMedal;
-    }
-  | {
-      type: "speed";
-      value: number;
-    }
-  | {
-      type: "chain";
-      value: number;
-    };
+import { MedalName } from "@/api/play.api";
 
 type ScoreMedalProps = {
-  medalType: MedalType;
+  medal: MedalName;
 };
 
-export default function ScoreMedal({ medalType }: ScoreMedalProps) {
+export default function ScoreMedal({ medal }: ScoreMedalProps) {
   const shadowStyle = {
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 10,
-    textShadowColor:
-      medalType.value === "correct"
-        ? "#2AD89A"
-        : medalType.value === "wrong"
-          ? "#F1425F"
-          : "#FF7B1B",
+    // textShadowColor:
+    //   type === "correct"
+    //     ? "#2AD89A"
+    //     : type === "incorrect"
+    //       ? "#F1425F"
+    //       : "#FF7B1B",
   };
 
-  const MEDAL_PROFILES = [
+  const MEDAL_PROFILES: Array<{
+    name: MedalName;
+    type: "base" | "bonus" | "penalty" | "shield";
+    typeLabel: string;
+    label: string;
+    imagePath: ImageSourcePropType;
+    points: string;
+  }> = [
     {
       type: "base",
-      value: "correct",
+      name: "correct",
       typeLabel: "Récompense de base",
       label: "Bonne réponse",
       imagePath: require("@/assets/images/medals/base_correct.png"),
       points: "+1",
     },
     {
-      type: "base",
-      value: "wrong",
-      typeLabel: "Pénalité",
-      label: "Mauvaise réponse",
-      imagePath: require("@/assets/images/medals/base_wrong.png"),
-      points: "-1",
-    },
-    {
-      type: "base",
-      value: "none",
-      typeLabel: "",
-      label: "Pas de réponse",
-      imagePath: require("@/assets/images/medals/base_none.png"),
-      points: "+0",
-    },
-    {
-      type: "difficulty",
-      value: "medium",
+      type: "bonus",
+      name: "difficulty:medium",
       typeLabel: "Bonus de difficulté",
       label: "Question difficile !",
       imagePath: require("@/assets/images/medals/bonus_difficulty.png"),
       points: "+1",
     },
     {
-      type: "difficulty",
-      value: "hard",
+      type: "bonus",
+      name: "difficulty:hard",
       typeLabel: "Bonus de difficulté",
       label: "Question très difficile !!",
       imagePath: require("@/assets/images/medals/bonus_difficulty.png"),
       points: "+2",
     },
     {
-      type: "difficulty",
-      value: "expert",
+      type: "bonus",
+      name: "difficulty:hard",
       typeLabel: "Bonus de difficulté",
       label: "Question experte !!!",
       imagePath: require("@/assets/images/medals/bonus_difficulty.png"),
       points: "+3",
     },
     {
-      type: "speed",
-      value: 1,
+      type: "bonus",
+      name: "streak:5",
+      typeLabel: "Bonus de chaîne",
+      label: "5 à la suite !",
+      imagePath: require("@/assets/images/medals/bonus_chain.png"),
+      points: "+1",
+    },
+    {
+      type: "bonus",
+      name: "streak:10",
+      typeLabel: "Bonus de chaîne",
+      label: "10 à la suite !",
+      imagePath: require("@/assets/images/medals/bonus_chain.png"),
+      points: "+2",
+    },
+    {
+      type: "bonus",
+      name: "streak:15",
+      typeLabel: "Bonus de chaîne",
+      label: "15 à la suite !",
+      imagePath: require("@/assets/images/medals/bonus_chain.png"),
+      points: "+3",
+    },
+    {
+      type: "bonus",
+      name: "streak:20",
+      typeLabel: "Bonus de chaîne",
+      label: "20 à la suite !",
+      imagePath: require("@/assets/images/medals/bonus_chain.png"),
+      points: "+4",
+    },
+    {
+      type: "bonus",
+      name: "streak:25",
+      typeLabel: "Bonus de chaîne",
+      label: "25 à la suite !",
+      imagePath: require("@/assets/images/medals/bonus_chain.png"),
+      points: "+5",
+    },
+    {
+      type: "bonus",
+      name: "streak:30",
+      typeLabel: "Bonus de chaîne",
+      label: "30 à la suite !",
+      imagePath: require("@/assets/images/medals/bonus_chain.png"),
+      points: "+6",
+    },
+    {
+      type: "bonus",
+      name: "streak:35",
+      typeLabel: "Bonus de chaîne",
+      label: "35 à la suite !",
+      imagePath: require("@/assets/images/medals/bonus_chain.png"),
+      points: "+7",
+    },
+    {
+      type: "bonus",
+      name: "streak:40",
+      typeLabel: "Bonus de chaîne",
+      label: "40 à la suite !",
+      imagePath: require("@/assets/images/medals/bonus_chain.png"),
+      points: "+8",
+    },
+    {
+      type: "bonus",
+      name: "streak:45",
+      typeLabel: "Bonus de chaîne",
+      label: "45 à la suite !",
+      imagePath: require("@/assets/images/medals/bonus_chain.png"),
+      points: "+9",
+    },
+    {
+      type: "bonus",
+      name: "streak:50",
+      typeLabel: "Bonus de chaîne",
+      label: "50 à la suite !",
+      imagePath: require("@/assets/images/medals/bonus_chain.png"),
+      points: "+10",
+    },
+    {
+      type: "bonus",
+      name: "speed:fastest",
       typeLabel: "Bonus de rapidité",
       label: "Réponse la plus rapide !!!",
       imagePath: require("@/assets/images/medals/bonus_speed.png"),
       points: "+3",
     },
     {
-      type: "speed",
-      value: 2,
+      type: "bonus",
+      name: "speed:faster",
       typeLabel: "Bonus de rapidité",
       label: "Réponse très rapide !!",
       imagePath: require("@/assets/images/medals/bonus_speed.png"),
       points: "+2",
     },
     {
-      type: "speed",
-      value: 3,
+      type: "bonus",
+      name: "speed:fast",
       typeLabel: "Bonus de rapidité",
       label: "Réponse rapide !",
       imagePath: require("@/assets/images/medals/bonus_speed.png"),
       points: "+1",
     },
     {
-      type: "chain",
-      value: 5,
-      typeLabel: "Bonus de chaîne",
-      label: "Cinq à la suite !",
-      imagePath: require("@/assets/images/medals/bonus_chain.png"),
-      points: "+1",
+      type: "bonus",
+      name: "boost",
+      typeLabel: "Bonus de Boost",
+      label: "Boost !!",
+      imagePath: require("@/assets/images/medals/base_correct.png"),
+      points: "x2",
     },
     {
-      type: "chain",
-      value: 10,
-      typeLabel: "Bonus de chaîne",
-      label: "Dix à la suite !!",
-      imagePath: require("@/assets/images/medals/bonus_chain.png"),
-      points: "+2",
+      type: "bonus",
+      name: "gold:boost",
+      typeLabel: "Bonus de Tour",
+      label: "Tour doré !!",
+      imagePath: require("@/assets/images/medals/base_correct.png"),
+      points: "x2",
     },
     {
-      type: "chain",
-      value: 15,
-      typeLabel: "Bonus de chaîne",
-      label: "Quinze à la suite !!!",
-      imagePath: require("@/assets/images/medals/bonus_chain.png"),
-      points: "+3",
+      type: "shield",
+      name: "gold:shield",
+      typeLabel: "Protection contre les pénalités",
+      label: "Tour doré",
+      imagePath: require("@/assets/images/medals/base_correct.png"),
+      points: "",
+    },
+    {
+      type: "base",
+      name: "incorrect",
+      typeLabel: "Pénalité",
+      label: "Mauvaise réponse",
+      imagePath: require("@/assets/images/medals/base_wrong.png"),
+      points: "-1",
+    },
+    {
+      type: "penalty",
+      name: "judge",
+      typeLabel: "Pénalité",
+      label: "Pénalité du Juge",
+      imagePath: require("@/assets/images/medals/base_wrong.png"),
+      points: "-2",
     },
   ];
 
   const currentMedalProfile = MEDAL_PROFILES.find(
-    (profile) =>
-      profile.type === medalType.type && profile.value === medalType.value
+    (profile) => profile.name === medal,
   );
 
   return (
