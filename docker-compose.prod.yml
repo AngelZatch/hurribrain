@@ -33,9 +33,27 @@ services:
       - "8080:8080"
     environment:
       PORT: 8080
+      POSTGRES_HOST: "hurribrain-postgres"
+      POSTGRES_PORT: 5432
+      REDIS_HOST: "hurribrain-redis"
+      REDIS_PORT: 6379
     depends_on:
       - database
       - redis
+    container_name: hurribrain-api
+
+  web:
+    build:
+      context: ./
+      dockerfile: ./apps/app/Dockerfile
+    networks:
+      - "axon"
+    ports:
+      - "8081:8081"
+    environment:
+      PORT: 8081
+      API_HOST: "hurribrain-api"
+    container_name: hurribrain-web
 
 volumes:
   pg_data:
