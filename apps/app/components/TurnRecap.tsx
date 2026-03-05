@@ -8,7 +8,7 @@ import {
   Participation,
 } from "@/api/play.api";
 import { useAuth } from "@/contexts/auth.context";
-import ScoreMedal, { DifficultyMedal } from "./ScoreMedal";
+import ScoreMedal from "./ScoreMedal";
 import { Divider } from "./ui/Divider";
 
 type ActivePlayedTurnProps = {
@@ -26,12 +26,6 @@ export default function TurnRecap({
     "correct" | "wrong" | "none"
   >("none");
 
-  // Medals awarded
-  const [difficultyMedalAwarded, setDifficultyMedalAwarded] =
-    useState<boolean>(false);
-  const [streakMedalAwarded, setStreakMedalAwarded] = useState<boolean>(false);
-  const [speedMedalAwarded, setSpeedMedalAwarded] = useState<boolean>(false);
-
   // Points gained
   const [pointsGained, setPointsGained] = useState<number>(0);
 
@@ -42,9 +36,7 @@ export default function TurnRecap({
   }, [currentTurn]);
 
   useEffect(() => {
-    setPointsGained(
-      (value) => participation.score - participation.previousScore,
-    );
+    setPointsGained(() => participation.score - participation.previousScore);
   }, [participation]);
 
   // Set my answer if I already answered
@@ -55,43 +47,23 @@ export default function TurnRecap({
   );
 
   useEffect(() => {
-    if (myAnswer && myAnswer.choice) {
+    if (!myAnswer || !myAnswer.choice) {
+      setAnswerStatus("none");
+    } else {
       if (myAnswer.choice.uuid === correctChoice?.uuid) {
         setAnswerStatus("correct");
       } else {
         setAnswerStatus("wrong");
       }
-    } else {
-      setAnswerStatus("none");
     }
   }, [myAnswer, correctChoice]);
 
-  useEffect(() => {
-    setDifficultyMedalAwarded(
-      answerStatus === "correct" &&
-        currentTurn.question.difficulty !== "easy" &&
-        currentTurn.question.difficulty !== "unknown",
-    );
-  }, [answerStatus, currentTurn.question.difficulty]);
-
-  useEffect(() => {
-    setStreakMedalAwarded(
-      participation.streak % 5 === 0 && participation.streak > 0,
-    );
-  }, [participation.streak]);
-
-  useEffect(() => {
-    setSpeedMedalAwarded(false);
-    if (!currentTurn.speedRanking) return;
-
-    const speedRanking = currentTurn?.speedRanking.indexOf(participation.uuid);
-    if (speedRanking !== -1) {
-      setSpeedMedalAwarded(true);
-    }
-  }, [currentTurn.speedRanking]);
-
   return (
-    <View>
+    <View
+      style={{
+        gap: 12,
+      }}
+    >
       <ThemedText
         style={{
           textAlign: "center",
@@ -109,16 +81,17 @@ export default function TurnRecap({
       <View
         style={[
           {
-            maxHeight: 300,
+            maxHeight: 400,
             borderStyle: "solid",
-            borderWidth: 1,
+            borderWidth: 3,
             borderRadius: 10,
-            padding: 20,
-            gap: 10,
+            padding: 12,
+            gap: 8,
             alignItems: "center",
             justifyContent: "space-between",
             flexGrow: 1,
             flexBasis: "auto",
+            backgroundColor: "#0000000C",
           },
           answerStatus === "correct" && {
             borderColor: "#3DC96C",
@@ -163,41 +136,15 @@ export default function TurnRecap({
             flexDirection: "column",
             gap: 10,
             flex: 1,
-            maxHeight: 350,
+            maxHeight: 300,
             width: "100%",
             alignItems: "flex-start",
+            overflow: "scroll",
           }}
         >
-          <ScoreMedal
-            medalType={{
-              type: "base",
-              value: answerStatus,
-            }}
-          />
-          {difficultyMedalAwarded && (
-            <ScoreMedal
-              medalType={{
-                type: "difficulty",
-                value: currentTurn.question.difficulty as DifficultyMedal,
-              }}
-            />
-          )}
-          {streakMedalAwarded && (
-            <ScoreMedal
-              medalType={{
-                type: "chain",
-                value: participation.streak,
-              }}
-            />
-          )}
-          {speedMedalAwarded && (
-            <ScoreMedal
-              medalType={{
-                type: "speed",
-                value: currentTurn.speedRanking.indexOf(participation.uuid) + 1,
-              }}
-            />
-          )}
+          {myAnswer?.medals?.map((medal) => (
+            <ScoreMedal medal={medal} key={medal} />
+          ))}
         </View>
         <Divider orientation="horizontal" size="100%" />
         <ThemedText
