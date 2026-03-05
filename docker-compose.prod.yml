@@ -1,0 +1,63 @@
+services:
+  database:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: hurribrain
+      POSTGRES_USER: neuron
+      POSTGRES_PASSWORD: synapse
+    networks:
+      - "axon"
+    ports:
+      - "5432:5432"
+    container_name: hurribrain-postgres
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  redis:
+    image: redis:7
+    networks:
+      - "axon"
+    ports:
+      - "6379:6379"
+    container_name: hurribrain-redis
+    restart: unless-stopped
+
+  api:
+    build:
+      context: ./
+      dockerfile: ./apps/api/Dockerfile
+    networks:
+      - "axon"
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: 8080
+      POSTGRES_HOST: "hurribrain-postgres"
+      POSTGRES_PORT: 5432
+      REDIS_HOST: "hurribrain-redis"
+      REDIS_PORT: 6379
+    depends_on:
+      - database
+      - redis
+    container_name: hurribrain-api
+
+  web:
+    build:
+      context: ./
+      dockerfile: ./apps/app/Dockerfile
+    networks:
+      - "axon"
+    ports:
+      - "8081:8081"
+    environment:
+      PORT: 8081
+      API_HOST: "hurribrain-api"
+    container_name: hurribrain-web
+
+volumes:
+  pg_data:
+    
+networks:
+  axon:
+    driver: bridge
