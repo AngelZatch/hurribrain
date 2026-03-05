@@ -1,4 +1,20 @@
 services:
+  traefik:
+    image: traefik:v3.6
+    container_name: hurribrain-traefik
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - axon
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./config/traefik.yaml:/etc/traefik/traefik.yaml:ro
+
   database:
     image: postgres:16
     environment:
@@ -30,9 +46,9 @@ services:
     networks:
       - "axon"
     ports:
-      - "8080:8080"
+      - "3002:3002"
     environment:
-      PORT: 8080
+      PORT: 3002
       POSTGRES_HOST: "hurribrain-postgres"
       POSTGRES_PORT: 5432
       REDIS_HOST: "hurribrain-redis"
@@ -41,6 +57,7 @@ services:
       - database
       - redis
     container_name: hurribrain-api
+    restart: unless-stopped
 
   web:
     build:
@@ -54,6 +71,7 @@ services:
       PORT: 8081
       API_HOST: "hurribrain-api"
     container_name: hurribrain-web
+    restart: unless-stopped
 
 volumes:
   pg_data:

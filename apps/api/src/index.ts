@@ -2,7 +2,7 @@ import { initializeDatabase } from "./database.js"
 import { getOrmConfig } from "./mikro-orm.config.js"
 import { server, initializeServer } from "./server.js"
 import SyncService from "./services/sync.service.js"
-const PORT = 8080
+const PORT = process.env.PORT ?? 8080
 
 ;(async () => {
   try {
@@ -16,7 +16,7 @@ const PORT = 8080
     const syncService = new SyncService()
     syncService.listen()
 
-    await server.listen({ host: "127.0.0.1", port: PORT })
+    await server.listen({ host: "127.0.0.1", port: Number(PORT) })
     console.log(`Server is running at http://localhost:${PORT}`)
   } catch (err) {
     console.error(err)
