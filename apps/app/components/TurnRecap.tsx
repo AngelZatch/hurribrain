@@ -59,7 +59,11 @@ export default function TurnRecap({
   }, [myAnswer, correctChoice]);
 
   return (
-    <View>
+    <View
+      style={{
+        gap: 12,
+      }}
+    >
       <ThemedText
         style={{
           textAlign: "center",
@@ -77,16 +81,17 @@ export default function TurnRecap({
       <View
         style={[
           {
-            maxHeight: 300,
+            maxHeight: 400,
             borderStyle: "solid",
-            borderWidth: 1,
+            borderWidth: 3,
             borderRadius: 10,
-            padding: 20,
-            gap: 10,
+            padding: 12,
+            gap: 8,
             alignItems: "center",
             justifyContent: "space-between",
             flexGrow: 1,
             flexBasis: "auto",
+            backgroundColor: "#0000000C",
           },
           answerStatus === "correct" && {
             borderColor: "#3DC96C",
@@ -131,9 +136,10 @@ export default function TurnRecap({
             flexDirection: "column",
             gap: 10,
             flex: 1,
-            maxHeight: 350,
+            maxHeight: 300,
             width: "100%",
             alignItems: "flex-start",
+            overflow: "scroll",
           }}
         >
           {myAnswer?.medals?.map((medal) => (

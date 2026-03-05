@@ -190,23 +190,38 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
   }
 
   return (
-    <View style={{ flexDirection: "row", width: "100%", gap: 10 }}>
+    <View
+      style={{
+        flexDirection: "row",
+        width: "100%",
+        gap: 8,
+        flexGrow: 1,
+        flexShrink: 1,
+        flexBasis: "100%",
+        justifyContent: "space-around",
+        alignContent: "center",
+        alignItems: "center",
+      }}
+    >
       <Image
         source={currentMedalProfile.imagePath}
         style={{ height: 50, width: 50 }}
       />
-      <View
+      <ThemedText
         style={{
-          alignItems: "center",
-          gap: 10,
-          flexGrow: 1,
-          flexDirection: "row",
+          textShadowColor: textShadowStyle[currentMedalProfile.type],
+          ...styles.bonusLabel,
+          width: "100%",
         }}
       >
+        {currentMedalProfile.label}
+      </ThemedText>
+      {currentMedalProfile.bonusPoints && (
         <View
           style={{
-            flexDirection: "column",
-            alignItems: "flex-start",
+            flexDirection: "row",
+            gap: 4,
+            alignItems: "baseline",
             flexGrow: 1,
           }}
         >
@@ -216,33 +231,19 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
               ...styles.bonusLabel,
             }}
           >
-            {currentMedalProfile.label}
+            {currentMedalProfile.bonusPoints}
+          </ThemedText>
+          <ThemedText
+            style={{
+              textShadowColor: textShadowStyle[currentMedalProfile.type],
+              ...styles.typeLabel,
+              fontStyle: "normal",
+            }}
+          >
+            pts
           </ThemedText>
         </View>
-        {currentMedalProfile.bonusPoints && (
-          <View
-            style={{ flexDirection: "row", gap: 5, alignItems: "baseline" }}
-          >
-            <ThemedText
-              style={{
-                textShadowColor: textShadowStyle[currentMedalProfile.type],
-                ...styles.bonusLabel,
-              }}
-            >
-              {currentMedalProfile.bonusPoints}
-            </ThemedText>
-            <ThemedText
-              style={{
-                textShadowColor: textShadowStyle[currentMedalProfile.type],
-                ...styles.typeLabel,
-                fontStyle: "normal",
-              }}
-            >
-              pts
-            </ThemedText>
-          </View>
-        )}
-      </View>
+      )}
     </View>
   );
 }
