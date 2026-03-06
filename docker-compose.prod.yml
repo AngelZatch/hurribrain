@@ -41,15 +41,18 @@ services:
       dockerfile: ./apps/api/Dockerfile
     networks:
       - axon
-    environment:
-      PORT: 3002
-      POSTGRES_HOST: "hurribrain-postgres"
-      POSTGRES_PORT: 5432
-      REDIS_HOST: "hurribrain-redis"
-      REDIS_PORT: 6379
+    ports:
+      - "3002:3002"
     depends_on:
-      - database
-      - redis
+      database:
+        condition: service_started
+      redis:
+        condition: service_started
+    environment:
+      POSTGRES_HOST: "hurribrain-postgres"
+      REDIS_HOST: "hurribrain-redis"
+      PORT: 3002
+      HOST: "0.0.0.0"
     container_name: hurribrain-api
     restart: unless-stopped
     labels:
