@@ -172,7 +172,7 @@ export const hasACurrentParticipation = (token: string) => {
     queryKey: ["my-participation"],
     queryFn: async (): Promise<Participation | null> => {
       const response = await axios.get(
-        `http://localhost:8080/auth/my-participation`,
+        `${process.env.EXPO_PUBLIC_API_URL}/auth/my-participation`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -189,7 +189,7 @@ export const useGetLeaderboard = (token: string, gameId: string) => {
     queryKey: ["leaderboard", gameId],
     queryFn: async (): Promise<Leaderboard> => {
       const response = await axios.get(
-        `http://localhost:8080/games/${gameId}/leaderboard`,
+        `${process.env.EXPO_PUBLIC_API_URL}/games/${gameId}/leaderboard`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -206,7 +206,7 @@ export const useStartGame = (token: string) => {
     mutationFn: async (gameId: string) => {
       try {
         const response = await axios.put(
-          `http://localhost:8080/games/${gameId}/start`,
+          `${process.env.EXPO_PUBLIC_API_URL}/games/${gameId}/start`,
           {},
           {
             headers: {
@@ -231,7 +231,7 @@ export const useStartGame = (token: string) => {
 //     queryKey: ["my-participation"],
 //     queryFn: async (): Promise<Participation> => {
 //       const response = await axios.get(
-//         `http://localhost:8080/games/${gameId}/leaderboard/me`,
+//         `${process.env.EXPO_PUBLIC_API_URL}/games/${gameId}/leaderboard/me`,
 //         {
 //           headers: {
 //             Authorization: `Bearer ${token}`,
@@ -254,7 +254,7 @@ export const useAnswerQuestion = (token: string, gameId: string) => {
     }) => {
       try {
         const response = await axios.post(
-          `http://localhost:8080/games/${gameId}/turns/${turnId}/answers`,
+          `${process.env.EXPO_PUBLIC_API_URL}/games/${gameId}/turns/${turnId}/answers`,
           { choiceId },
           {
             headers: {
@@ -283,7 +283,7 @@ export const useGetMyAnswer = (
     queryKey: ["my-answer", gameId, turnId],
     queryFn: async () => {
       const response = await axios.get(
-        `http://localhost:8080/games/${gameId}/turns/${turnId}/myanswer`,
+        `${process.env.EXPO_PUBLIC_API_URL}/games/${gameId}/turns/${turnId}/myanswer`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

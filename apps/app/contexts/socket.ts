@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-export const socket = io("http://localhost:8080", {
+export const socket = io(`${process.env.EXPO_PUBLIC_API_URL}`, {
   transports: ["websocket"],
   reconnection: true,
   reconnectionDelay: 400,

@@ -29,11 +29,14 @@ export const useGetGames = (token: string) => {
       data: Array<Game>;
       nextCursor: number;
     }> => {
-      const response = await axios.get("http://localhost:8080/games", {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await axios.get(
+        `${process.env.EXPO_PUBLIC_API_URL}/games`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
       return response.data;
     },
   });
@@ -44,12 +47,12 @@ export const useGetGame = (token: string, gameId: string) => {
     queryKey: ["games", gameId],
     queryFn: async (): Promise<Game> => {
       const response = await axios.get(
-        `http://localhost:8080/games/${gameId}`,
+        `${process.env.EXPO_PUBLIC_API_URL}/games/${gameId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       return response.data;
     },
@@ -61,13 +64,13 @@ export const useJoinGame = (token: string) => {
     mutationFn: async (gameCode: string): Promise<Game> => {
       try {
         const response = await axios.post(
-          `http://localhost:8080/games/${gameCode}/join`,
+          `${process.env.EXPO_PUBLIC_API_URL}/games/${gameCode}/join`,
           {},
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
 
         return response.data;
@@ -85,11 +88,15 @@ export const useCreateGame = (token: string) => {
   return useMutation({
     mutationFn: async (data: GameCreationDTO): Promise<Game> => {
       try {
-        const response = await axios.post("http://localhost:8080/games", data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
+        const response = await axios.post(
+          `${process.env.EXPO_PUBLIC_API_URL}/games`,
+          data,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        });
+        );
 
         return response.data;
       } catch (error) {

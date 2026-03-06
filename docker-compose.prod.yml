@@ -60,10 +60,10 @@ services:
     build:
       context: ./
       dockerfile: ./apps/app/Dockerfile
+      args:
+        API_URL: "http://api.docker.localhost"
     networks:
       - axon
-    environment:
-      API_HOST: "hurribrain-api"
     container_name: hurribrain-web
     restart: unless-stopped
     labels:
