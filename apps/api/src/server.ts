@@ -22,6 +22,7 @@ import { fastifyMultipart } from "@fastify/multipart"
 import { MEGABYTE } from "./utils/helperVariables.js"
 import fastifyRedis from "@fastify/redis"
 import ItemService from "./services/item.service.js"
+import { getRedisConfig } from "./redis.config.js"
 
 export const server = Fastify()
 
@@ -83,8 +84,7 @@ export const initializeServer = async () => {
 
   // Redis
   await server.register(fastifyRedis, {
-    host: process.env.REDIS_HOST || "localhost",
-    port: parseInt(process.env.REDIS_PORT || "6379"),
+    ...getRedisConfig(),
   })
 
   // Authentication

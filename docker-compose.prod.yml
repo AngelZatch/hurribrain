@@ -1,20 +1,4 @@
 services:
-  traefik:
-    image: traefik:v3.6
-    container_name: hurribrain-traefik
-    restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
-    networks:
-      - axon
-    ports:
-      - "80:80"
-      - "443:443"
-      - "8080:8080"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./config/traefik.yaml:/etc/traefik/traefik.yaml:ro
-
   database:
     image: postgres:16
     environment:
@@ -72,6 +56,22 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.web.rule=Host(`web.docker.localhost`)"
+
+  traefik:
+    image: traefik:v3.6
+    container_name: hurribrain-traefik
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - axon
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./config/traefik.yaml:/etc/traefik/traefik.yaml:ro
 
 volumes:
   pg_data:

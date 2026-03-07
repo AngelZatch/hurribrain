@@ -8,7 +8,7 @@ export function getOrmConfig(): Options {
     user: "neuron",
     password: "synapse",
     host: process.env.POSTGRES_HOST ?? "localhost",
-    port: process.env.POSTGRES_PORT ? Number(process.env.POSTGRES_PORT) : 5432,
+    port: parseInt(process.env.POSTGRES_PORT ?? "5432"),
     dbName: "hurribrain",
     entities: ["./dist/entities"],
     entitiesTs: ["./src/entities"],
