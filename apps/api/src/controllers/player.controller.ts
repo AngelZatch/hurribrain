@@ -27,6 +27,7 @@ const PlayerController = async (fastify: FastifyInstance) => {
           200: GetLeaderboardReplySchema,
         },
       },
+      preHandler: [fastify.auth([verifyJWT])],
     },
     async (request, reply) => {
       const em = request.em
