@@ -8,23 +8,8 @@ import { Game } from "./../entities/game.entity.js"
 import { User } from "./../entities/user.entity.js"
 import { ErrorResponsesSchema } from "./../schemas/errors.schema.js"
 import { MyAnswerSchema } from "./../schemas/answer.schema.js"
-import { GameByIdParams } from "./../schemas/game.schema.js"
 
 const TurnController = async (fastify: FastifyInstance) => {
-  fastify.get<{
-    Params: GameByIdParams
-  }>("/", async (request) => {
-    const em = request.em
-
-    return em.find(
-      Turn,
-      {
-        game: { uuid: request.params.gameId } as Game,
-      },
-      { orderBy: { position: "ASC" }, populate: ["question"] }
-    )
-  })
-
   fastify.post<{
     Params: { gameId: string; turnId: string }
     Body: { choiceId: string | null }
