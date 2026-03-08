@@ -7,12 +7,17 @@ export type Tag = {
   description?: string;
 };
 
-export const useGetTags = () => {
+export const useGetTags = (token: string) => {
   return useQuery({
     queryKey: ["tags"],
     queryFn: async (): Promise<Tag[]> => {
       const response = await axios.get(
         `${process.env.EXPO_PUBLIC_API_URL}/tags`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
       );
       return response.data;
     },
