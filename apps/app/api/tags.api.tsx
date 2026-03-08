@@ -11,7 +11,9 @@ export const useGetTags = () => {
   return useQuery({
     queryKey: ["tags"],
     queryFn: async (): Promise<Tag[]> => {
-      const response = await axios.get("http://localhost:8080/tags");
+      const response = await axios.get(
+        `${process.env.EXPO_PUBLIC_API_URL}/tags`,
+      );
       return response.data;
     },
   });

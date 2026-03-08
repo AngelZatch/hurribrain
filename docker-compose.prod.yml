@@ -6,9 +6,7 @@ services:
       POSTGRES_USER: neuron
       POSTGRES_PASSWORD: synapse
     networks:
-      - "axon"
-    ports:
-      - "5432:5432"
+      - axon
     container_name: hurribrain-postgres
     volumes:
       - pg_data:/var/lib/postgresql/data
@@ -17,9 +15,7 @@ services:
   redis:
     image: redis:7
     networks:
-      - "axon"
-    ports:
-      - "6379:6379"
+      - axon
     container_name: hurribrain-redis
     restart: unless-stopped
 
@@ -28,32 +24,54 @@ services:
       context: ./
       dockerfile: ./apps/api/Dockerfile
     networks:
-      - "axon"
+      - axon
     ports:
-      - "8080:8080"
-    environment:
-      PORT: 8080
-      POSTGRES_HOST: "hurribrain-postgres"
-      POSTGRES_PORT: 5432
-      REDIS_HOST: "hurribrain-redis"
-      REDIS_PORT: 6379
+      - "3002:3002"
     depends_on:
-      - database
-      - redis
+      database:
+        condition: service_started
+      redis:
+        condition: service_started
+    environment:
+      POSTGRES_HOST: "hurribrain-postgres"
+      REDIS_HOST: "hurribrain-redis"
+      PORT: 3002
+      HOST: "0.0.0.0"
     container_name: hurribrain-api
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`api.docker.localhost`)"
 
   web:
     build:
       context: ./
       dockerfile: ./apps/app/Dockerfile
+      args:
+        API_URL: "http://api.docker.localhost"
     networks:
-      - "axon"
-    ports:
-      - "8081:8081"
-    environment:
-      PORT: 8081
-      API_HOST: "hurribrain-api"
+      - axon
     container_name: hurribrain-web
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.web.rule=Host(`web.docker.localhost`)"
+
+  traefik:
+    image: traefik:v3.6
+    container_name: hurribrain-traefik
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - axon
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./config/traefik.yaml:/etc/traefik/traefik.yaml:ro
 
 volumes:
   pg_data:

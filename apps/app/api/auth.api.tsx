@@ -9,7 +9,7 @@ export const useRegister = () => {
       password: string;
     }) => {
       const response = await axios.post(
-        "http://localhost:8080/auth/register",
+        `${process.env.EXPO_PUBLIC_API_URL}/auth/register`,
         data,
       );
       return response.data;
@@ -21,7 +21,7 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: async (data: { email: string; password: string }) => {
       const response = await axios.post(
-        "http://localhost:8080/auth/login",
+        `${process.env.EXPO_PUBLIC_API_URL}/auth/login`,
         data,
       );
       return response.data;
@@ -33,7 +33,7 @@ export const useAuthCheck = () => {
   return useMutation({
     mutationFn: async (data: { email: string; password: string }) => {
       const response = await axios.post(
-        "http://localhost:8080/auth/check",
+        `${process.env.EXPO_PUBLIC_API_URL}/auth/check`,
         data,
       );
       return response.data;
@@ -45,7 +45,7 @@ export const useAuthRecover = () => {
   return useMutation({
     mutationFn: async (data: { email: string; password: string }) => {
       const response = await axios.post(
-        "http://localhost:8080/auth/recover",
+        `${process.env.EXPO_PUBLIC_API_URL}/auth/recover`,
         data,
       );
       return response.data;
@@ -63,11 +63,14 @@ export const useGetMe = (token: string) => {
       createdAt: string;
       updatedAt: string;
     }> => {
-      const response = await axios.get("http://localhost:8080/auth/me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await axios.get(
+        `${process.env.EXPO_PUBLIC_API_URL}/auth/me`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
       return response.data;
     },
   });
@@ -91,11 +94,14 @@ export const useGetMeWithStats = (token: string) => {
         firstGameWon: string;
       };
     }> => {
-      const response = await axios.get("http://localhost:8080/auth/me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await axios.get(
+        `${process.env.EXPO_PUBLIC_API_URL}/auth/me`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
       return response.data;
     },
   });
@@ -105,7 +111,7 @@ export const useDeleteAccount = (token: string) => {
   return useMutation({
     mutationFn: async (data: { email: string; password: string }) => {
       const response = await axios.post(
-        "http://localhost:8080/auth/delete",
+        `${process.env.EXPO_PUBLIC_API_URL}/auth/delete`,
         data,
         {
           headers: {

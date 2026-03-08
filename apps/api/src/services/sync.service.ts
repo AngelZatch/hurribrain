@@ -1,6 +1,9 @@
 import Queue from "bull"
 import GameService from "./game.service.js"
-const gameQueue = new Queue("games")
+import { getRedisConfig } from "./../redis.config.js"
+const gameQueue = new Queue("games", {
+  redis: getRedisConfig(),
+})
 
 class SyncService {
   public listen() {

@@ -18,7 +18,10 @@ import { MINUTE, SECOND } from "./../utils/helperVariables.js"
 import { User } from "./../entities/user.entity.js"
 import { wrap } from "@mikro-orm/core"
 import { ItemName } from "./../entities/item.entity.js"
-const gameQueue = new Queue("games")
+import { getRedisConfig } from "./../redis.config.js"
+const gameQueue = new Queue("games", {
+  redis: getRedisConfig(),
+})
 
 export default class GameService {
   getCurrentTurn = async (
