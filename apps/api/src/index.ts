@@ -9,8 +9,6 @@ const HOST = process.env.HOST ?? "0.0.0.0"
   try {
     const ormConfig = getOrmConfig()
     await initializeDatabase(ormConfig)
-    // If dev, migrate and seed database
-
     await initializeServer()
 
     // Init game worker

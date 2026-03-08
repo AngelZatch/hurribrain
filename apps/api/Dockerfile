@@ -15,4 +15,5 @@ WORKDIR /app
 COPY --link --from=build /app/apps/api/node_modules ./node_modules
 COPY --link --from=build /app/apps/api/dist ./dist
 EXPOSE ${PORT}
+ENV NODE_ENV=production
 CMD [ "node", "dist/index.js" ]
