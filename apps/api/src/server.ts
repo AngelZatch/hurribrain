@@ -8,7 +8,6 @@ import Fastify, {
 import fastifyCors from "@fastify/cors"
 import fastifySwagger from "@fastify/swagger"
 import fastifySwaggerUi from "@fastify/swagger-ui"
-import QuestionController from "./controllers/question.controller.js"
 import { ErrorResponseTemplateSchema } from "./schemas/errors.schema.js"
 import TagController from "./controllers/tag.controller.js"
 import { getEntityManager } from "./middlewares/entityManager.middleware.js"
@@ -101,7 +100,6 @@ export const initializeServer = async () => {
     })
 
     await instance.register(AuthController, { prefix: "/auth" })
-    await instance.register(QuestionController, { prefix: "/questions" })
     await instance.register(TagController, { prefix: "/tags" })
     await instance.register(GameController, { prefix: "/games" })
   })

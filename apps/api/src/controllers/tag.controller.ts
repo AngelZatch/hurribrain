@@ -1,18 +1,14 @@
 import { ErrorResponsesSchema } from "./../schemas/errors.schema.js"
 import { Tag } from "./../entities/tag.entity.js"
 import {
-  CreateTagSchema,
   GetTagParams,
   GetTagReply,
   GetTagsReply,
-  PostTagBody,
-  PostTagReply,
-  PutTagBody,
-  PutTagReply,
   TagParamsSchema,
   TagResponseSchema,
 } from "./../schemas/tag.schema.js"
 import fastify from "fastify"
+import { verifyJWT } from "./../utils/authChecker.js"
 
 const TagController = async (fastify: fastify.FastifyInstance) => {
   fastify.addSchema(TagResponseSchema)
@@ -34,6 +30,7 @@ const TagController = async (fastify: fastify.FastifyInstance) => {
           ...ErrorResponsesSchema,
         },
       },
+      preHandler: [fastify.auth([verifyJWT])],
     },
     async (request, reply) => {
       const em = request.em
@@ -65,72 +62,12 @@ const TagController = async (fastify: fastify.FastifyInstance) => {
           ...ErrorResponsesSchema,
         },
       },
+      preHandler: [fastify.auth([verifyJWT])],
     },
     async (request, reply) => {
       const em = request.em
 
       const tag = await em.findOneOrFail(Tag, { uuid: request.params.uuid })
-
-      return reply.code(200).send(tag)
-    }
-  )
-
-  fastify.post<{
-    Body: PostTagBody
-    Reply: PostTagReply
-  }>(
-    "/",
-    {
-      schema: {
-        tags: ["Tags"],
-        summary: "Creates a new tag",
-        body: CreateTagSchema,
-        response: {
-          201: TagResponseSchema,
-          ...ErrorResponsesSchema,
-        },
-      },
-    },
-    async (request, reply) => {
-      const em = request.em
-
-      const tag = new Tag({
-        name: request.body.name,
-      })
-
-      await em.persist(tag).flush()
-
-      return reply.code(201).send(tag)
-    }
-  )
-
-  fastify.put<{
-    Params: GetTagParams
-    Body: PutTagBody
-    Reply: PutTagReply
-  }>(
-    "/:uuid",
-    {
-      schema: {
-        tags: ["Tags"],
-        summary: "Updates a tag by its UUID",
-        params: TagParamsSchema,
-        body: CreateTagSchema,
-        response: {
-          200: TagResponseSchema,
-          ...ErrorResponsesSchema,
-        },
-      },
-    },
-    async (request, reply) => {
-      const em = request.em
-
-      const tag = await em.findOneOrFail(Tag, { uuid: request.params.uuid })
-
-      tag.name = request.body.name ?? tag.name
-      tag.description = request.body.description ?? tag.description
-
-      await em.persist(tag).flush()
 
       return reply.code(200).send(tag)
     }

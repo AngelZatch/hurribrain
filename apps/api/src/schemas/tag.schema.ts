@@ -35,33 +35,3 @@ export const TagParamsSchema = Type.Object(
 export type GetTagParams = Static<typeof TagParamsSchema>
 export type GetTagReply = Static<typeof TagResponseSchema>
 export type GetTagsReply = Array<GetTagReply>
-
-// POST Tags
-export const CreateTagSchema = Type.Object(
-  {
-    name: Type.String(),
-    description: Type.Optional(Type.String()),
-  },
-  {
-    $id: "CreateTag",
-    description: "Create Tag entity",
-  }
-)
-
-export type PostTagBody = Static<typeof CreateTagSchema>
-export type PostTagReply = Static<typeof TagResponseSchema>
-
-// PUT Tags
-export const UpdateTagSchema = Type.Object(
-  {
-    name: Type.Optional(Type.String()),
-    description: Type.Optional(Type.String()),
-  },
-  {
-    $id: "UpdateTag",
-    description: "Update Tag entity",
-  }
-)
-
-export type PutTagBody = Static<typeof UpdateTagSchema>
-export type PutTagReply = Static<typeof TagResponseSchema>

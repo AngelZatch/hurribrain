@@ -37,7 +37,7 @@ export default function CreateGameForm() {
     return null;
   }
 
-  const { data, isLoading } = useGetTags();
+  const { data, isLoading } = useGetTags(user);
 
   const difficultyMap: DifficultyMap = {
     25: {

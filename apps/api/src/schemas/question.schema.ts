@@ -44,37 +44,3 @@ export type GetQuestionsReply = Static<typeof GetQuestionsReplySchema>
 // Get one question by id
 export const GetQuestionReplySchema = QuestionResponseSchema
 export type GetQuestionReply = Static<typeof GetQuestionReplySchema>
-
-// POST
-export const CreateQuestionSchema = Type.Object({
-  title: Type.String({
-    description: "The title of the question",
-    examples: ["What is the capital of France?"],
-    minLength: 5,
-    maxLength: 255,
-  }),
-  asset: Type.Optional(
-    Type.String({
-      format: "uuid",
-      description: "An optional asset",
-    })
-  ),
-  choices: Type.Array(
-    Type.Object({
-      value: Type.String({
-        description: "The value of the choice",
-        examples: ["Paris"],
-        minLength: 1,
-        maxLength: 255,
-      }),
-      isCorrect: Type.Boolean({
-        description:
-          "Whether the choice is correct or not. Only one choice may be correct.",
-      }),
-    })
-  ),
-  tags: Type.Array(TagResponseSchema),
-})
-
-export type PostQuestionBody = Static<typeof CreateQuestionSchema>
-export type PostQuestionReply = Static<typeof QuestionResponseSchema>
