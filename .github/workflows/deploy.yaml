@@ -12,8 +12,10 @@ jobs:
         uses: actions/checkout@v5
       
       - name: Build and Push
+        env:
+          BUILD_TOKEN: ${{ secrets.BUILD_TOKEN }}
         run: |
-          echo $BUILD_TOKEN | docker login ghcr.io --username AngelZatch --password-stdin
+          echo "$BUILD_TOKEN" | docker login ghcr.io --username AngelZatch --password-stdin
           docker compose --file docker-compose.prod.yml build --no-cache api web
           docker push ghrc.io/angelzatch/hurribrain-api:latest
           docker push ghrc.io/angelzatch/hurribrain-web:latest
