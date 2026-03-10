@@ -17,5 +17,5 @@ jobs:
         run: |
           echo "$BUILD_TOKEN" | docker login ghcr.io --username AngelZatch --password-stdin
           docker compose --file docker-compose.prod.yml build --no-cache api web
-          docker compose push ghrc.io/angelzatch/hurribrain:api-latest
-          docker compose push ghrc.io/angelzatch/hurribrain:web-latest
+          docker compose push api
+          docker compose push web
