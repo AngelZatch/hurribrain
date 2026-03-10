@@ -1,0 +1,19 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  docker:
+    runs-on: ubuntu-24
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+      
+      - name: Build and Push
+        run: |
+          echo $BUILD_TOKEN | docker login ghcr.io --username AngelZatch --password-stdin
+          docker compose --file docker-compose.prod.yml build --no-cache api web
+          docker push ghrc.io/angelzatch/hurribrain-api:latest
+          docker push ghrc.io/angelzatch/hurribrain-web:latest

@@ -42,6 +42,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.api.rule=Host(`api.docker.localhost`)"
+    image: "ghrc.io/angelzatch/hurribrain-api:latest"
 
   web:
     build:
@@ -56,6 +57,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.web.rule=Host(`web.docker.localhost`)"
+    image: "ghrc.io/angelzatch/hurribrain-web:latest"
 
   traefik:
     image: traefik:v3.6
