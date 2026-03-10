@@ -13,7 +13,10 @@ export const verifyJWT = async (
   // Get the token from Bearer
   const token = request.headers.authorization.split(" ")[1]
 
-  const decoded = jwt.verify(token, "changeSecretIntoEnvVariable") as {
+  const decoded = jwt.verify(
+    token,
+    process.env.JWTSALT ?? "changeSecretIntoEnvVariable"
+  ) as {
     uuid: string
   }
   if (!decoded) {

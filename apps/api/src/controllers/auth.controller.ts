@@ -83,7 +83,7 @@ const AuthController = async (fastify: FastifyInstance) => {
             name: user.name,
             role: user.role,
           },
-          "changeSecretIntoEnvVariable",
+          process.env.JWTSALT ?? "changeSecretIntoEnvVariable",
           {
             expiresIn: "7d",
           }
@@ -154,7 +154,7 @@ const AuthController = async (fastify: FastifyInstance) => {
             name: user.name,
             role: user.role,
           },
-          "changeSecretIntoEnvVariable",
+          process.env.JWTSALT ?? "changeSecretIntoEnvVariable",
           {
             expiresIn: "7d",
           }
@@ -219,7 +219,7 @@ const AuthController = async (fastify: FastifyInstance) => {
           name: user.name,
           role: user.role,
         },
-        "changeSecretIntoEnvVariable",
+        process.env.JWTSALT ?? "changeSecretIntoEnvVariable",
         {
           expiresIn: "7d",
         }
