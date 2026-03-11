@@ -20,9 +20,6 @@ services:
     restart: unless-stopped
 
   api:
-    # build:
-    #   context: ./
-    #   dockerfile: ./apps/api/Dockerfile
     networks:
       - axon
     ports:
@@ -45,9 +42,6 @@ services:
     image: "ghcr.io/angelzatch/hurribrain-api:latest"
 
   web:
-    # build:
-    #   context: ./
-    #   dockerfile: ./apps/app/Dockerfile
     #   args:
     #     API_URL: "http://api.docker.localhost"
     networks:

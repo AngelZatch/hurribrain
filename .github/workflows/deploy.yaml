@@ -31,7 +31,7 @@ jobs:
           file: ./apps/app/Dockerfile
           push: true
           tags: ghcr.io/angelzatch/hurribrain-web:latest
-          labels: "org.opencontainers.image.source=https://github.com/angelzatch/hurribrain"
+          labels: "org.opencontainers.image.source https://github.com/angelzatch/hurribrain"
       
 
       - name: Build and Push API
@@ -41,4 +41,4 @@ jobs:
           file: ./apps/api/Dockerfile
           push: true
           tags: ghcr.io/angelzatch/hurribrain-api:latest
-          labels: "org.opencontainers.image.source=https://github.com/angelzatch/hurribrain"
+          labels: "org.opencontainers.image.source https://github.com/angelzatch/hurribrain"
