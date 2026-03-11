@@ -30,7 +30,7 @@ jobs:
           context: ./
           file: ./apps/app/Dockerfile
           push: true
-          tags: ghrc.io/angelzatch/hurribrain-web:latest
+          tags: ghrc.io/angelzatch/hurribrain/web:latest
       
 
       - name: Build and Push API
@@ -39,4 +39,4 @@ jobs:
           context: ./
           file: ./apps/api/Dockerfile
           push: true
-          tags: ghrc.io/angelzatch/hurribrain-api:latest
+          tags: ghrc.io/angelzatch/hurribrain:api-latest
