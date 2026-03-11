@@ -22,15 +22,17 @@ services:
   api:
     networks:
       - axon
-    ports:
-      - "3002:3002"
     depends_on:
       database:
         condition: service_started
       redis:
         condition: service_started
+    ports:
+      - "3002:3002"
     environment:
       POSTGRES_HOST: "hurribrain-postgres"
+      POSTGRES_USER: neuron
+      POSTGRES_PASSWORD: synapse
       REDIS_HOST: "hurribrain-redis"
       PORT: 3002
       HOST: "0.0.0.0"
@@ -38,19 +40,19 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.api.rule=Host(`api.docker.localhost`)"
+      - "traefik.http.routers.api.rule=Host(`api.hurribrain.net`)"
+      - "traefik.http.routers.api.entrypoints=web"
     image: "ghcr.io/angelzatch/hurribrain-api:latest"
 
   web:
-    #   args:
-    #     API_URL: "http://api.docker.localhost"
     networks:
       - axon
     container_name: hurribrain-web
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.web.rule=Host(`web.docker.localhost`)"
+      - "traefik.http.routers.web.rule=Host(`hurribrain.net`)"
+      - "traefik.http.routers.web.entrypoints=web"
     image: "ghcr.io/angelzatch/hurribrain-web:latest"
 
   traefik:

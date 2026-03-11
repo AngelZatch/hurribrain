@@ -44,3 +44,25 @@ jobs:
           tags: ghcr.io/angelzatch/hurribrain-api:latest
           labels: "org.opencontainers.image.source https://github.com/angelzatch/hurribrain"
           platforms: linux/arm64,linux/amd64
+  
+  deploy:
+    needs: docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5      
+      - name: Refresh Compose File
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.DEV_DROPLET_HOST }}
+          username: ${{ secrets.DEV_DROPLET_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          source: "docker-compose.prod.yml"
+          target: "/"
+      - name: Run Compose
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEV_DROPLET_HOST }}
+          username: ${{ secrets.DEV_DROPLET_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: "docker compose up -d"

@@ -5,8 +5,8 @@ import { SeedManager } from "@mikro-orm/seeder"
 
 export function getOrmConfig(): Options {
   return {
-    user: "neuron",
-    password: "synapse",
+    user: process.env.POSTGRES_USER ?? "neuron",
+    password: process.env.POSTGRES_PASSWORD ?? "synapse",
     host: process.env.POSTGRES_HOST ?? "localhost",
     port: parseInt(process.env.POSTGRES_PORT ?? "5432"),
     dbName: "hurribrain",
