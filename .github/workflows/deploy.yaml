@@ -16,7 +16,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.BUILD_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -30,7 +30,8 @@ jobs:
           context: ./
           file: ./apps/app/Dockerfile
           push: true
-          tags: ghrc.io/angelzatch/hurribrain/web:latest
+          tags: ghrc.io/angelzatch/hurribrain:web-latest
+          labels: "org.opencontainers.image.source=https://github.com/angelzatch/hurribrain"
       
 
       - name: Build and Push API
@@ -40,3 +41,4 @@ jobs:
           file: ./apps/api/Dockerfile
           push: true
           tags: ghrc.io/angelzatch/hurribrain:api-latest
+          labels: "org.opencontainers.image.source=https://github.com/angelzatch/hurribrain"
