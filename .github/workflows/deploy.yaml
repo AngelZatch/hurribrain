@@ -59,9 +59,14 @@ jobs:
           target: ~/
       - name: Run Compose
         uses: appleboy/ssh-action@v1
+        env:
+          USERNAME: ${{ github.actor }}
+          APPTOKEN: ${{ secrets.BUILD_TOKEN }}
         with:
           host: ${{ secrets.DEV_DROPLET_HOST }}
           username: ${{ secrets.DEV_DROPLET_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
           port: 22
-          script: docker compose -f ~/docker-compose.prod.yml up -d
+          script: |
+          echo $APPTOKEN | docker login ghcr.io -u $USERNAME --password-stdin
+          docker compose -f ~/docker-compose.prod.yml up -d
