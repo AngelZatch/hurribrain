@@ -5,7 +5,7 @@ WORKDIR /app
 COPY . .
 RUN corepack enable && corepack prepare yarn@${YARN_VERSION}
 RUN yarn install --frozen-lockfile
-RUN echo EXPO_PUBLIC_API_URL="https://api.hurribrain.net">>./apps/app/.env.production
+RUN echo EXPO_PUBLIC_API_URL="http://api.hurribrain.net">>./apps/app/.env.production
 RUN yarn workspace app run web:build
 
 FROM node:24-alpine AS run
