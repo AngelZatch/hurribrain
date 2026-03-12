@@ -24,4 +24,4 @@ certificatesresolvers:
     email: angelzatch@gmail.com
     storage: /letsencrypt/acme.json
     httpchallenge:
-      entrypoints: web
+      entrypoint: web
