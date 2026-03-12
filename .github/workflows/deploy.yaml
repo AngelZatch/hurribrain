@@ -55,7 +55,7 @@ jobs:
           host: ${{ secrets.DEV_DROPLET_HOST }}
           username: ${{ secrets.DEV_DROPLET_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
-          source: "docker-compose.prod.yml"
+          source: "docker-compose.prod.yml, config/traefik.yaml"
           target: ~/
       - name: Run Compose
         uses: appleboy/ssh-action@v1
