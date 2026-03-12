@@ -32,7 +32,6 @@ jobs:
           push: true
           tags: ghcr.io/angelzatch/hurribrain-web:latest
           labels: "org.opencontainers.image.source https://github.com/angelzatch/hurribrain"
-          platforms: linux/arm64,linux/amd64
       
 
       - name: Build and Push API
@@ -43,7 +42,6 @@ jobs:
           push: true
           tags: ghcr.io/angelzatch/hurribrain-api:latest
           labels: "org.opencontainers.image.source https://github.com/angelzatch/hurribrain"
-          platforms: linux/arm64,linux/amd64
   
   deploy:
     needs: docker
