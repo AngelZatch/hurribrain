@@ -56,11 +56,12 @@ jobs:
           username: ${{ secrets.DEV_DROPLET_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
           source: "docker-compose.prod.yml"
-          target: "/"
+          target: ~/
       - name: Run Compose
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.DEV_DROPLET_HOST }}
           username: ${{ secrets.DEV_DROPLET_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
-          script: "docker compose up -d"
+          port: 22
+          script: docker compose -f ~/docker-compose.prod.yml up -d
