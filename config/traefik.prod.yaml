@@ -10,18 +10,19 @@ entryPoints:
         entryPoint:
           to: websecure
           scheme: https
+          permanent: true
   websecure:
     address: :443
-    tls: true
+    tls: {}
 providers:
   docker:
     endpoint: "unix:///var/run/docker.sock"
     exposedByDefault: false
     network: axon
-certificatesresolvers:
+certificatesResolvers:
   le:
    acme:
     email: angelzatch@gmail.com
     storage: /letsencrypt/acme.json
-    httpchallenge:
-      entrypoint: web
+    httpChallenge:
+      entryPoint: web
