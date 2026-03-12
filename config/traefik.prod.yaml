@@ -1,6 +1,7 @@
 log:
   level: DEBUG
 api:
+  dashboard: true
   insecure: false
 entryPoints:
   web:
@@ -23,5 +24,9 @@ certificatesResolvers:
    acme:
     email: angelzatch@gmail.com
     storage: /letsencrypt/acme.json
-    httpChallenge:
-      entryPoint: web
+    dnsChallenge:
+      provider: digitalocean
+      resolvers:
+        - "ns1.digitalocean.com"
+        - "ns2.digitalocean.com"
+        - "ns3.digitalocean.com"

@@ -62,6 +62,7 @@ jobs:
         env:
           USERNAME: ${{ github.actor }}
           APPTOKEN: ${{ secrets.PULL_TOKEN }}
+          CERTTOKEN: ${{ secrets.CERT_TOKEN }}
         with:
           host: ${{ secrets.DEV_DROPLET_HOST }}
           username: ${{ secrets.DEV_DROPLET_USER }}
@@ -69,4 +70,5 @@ jobs:
           port: 22
           script: |
             echo $APPTOKEN | docker login ghcr.io -u $USERNAME --password-stdin
+            echo "DO_AUTH_TOKEN:'$CERTTOKEN'" >> ~/.env 
             docker compose -f ~/docker-compose.prod.yml up -d
