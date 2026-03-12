@@ -1,12 +1,27 @@
 log:
   level: DEBUG
+api:
+  insecure: false
 entryPoints:
   web:
     address: :80
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
   websecure:
     address: :443
+    tls: true
 providers:
   docker:
     endpoint: "unix:///var/run/docker.sock"
     exposedByDefault: false
     network: axon
+certificatesresolvers:
+  le:
+   acme:
+    email: angelzatch@gmail.com
+    storage: /letsencrypt/acme.json
+    httpchallenge:
+      entrypoints: web

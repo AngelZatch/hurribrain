@@ -39,9 +39,21 @@ services:
     container_name: hurribrain-api
     restart: unless-stopped
     labels:
+      # Base Traefik
       - "traefik.enable=true"
       - "traefik.http.routers.api.rule=Host(`api.hurribrain.net`)"
       - "traefik.http.routers.api.entrypoints=web"
+      # Middlewares
+      - "traefik.http.middlewares.secure-headers.headers.frameDeny=true"
+      - "traefik.http.middlewares.secure-headers.headers.sslRedirect=true"
+      - "traefik.http.middlewares.secure-headers.headers.browserXssFiltre=true"
+      - "traefik.http.middlewares.secure-headers.headers.contentTypeNosniff=true"
+      - "traefik.http.middlewares.secure-headers.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.secure-headers.headers.stsPreload=true"
+      - "traefik.http.middlewares.secure-headers.headers.stsSeconds=31536000"
+      - "traefik.http.routers.api.middlewares=secure-headers"
+      # SSL
+      - "traefik.http.routers.api.tls.certresolver=le"
     image: "ghcr.io/angelzatch/hurribrain-api:latest"
 
   web:
@@ -50,9 +62,21 @@ services:
     container_name: hurribrain-web
     restart: unless-stopped
     labels:
+      # Base Traefik
       - "traefik.enable=true"
       - "traefik.http.routers.web.rule=Host(`hurribrain.net`)"
       - "traefik.http.routers.web.entrypoints=web"
+      # Middlewares
+      - "traefik.http.middlewares.secure-headers.headers.frameDeny=true"
+      - "traefik.http.middlewares.secure-headers.headers.sslRedirect=true"
+      - "traefik.http.middlewares.secure-headers.headers.browserXssFiltre=true"
+      - "traefik.http.middlewares.secure-headers.headers.contentTypeNosniff=true"
+      - "traefik.http.middlewares.secure-headers.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.secure-headers.headers.stsPreload=true"
+      - "traefik.http.middlewares.secure-headers.headers.stsSeconds=31536000"
+      - "traefik.http.routers.web.middlewares=secure-headers"
+      # SSL
+      - "traefik.http.routers.web.tls.certresolver=le"
     image: "ghcr.io/angelzatch/hurribrain-web:latest"
 
   traefik:
@@ -70,6 +94,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./config/traefik.prod.yaml:/etc/traefik/traefik.yaml:ro
+      - ./letsencrypt:/letsencrypt
 
 volumes:
   pg_data:

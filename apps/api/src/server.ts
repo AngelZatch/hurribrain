@@ -58,8 +58,7 @@ export const initializeServer = async () => {
   // Cors
   await server.register(fastifyCors, {
     credentials: true,
-    origin:
-      process.env.NODE_ENV === "production" ? "http://hurribrain.net" : false,
+    origin: true,
   })
 
   // Multipart
