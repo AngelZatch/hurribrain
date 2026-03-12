@@ -69,7 +69,7 @@ services:
       - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./config/traefik.yaml:/etc/traefik/traefik.prod.yaml:ro
+      - ./config/traefik.prod.yaml:/etc/traefik/traefik.yaml:ro
 
 volumes:
   pg_data:
