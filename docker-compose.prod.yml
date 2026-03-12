@@ -51,7 +51,7 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.web.rule=Host(`www.hurribrain.net`)"
+      - "traefik.http.routers.web.rule=Host(`hurribrain.net`)"
       - "traefik.http.routers.web.entrypoints=web"
     image: "ghcr.io/angelzatch/hurribrain-web:latest"
 
