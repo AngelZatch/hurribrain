@@ -42,7 +42,9 @@ services:
       # Base Traefik
       - "traefik.enable=true"
       - "traefik.http.routers.api.rule=Host(`api.hurribrain.net`)"
-      - "traefik.http.routers.api.entrypoints=web"
+      - "traefik.http.routers.api.tls=true"
+      - "traefik.http.routers.api.tls.certresolver=le"
+      - "traefik.http.routers.api.entrypoints=websecure"
       # Middlewares
       - "traefik.http.middlewares.secure-headers.headers.frameDeny=true"
       - "traefik.http.middlewares.secure-headers.headers.sslRedirect=true"
@@ -52,8 +54,6 @@ services:
       - "traefik.http.middlewares.secure-headers.headers.stsPreload=true"
       - "traefik.http.middlewares.secure-headers.headers.stsSeconds=31536000"
       - "traefik.http.routers.api.middlewares=secure-headers"
-      # SSL
-      - "traefik.http.routers.api.tls.certresolver=le"
     image: "ghcr.io/angelzatch/hurribrain-api:latest"
 
   web:
@@ -65,7 +65,9 @@ services:
       # Base Traefik
       - "traefik.enable=true"
       - "traefik.http.routers.web.rule=Host(`hurribrain.net`)"
-      - "traefik.http.routers.web.entrypoints=web"
+      - "traefik.http.routers.web.tls=true"
+      - "traefik.http.routers.web.tls.certresolver=le"
+      - "traefik.http.routers.web.entrypoints=websecure"
       # Middlewares
       - "traefik.http.middlewares.secure-headers.headers.frameDeny=true"
       - "traefik.http.middlewares.secure-headers.headers.sslRedirect=true"
@@ -75,8 +77,6 @@ services:
       - "traefik.http.middlewares.secure-headers.headers.stsPreload=true"
       - "traefik.http.middlewares.secure-headers.headers.stsSeconds=31536000"
       - "traefik.http.routers.web.middlewares=secure-headers"
-      # SSL
-      - "traefik.http.routers.web.tls.certresolver=le"
     image: "ghcr.io/angelzatch/hurribrain-web:latest"
 
   traefik:

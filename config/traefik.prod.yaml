@@ -22,7 +22,7 @@ providers:
 certificatesResolvers:
   le:
    acme:
-    email: angelzatch@gmail.com
+    email: angelzatch-admin@hurribrain.net
     storage: /letsencrypt/acme.json
     dnsChallenge:
       provider: digitalocean
@@ -31,4 +31,4 @@ certificatesResolvers:
         - "ns2.digitalocean.com"
         - "ns3.digitalocean.com"
       propagation:
-        delayBeforeChecks: 60
+        delayBeforeChecks: 30s
