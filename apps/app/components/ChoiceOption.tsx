@@ -4,14 +4,12 @@ import { Choice } from "@/api/play.api";
 
 type ChoiceOptionProps = {
   choice: Choice;
-  isSelected: boolean;
   isSent: boolean;
   onPress: () => void;
 };
 
 export default function ChoiceOption({
   choice,
-  isSelected,
   isSent,
   onPress,
 }: ChoiceOptionProps) {
@@ -32,7 +30,6 @@ export default function ChoiceOption({
             backgroundColor: "transparent",
             minHeight: 50,
           },
-          isSelected && { backgroundColor: "#94CED080" },
           isSent && { backgroundColor: "#0A99FF" },
         ]}
       >

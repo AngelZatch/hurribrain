@@ -1,7 +1,6 @@
 import { View } from "react-native";
 import ChoiceOption from "./ChoiceOption";
 import { useEffect, useState } from "react";
-import ThemedButton from "./ui/ThemedButton";
 import { useAuth } from "@/contexts/auth.context";
 import {
   PlayableTurn,
@@ -23,15 +22,9 @@ export default function ActivePlayableTurn({
   participation,
   timeLeft,
 }: ActivePlayableTurnProps) {
-  const [selectedChoice, setSelectedChoice] = useState<Choice | null>(null);
   const [sentChoice, setSentChoice] = useState<Choice | null>(null);
   const { user } = useAuth();
   const { mutate: answerQuestion } = useAnswerQuestion(user!, currentTurn.game);
-
-  // By default, set the selected choice to null
-  useEffect(() => {
-    setSelectedChoice(null);
-  }, []);
 
   // Set my answer if I already answered
   const { data: myAnswer } = useGetMyAnswer(
@@ -39,23 +32,28 @@ export default function ActivePlayableTurn({
     currentTurn.game,
     currentTurn.uuid,
   );
+
   useEffect(() => {
     if (myAnswer) {
       setSentChoice(myAnswer.choice);
     }
   }, [myAnswer]);
 
-  const handleSendAnswer = async () => {
-    if (!selectedChoice || timeLeft <= 0) {
+  const handleSendAnswer = async (choice: Choice) => {
+    if (!choice || timeLeft <= 0) {
       return;
     }
 
-    await answerQuestion({
-      turnId: currentTurn.uuid,
-      choiceId: selectedChoice.uuid,
-    });
-
-    setSentChoice(selectedChoice);
+    try {
+      answerQuestion({
+        turnId: currentTurn.uuid,
+        choiceId: choice.uuid,
+      });
+      setSentChoice(choice);
+    } catch (error) {
+      //TODO: Display error toast
+      console.log(error);
+    }
   };
 
   return (
@@ -68,9 +66,8 @@ export default function ActivePlayableTurn({
         {currentTurn.question.choices.map((choice) => (
           <ChoiceOption
             key={choice.uuid}
-            onPress={() => setSelectedChoice(choice)}
+            onPress={() => handleSendAnswer(choice)}
             choice={choice}
-            isSelected={selectedChoice?.uuid === choice.uuid}
             isSent={sentChoice?.uuid === choice.uuid}
           />
         ))}
@@ -80,18 +77,12 @@ export default function ActivePlayableTurn({
           display: "flex",
           gap: 24,
           flexDirection: "row",
-          justifyContent: "center",
+          justifyContent: "flex-start",
           alignSelf: "stretch",
           alignItems: "center",
         }}
       >
         <ItemButton participation={participation} />
-        <ThemedButton
-          title={sentChoice ? "Modifier" : "Répondre"}
-          onPress={handleSendAnswer}
-          disabled={!selectedChoice || timeLeft <= 0}
-          fullWidth
-        />
       </View>
     </>
   );
