@@ -76,4 +76,4 @@ jobs:
             echo $APPTOKEN | docker login ghcr.io -u $USERNAME --password-stdin
             rm .env
             echo "DO_AUTH_TOKEN:'$CERTTOKEN'" >> ~/.env 
-            docker compose -f ~/docker-compose.prod.yml up -d
+            docker compose -f ~/docker-compose.prod.yml pull && docker compose -f ~/docker-compose.prod.yml up -d
