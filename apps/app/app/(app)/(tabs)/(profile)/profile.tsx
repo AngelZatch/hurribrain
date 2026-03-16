@@ -98,15 +98,17 @@ export default function ProfileScreen() {
             paddingHorizontal: 0,
             paddingVertical: 10,
             width: "100%",
+            justifyContent: "flex-end",
           }}
         >
-          <ThemedButton title="Modifier le Profil" size="medium" fullWidth />
+          {/* <ThemedButton title="Modifier le Profil" size="medium" fullWidth disabled /> */}
           <Link href="/settings" asChild>
             <ThemedButton
               icon="gearshape.fill"
               size="large"
-              title=""
+              title="Paramètres"
               type="secondary"
+              fullWidth
             />
           </Link>
         </View>
@@ -131,7 +133,9 @@ export default function ProfileScreen() {
               Première partie
             </ThemedText>
             <ThemedText style={styles.statValue} colorType="text">
-              {new Date(data.stats.firstGamePlayed).toLocaleDateString()}
+              {data.stats.firstGamePlayed
+                ? new Date(data.stats.firstGamePlayed).toLocaleDateString()
+                : "-"}
             </ThemedText>
           </View>
           <Divider orientation="horizontal" size="100%" />
@@ -148,7 +152,9 @@ export default function ProfileScreen() {
               Première victoire
             </ThemedText>
             <ThemedText style={styles.statValue} colorType="text">
-              {new Date(data.stats.firstGameWon).toLocaleDateString()}
+              {data.stats.firstGameWon
+                ? new Date(data.stats.firstGameWon).toLocaleDateString()
+                : "-"}
             </ThemedText>
           </View>
           <Divider orientation="horizontal" size="100%" />
