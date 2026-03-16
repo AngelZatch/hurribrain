@@ -166,7 +166,7 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
       imagePath: require("@/assets/images/medals/medal_shield.png"),
     },
     {
-      type: "base",
+      type: "penalty",
       name: "incorrect",
       label: "Mauvaise réponse",
       imagePath: require("@/assets/images/medals/medal_incorrect.png"),
