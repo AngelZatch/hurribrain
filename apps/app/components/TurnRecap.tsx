@@ -1,12 +1,7 @@
-import { View } from "react-native";
+import { Animated, View } from "react-native";
 import ThemedText from "./ui/ThemedText";
-import { useEffect, useState } from "react";
-import {
-  PlayedTurn,
-  Choice,
-  useGetMyAnswer,
-  Participation,
-} from "@/api/play.api";
+import { useEffect, useRef, useState } from "react";
+import { PlayedTurn, useGetMyAnswer, Participation } from "@/api/play.api";
 import { useAuth } from "@/contexts/auth.context";
 import ScoreMedal from "./ScoreMedal";
 import { Divider } from "./ui/Divider";
@@ -20,24 +15,13 @@ export default function TurnRecap({
   currentTurn,
   participation,
 }: ActivePlayedTurnProps) {
-  const [correctChoice, setCorrectChoice] = useState<Choice | null>(null);
   const { user } = useAuth();
   const [answerStatus, setAnswerStatus] = useState<
     "correct" | "wrong" | "none"
   >("none");
 
   // Points gained
-  const [pointsGained, setPointsGained] = useState<number>(0);
-
-  useEffect(() => {
-    setCorrectChoice(
-      currentTurn.question.choices.find((choice) => choice.isCorrect) ?? null,
-    );
-  }, [currentTurn]);
-
-  useEffect(() => {
-    setPointsGained(() => participation.score - participation.previousScore);
-  }, [participation]);
+  const [displayedPointsGained, setDisplayedPointsGained] = useState<number>(0);
 
   // Set my answer if I already answered
   const { data: myAnswer } = useGetMyAnswer(
@@ -46,7 +30,36 @@ export default function TurnRecap({
     currentTurn.uuid,
   );
 
+  // Animations
+  const openingAnim = useRef(new Animated.Value(0)).current;
   useEffect(() => {
+    Animated.spring(openingAnim, {
+      toValue: 400,
+      friction: 5,
+      tension: 5,
+      delay: 300,
+      useNativeDriver: true,
+    }).start();
+  }, [openingAnim]);
+
+  useEffect(() => {
+    const pointsGained = participation.score - participation.previousScore;
+
+    const pointsGainedTimerId = setInterval(() => {
+      setDisplayedPointsGained((previousValue) => {
+        if (previousValue < pointsGained) return previousValue + 1;
+        if (previousValue > pointsGained) return previousValue - 1;
+        return previousValue;
+      });
+    }, 50);
+
+    return () => clearInterval(pointsGainedTimerId);
+  }, [participation]);
+
+  useEffect(() => {
+    const correctChoice = currentTurn.question.choices.find(
+      (choice) => choice.isCorrect ?? null,
+    );
     if (!myAnswer || !myAnswer.choice) {
       setAnswerStatus("none");
     } else {
@@ -56,111 +69,95 @@ export default function TurnRecap({
         setAnswerStatus("wrong");
       }
     }
-  }, [myAnswer, correctChoice]);
+  }, [myAnswer]);
 
   return (
-    <View
-      style={{
-        gap: 12,
-      }}
+    <Animated.View
+      style={[
+        {
+          // maxHeight: 400,
+          borderStyle: "solid",
+          borderWidth: 3,
+          borderRadius: 10,
+          padding: 12,
+          gap: 12,
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexGrow: 1,
+          flexBasis: "auto",
+          backgroundColor: "#0000000C",
+          overflow: "hidden",
+          maxHeight: openingAnim,
+        },
+        answerStatus === "correct" && {
+          borderColor: "#3DC96C",
+        },
+        answerStatus === "wrong" && {
+          borderColor: "#F1425F",
+        },
+        answerStatus === "none" && {
+          borderColor: "#919191",
+        },
+      ]}
     >
       <ThemedText
-        style={{
-          textAlign: "center",
-          fontSize: 40,
-          lineHeight: 53,
-          fontFamily: "Exo_800ExtraBold",
-          letterSpacing: 2,
-          backgroundImage: "linear-gradient(180deg, #3C73FF 0%, #3AF2F8 100%)",
-          color: "transparent",
-          backgroundClip: "text",
-        }}
-      >
-        {correctChoice?.value}
-      </ThemedText>
-      <View
         style={[
           {
-            maxHeight: 400,
-            borderStyle: "solid",
-            borderWidth: 3,
-            borderRadius: 10,
-            padding: 12,
-            gap: 8,
-            alignItems: "center",
-            justifyContent: "space-between",
-            flexGrow: 1,
-            flexBasis: "auto",
-            backgroundColor: "#0000000C",
+            textAlign: "center",
+            fontSize: 32,
+            fontFamily: "Exo_700Bold",
+            color: "transparent",
+            backgroundClip: "text",
+            lineHeight: 48,
           },
           answerStatus === "correct" && {
-            borderColor: "#3DC96C",
+            backgroundImage:
+              "linear-gradient(180deg, #2AD89A 100%, #27EC47 100%, #17BB81 100%)",
           },
           answerStatus === "wrong" && {
-            borderColor: "#F1425F",
+            backgroundImage:
+              "linear-gradient(180deg, #F1425F 0%, #F1425F 0.01%, #E30026 100%)",
           },
           answerStatus === "none" && {
-            borderColor: "#919191",
+            backgroundImage: "linear-gradient(0deg, #919191 0%, #3C3C3C 100%)",
           },
         ]}
       >
-        <ThemedText
-          style={[
-            {
-              textAlign: "center",
-              fontSize: 24,
-              fontFamily: "Exo_700Bold",
-              color: "transparent",
-              backgroundClip: "text",
-            },
-            answerStatus === "correct" && {
-              backgroundImage:
-                "linear-gradient(180deg, #2AD89A 100%, #27EC47 100%, #17BB81 100%)",
-            },
-            answerStatus === "wrong" && {
-              backgroundImage:
-                "linear-gradient(180deg, #F1425F 0%, #F1425F 0.01%, #E30026 100%)",
-            },
-            answerStatus === "none" && {
-              backgroundImage:
-                "linear-gradient(0deg, #919191 0%, #3C3C3C 100%)",
-            },
-          ]}
-        >
-          {answerStatus === "correct" && "Bien joué !"}
-          {answerStatus === "wrong" && "Oh non..."}
-          {answerStatus === "none" && "Pas de réponse."}
-        </ThemedText>
-        <View
-          style={{
-            flexDirection: "column",
-            gap: 10,
-            flex: 1,
-            maxHeight: 300,
-            width: "100%",
-            alignItems: "flex-start",
-            overflow: "scroll",
-          }}
-        >
-          {myAnswer?.medals?.map((medal) => (
-            <ScoreMedal medal={medal} key={medal} />
-          ))}
-        </View>
-        <Divider orientation="horizontal" size="100%" />
-        <ThemedText
-          style={{
-            textAlign: "center",
-            fontSize: 32,
-            lineHeight: 48,
-            fontFamily: "Exo_700Bold",
-            textShadowColor: answerStatus === "correct" ? "#3DC96C" : "#D36F6F",
-            textShadowOffset: { width: 0, height: 0 },
-            textShadowRadius: 10,
-          }}
-        >
-          {pointsGained} pt
-        </ThemedText>
+        {answerStatus === "correct" && "Bien joué !"}
+        {answerStatus === "wrong" && "Oh non..."}
+        {answerStatus === "none" && "Pas de réponse."}
+      </ThemedText>
+      <View
+        style={{
+          flexDirection: "column",
+          gap: 10,
+          flex: 1,
+          maxHeight: 300,
+          width: "100%",
+          alignItems: "flex-start",
+          justifyContent: "flex-start",
+          alignContent: "flex-start",
+          overflow: "scroll",
+        }}
+      >
+        {myAnswer?.medals?.map((medal) => (
+          <ScoreMedal medal={medal} key={medal} />
+        ))}
       </View>
-    </View>
+      <Divider orientation="horizontal" size="100%" />
+      <ThemedText
+        style={{
+          textAlign: "center",
+          fontSize: 32,
+          lineHeight: 48,
+          fontFamily: "Exo_800ExtraBold",
+          textShadowColor: answerStatus === "correct" ? "#3DC96C" : "#D36F6F",
+          textShadowOffset: { width: 0, height: 0 },
+          textShadowRadius: 10,
+        }}
+      >
+        {displayedPointsGained} pt
+      </ThemedText>
+    </Animated.View>
   );
 }

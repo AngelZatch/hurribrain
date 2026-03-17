@@ -198,6 +198,7 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
         flexGrow: 1,
         flexShrink: 1,
         flexBasis: "100%",
+        maxHeight: 60,
         justifyContent: "space-around",
         alignContent: "center",
         alignItems: "center",

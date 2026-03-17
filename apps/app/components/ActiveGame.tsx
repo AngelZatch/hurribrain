@@ -6,11 +6,17 @@ import TurnTimer from "./TurnTimer";
 import React, { useEffect, useState } from "react";
 import ActivePlayableTurn from "./ActivePlayableTurn";
 import TurnRecap from "./TurnRecap";
-import { Participation, PlayableTurn, PlayedTurn } from "@/api/play.api";
+import {
+  Choice,
+  Participation,
+  PlayableTurn,
+  PlayedTurn,
+} from "@/api/play.api";
 import PlayerStatusList from "./PlayerStatusList";
 import { hasStatus } from "@/utils/gameUtils";
 import { Game } from "@/api/games.api";
 import PlayerRankDisplay from "./PlayerRankDisplay";
+import CorrectChoiceDisplay from "./CorrectChoiceDisplay";
 
 type ActiveTurnProps = {
   game: Game;
@@ -107,6 +113,9 @@ export default function ActiveGame({
         >
           {currentTurn.question.title}
         </ThemedText>
+        {currentTurn.finishedAt && (
+          <CorrectChoiceDisplay currentTurn={currentTurn as PlayedTurn} />
+        )}
       </View>
       {!currentTurn.finishedAt ? (
         <ActivePlayableTurn
