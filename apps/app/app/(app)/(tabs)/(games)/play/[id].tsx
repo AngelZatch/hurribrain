@@ -1,7 +1,7 @@
 import { useAuth } from "@/contexts/auth.context";
 import { Link, useLocalSearchParams } from "expo-router";
-import React, { useEffect, useRef, useState } from "react";
-import { View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { ImageBackground, View } from "react-native";
 import { PageContainer } from "@/components/ui/PageContainer";
 import TopNavigation from "@/components/TopNavigation";
 import { Colors } from "@/constants/Colors";
@@ -151,43 +151,53 @@ export default function PlayScreen() {
           </Link>
         }
       />
-      <View
-        style={[
+      <ImageBackground
+        source={require("@/assets/images/gold-turn-background.jpg")}
+        style={{
+          gap: 10,
+          flex: 1,
+          width: "100%",
+          borderRadius: 20,
+          borderWidth: 5,
+          borderBottomWidth: 10,
+          borderStyle: "solid",
+          backdropFilter: "blur(5px)",
+        }}
+        imageStyle={[
           {
-            paddingVertical: 12,
-            paddingHorizontal: 8,
-            gap: 10,
-            flex: 1,
-            width: "100%",
-            borderRadius: 20,
-            borderWidth: 1,
-            borderStyle: "solid",
-            backdropFilter: "blur(5px)",
-            borderColor:
-              "linear-gradient(45deg, rgba(255, 255, 255, 1) 0%, rgba(218, 191, 224, 0.1) 33%, rgba(176, 130, 193, 0.3) 67%, rgba(176, 130, 193, 0.5) 100%)",
-            backgroundColor: Colors[colorScheme ?? "light"].containerBackground,
+            borderRadius: 10,
+            resizeMode: "cover",
+            height: "100%",
+            opacity: 1,
           },
-          currentTurn?.isGold &&
-            !game.finishedAt && {
-              backgroundImage:
-                "linear-gradient(to bottom, #a3591c 0%,#fdf6a7 50%,#a3591c 75%,#fdf6a7 100%)",
-              boxShadow: "0px 0px 20px 6px #0000004D",
-              borderColor:
-                "border-color: linear-gradient(to bottom, #a3591c 0%,#cca34f 46%,#fefad3 67%,#cca34f 84%,#a3591c 100%)",
-              borderWidth: 3,
-            },
+          (!currentTurn?.isGold || game.finishedAt) && {
+            tintColor: Colors[colorScheme ?? "light"].containerBackground,
+          },
         ]}
       >
-        {!game.startedAt && <GameLobby game={game!} />}
-        {game.startedAt && !game.finishedAt && currentTurn && (
-          <ActiveGame
-            game={game}
-            currentTurn={currentTurn}
-            participation={participation}
-          />
-        )}
-        {game.finishedAt && <GameRecap />}
-      </View>
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            right: 0,
+            left: 0,
+            backgroundColor: "#00000040",
+            paddingVertical: 12,
+            paddingHorizontal: 8,
+          }}
+        >
+          {!game.startedAt && <GameLobby game={game!} />}
+          {game.startedAt && !game.finishedAt && currentTurn && (
+            <ActiveGame
+              game={game}
+              currentTurn={currentTurn}
+              participation={participation}
+            />
+          )}
+          {game.finishedAt && <GameRecap />}
+        </View>
+      </ImageBackground>
     </PageContainer>
   );
 }

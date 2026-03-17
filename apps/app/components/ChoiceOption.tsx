@@ -27,7 +27,7 @@ export default function ChoiceOption({
             borderWidth: 1,
             borderStyle: "solid",
             borderColor: "#94CED080",
-            backgroundColor: "transparent",
+            backgroundColor: "#00000033",
             minHeight: 50,
           },
           isSent && { backgroundColor: "#0A99FF" },
