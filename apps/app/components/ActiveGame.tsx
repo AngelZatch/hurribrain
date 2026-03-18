@@ -11,6 +11,7 @@ import PlayerStatusList from "./PlayerStatusList";
 import { hasStatus } from "@/utils/gameUtils";
 import { Game } from "@/api/games.api";
 import PlayerRankDisplay from "./PlayerRankDisplay";
+import ItemButton from "./ItemButton";
 
 type ActiveTurnProps = {
   game: Game;
@@ -120,6 +121,20 @@ export default function ActiveGame({
           participation={participation}
         />
       )}
+      <View
+        style={{
+          display: "flex",
+          gap: 24,
+          maxHeight: 120,
+          height: 120,
+          flexDirection: "row",
+          justifyContent: "flex-start",
+          alignSelf: "stretch",
+          alignItems: "center",
+        }}
+      >
+        <ItemButton participation={participation} />
+      </View>
     </View>
   );
 }

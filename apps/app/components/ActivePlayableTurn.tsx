@@ -72,18 +72,6 @@ export default function ActivePlayableTurn({
           />
         ))}
       </View>
-      <View
-        style={{
-          display: "flex",
-          gap: 24,
-          flexDirection: "row",
-          justifyContent: "flex-start",
-          alignSelf: "stretch",
-          alignItems: "center",
-        }}
-      >
-        <ItemButton participation={participation} />
-      </View>
     </>
   );
 }
