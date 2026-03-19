@@ -8,6 +8,8 @@ import ThemedButton from "./ui/ThemedButton";
 import { useGetMe } from "@/api/auth.api";
 import PlayerCount from "./PlayerCount";
 import { useStartGame } from "@/api/play.api";
+import * as Clipboard from "expo-clipboard";
+import { useEffect, useState } from "react";
 
 type GameLobbyProps = {
   game: Game;
@@ -25,6 +27,21 @@ export default function GameLobby({ game }: GameLobbyProps) {
 
   const isCreator = user && game.creator?.uuid === data?.uuid;
 
+  const [hasTextCopied, setHasTextCopied] = useState<boolean>(false);
+
+  const copyToClipboard = async () => {
+    await Clipboard.setStringAsync(
+      `https://hurribrain.net/invite/${game.code}`,
+    );
+    setHasTextCopied(true);
+  };
+
+  useEffect(() => {
+    const feedbackTimeout = setInterval(() => setHasTextCopied(false), 5000);
+
+    return () => clearInterval(feedbackTimeout);
+  }, [hasTextCopied]);
+
   return (
     <View
       style={{
@@ -38,72 +55,126 @@ export default function GameLobby({ game }: GameLobbyProps) {
         flexBasis: 0,
       }}
     >
-      <ThemedText
-        type="smallTitle"
-        style={{
-          textAlign: "center",
-        }}
-      >
-        {isCreator
-          ? "En attente de joueurs..."
-          : "La partie va bientôt commencer"}
-      </ThemedText>
-      {game.playerCount && <PlayerCount count={game.playerCount} />}
+      {game?.playerCount && game.playerCount < 12 && (
+        <View
+          style={{
+            flexDirection: "row",
+            width: "100%",
+            gap: 8,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "column",
+              flexGrow: 1,
+              flexShrink: 1,
+              flexBasis: "auto",
+            }}
+          >
+            <ThemedText
+              style={{
+                textAlign: "center",
+                fontSize: 12,
+              }}
+            >
+              Invite des joueurs avec le code
+            </ThemedText>
+            <ThemedText
+              style={{
+                textAlign: "center",
+                fontFamily: "Exo_700Bold",
+                fontSize: 20,
+              }}
+            >
+              {game.code}
+            </ThemedText>
+          </View>
+          <ThemedButton
+            title={hasTextCopied ? "Copié" : "Inviter"}
+            icon={hasTextCopied ? "checkmark" : "square.on.square"}
+            onPress={copyToClipboard}
+          />
+        </View>
+      )}
       <View
         style={{
-          padding: 10,
-          borderRadius: 10,
-          flexDirection: "column",
+          justifyContent: "center",
           alignItems: "center",
+          flex: 1,
+          padding: 8,
           gap: 10,
-          borderWidth: 2,
-          borderStyle: "solid",
-          borderColor: "#EC9D27",
-          width: "100%",
+          flexGrow: 1,
+          flexShrink: 0,
+          flexBasis: 0,
         }}
       >
         <ThemedText
+          type="smallTitle"
           style={{
-            fontSize: 16,
-            fontFamily: "Exo_600SemiBold",
-            lineHeight: 21,
-            color: "#EC9D27",
+            textAlign: "center",
           }}
         >
-          Règles de la partie
+          {isCreator
+            ? "En attente de joueurs..."
+            : "La partie va bientôt commencer"}
         </ThemedText>
-        <View style={styles.ruleContainer}>
-          <ThemedText>Thèmes</ThemedText>
-          <View
+        {game.playerCount && <PlayerCount count={game.playerCount} />}
+        <View
+          style={{
+            padding: 10,
+            borderRadius: 10,
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 10,
+            borderWidth: 2,
+            borderStyle: "solid",
+            borderColor: "#EC9D27",
+            width: "100%",
+          }}
+        >
+          <ThemedText
             style={{
-              flexDirection: "row",
-              gap: 10,
-              flexWrap: "wrap",
-              flexShrink: 1,
-              justifyContent: "flex-end",
+              fontSize: 16,
+              fontFamily: "Exo_600SemiBold",
+              lineHeight: 21,
+              color: "#EC9D27",
             }}
           >
-            {game.tags.map((tag) => (
-              <TagChip key={tag.uuid} text={tag.name} active />
-            ))}
+            Règles de la partie
+          </ThemedText>
+          <View style={styles.ruleContainer}>
+            <ThemedText>Thèmes</ThemedText>
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 10,
+                flexWrap: "wrap",
+                flexShrink: 1,
+                justifyContent: "flex-end",
+              }}
+            >
+              {game.tags.map((tag) => (
+                <TagChip key={tag.uuid} text={tag.name} active />
+              ))}
+            </View>
+          </View>
+          <View style={styles.ruleContainer}>
+            <ThemedText>Difficulté</ThemedText>
+            <DifficultyChip difficulty={game.difficulty} fullSize />
+          </View>
+          <View style={styles.ruleContainer}>
+            <ThemedText>Durée</ThemedText>
+            <ThemedText>{game.length} questions</ThemedText>
           </View>
         </View>
-        <View style={styles.ruleContainer}>
-          <ThemedText>Difficulté</ThemedText>
-          <DifficultyChip difficulty={game.difficulty} fullSize />
-        </View>
-        <View style={styles.ruleContainer}>
-          <ThemedText>Durée</ThemedText>
-          <ThemedText>{game.length} questions</ThemedText>
-        </View>
+        {isCreator && (
+          <ThemedButton
+            title="Démarrer la partie"
+            onPress={() => startGame(game.uuid)}
+            disabled={false}
+          />
+        )}
       </View>
-      {isCreator && (
-        <ThemedButton
-          title="Démarrer la partie"
-          onPress={() => startGame(game.uuid)}
-          disabled={false}
-        />
-      )}
     </View>
   );
 }

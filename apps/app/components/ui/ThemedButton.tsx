@@ -6,14 +6,15 @@ import {
   Text,
   useColorScheme,
 } from "react-native";
-import { IconSymbol, IconSymbolName } from "./IconSymbol";
+import { IconSymbol } from "./IconSymbol";
+import { SFSymbol } from "expo-symbols";
 
 type ThemedButtonProps = ButtonProps & {
   variant?: "contained" | "outlined" | "text";
   size?: "small" | "medium" | "large";
   type?: "primary" | "secondary" | "danger";
   fullWidth?: boolean;
-  icon?: IconSymbolName;
+  icon?: SFSymbol;
 };
 
 type ColorMapKey =
@@ -74,6 +75,7 @@ export default function ThemedButton({
         display: "flex",
         minHeight: 48,
         maxHeight: 48,
+        minWidth: 48,
         justifyContent: "center",
         alignItems: "center",
         flexDirection: "row",
@@ -98,7 +100,7 @@ export default function ThemedButton({
         {rest.icon && (
           <IconSymbol
             color={textColorMap[`${type}:${variant}`] as ColorValue}
-            size={32}
+            size={24}
             name={rest.icon}
           />
         )}
