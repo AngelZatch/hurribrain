@@ -1,21 +1,23 @@
-// This file is a fallback for using MaterialIcons on Android and web.
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme.web";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { SymbolWeight } from "expo-symbols";
+import {
+  AndroidSymbol,
+  SFSymbol,
+  SymbolView,
+  SymbolWeight,
+} from "expo-symbols";
 import React from "react";
 import { OpaqueColorValue, StyleProp, TextStyle, View } from "react-native";
-// Add your SFSymbol to MaterialIcons mappings here.
+
+// Maps ios (SF Symbols) to Android/Web (Material Icons)
 const MAPPING = {
-  // See MaterialIcons here: https://iconadds.expo.fyi
-  // See SF Symbols in the SF Symbols app on Mac.
   "house.fill": "home",
   "gamecontroller.fill": "games",
   "person.fill": "person",
   "paperplane.fill": "send",
   "chevron.left.forwardslash.chevron.right": "code",
-  "chevron.right": "chevron-right",
-  "chevron.left": "chevron-left",
+  "chevron.right": "chevron_right",
+  "chevron.left": "chevron_left",
   "gearshape.fill": "settings",
   "shield.fill": "shield",
   "door.left.hand.open": "logout",
@@ -23,16 +25,13 @@ const MAPPING = {
   plus: "add",
   "arrow.forward.square": "input",
   "star.fill": "grade",
-  play: "play-arrow",
+  play: "play_arrow",
   xmark: "close",
-  hourglass: "hourglass-bottom",
-} as Partial<
-  Record<
-    import("expo-symbols").SymbolViewProps["name"],
-    React.ComponentProps<typeof MaterialIcons>["name"]
-  >
->;
+  hourglass: "hourglass_bottom",
+  "square.on.square": "content_copy",
+} as Partial<Record<SFSymbol, AndroidSymbol>>;
 export type IconSymbolName = keyof typeof MAPPING;
+
 /**
  * An icon component that uses native SFSymbols on iOS, and MaterialIcons on Android and web. This ensures a consistent look across platforms, and optimal resource usage.
  *
@@ -42,9 +41,8 @@ export function IconSymbol({
   name,
   size = 24,
   color,
-  style,
 }: {
-  name: IconSymbolName;
+  name: SFSymbol;
   size?: number;
   color?: string | OpaqueColorValue;
   style?: StyleProp<TextStyle>;
@@ -60,12 +58,10 @@ export function IconSymbol({
         alignItems: "center",
       }}
     >
-      <MaterialIcons
-        color={color ?? Colors[colorScheme ?? "light"].text}
+      <SymbolView
+        name={{ ios: name, android: MAPPING[name], web: MAPPING[name] }}
+        tintColor={color ?? Colors[colorScheme ?? "light"].text}
         size={size}
-        padding={0}
-        name={MAPPING[name]}
-        style={style}
       />
     </View>
   );
