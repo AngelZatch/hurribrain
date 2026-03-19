@@ -18,7 +18,7 @@ import {
 import { Tag } from "./../entities/tag.entity.js"
 import { Participation } from "./../entities/participation.entity.js"
 import { User } from "./../entities/user.entity.js"
-import { verifyJWT } from "./../utils/authChecker.js"
+import { verifyJWT, verifyJWTIfExists } from "./../utils/authChecker.js"
 import PlayerController from "./player.controller.js"
 import TurnController from "./turn.controller.js"
 import GameService from "./../services/game.service.js"
@@ -170,6 +170,69 @@ const GameController = async (fastify: FastifyInstance) => {
       )
 
       return reply.code(201).send(createdGame)
+    }
+  )
+
+  fastify.get<{
+    Params: GameByCodeParams
+  }>(
+    "/:gameCode/prejoin",
+    {
+      schema: {
+        tags: ["Games"],
+        summary: `Checks if a game can be joined. If a user is provided, the endpoint will also check if they have already
+          joined the game and let them through in that case`,
+        params: GameByCodeParamsSchema,
+        response: {
+          200: GameResponseSchema,
+          ...ErrorResponsesSchema,
+        },
+      },
+      preHandler: [fastify.auth([verifyJWTIfExists])],
+    },
+    async (request, reply) => {
+      const em = request.em
+      const { gameCode } = request.params
+
+      const game = await em.findOneOrFail(
+        Game,
+        {
+          code: gameCode,
+          finishedAt: null,
+        },
+        {
+          populate: ["playerCount", "tags", "creator"],
+          failHandler: () => {
+            reply.statusCode = 404
+            return new Error("Game not found")
+          },
+        }
+      )
+
+      // If the user isn't authenticated, we simply check if the game has enough room for them to join.
+      if (!request.user) {
+        if (game.playerCount === 12) {
+          reply.statusCode = 403
+          return new Error("Player limit reached")
+        }
+
+        // If the game has room, send back an OK
+        return reply.code(200).send(game)
+      } else {
+        // If the request is authenticated, the user is checked against the participants of the game to see
+        // if they have already joined the game. If they have, or if there's room left, they are said OK
+        const userHasParticipation = await em.findOne(Participation, {
+          user: { uuid: request.user },
+          game,
+        })
+
+        if (!userHasParticipation && game.playerCount === 12) {
+          reply.statusCode = 403
+          return new Error("Player limit reached")
+        }
+
+        return reply.code(200).send(game)
+      }
     }
   )
 

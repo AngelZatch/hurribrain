@@ -26,3 +26,14 @@ export const verifyJWT = async (
 
   request.user = decoded["uuid"]
 }
+
+export const verifyJWTIfExists = async (
+  request: FastifyRequest,
+  reply: FastifyReply
+) => {
+  if (request.headers.authorization) {
+    return verifyJWT(request, reply)
+  }
+
+  request.user = ""
+}

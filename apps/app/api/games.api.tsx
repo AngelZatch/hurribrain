@@ -59,6 +59,24 @@ export const useGetGame = (token: string, gameId: string) => {
   });
 };
 
+export const useGetPreJoinGame = (token: string | null, gameCode: string) => {
+  return useQuery({
+    queryKey: [],
+    queryFn: async (): Promise<Game> => {
+      const response = await axios.get(
+        `${process.env.EXPO_PUBLIC_API_URL}/games/${gameCode}/prejoin`,
+        {
+          headers: {
+            Authorization: token ? `Bearer ${token}` : undefined,
+          },
+        },
+      );
+
+      return response.data;
+    },
+  });
+};
+
 export const useJoinGame = (token: string) => {
   return useMutation({
     mutationFn: async (gameCode: string): Promise<Game> => {
