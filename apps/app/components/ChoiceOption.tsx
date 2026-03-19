@@ -29,6 +29,7 @@ export default function ChoiceOption({
             borderColor: "#94CED080",
             backgroundColor: "#00000033",
             minHeight: 50,
+            maxHeight: 50,
           },
           isSent && { backgroundColor: "#0A99FF" },
         ]}
@@ -38,6 +39,7 @@ export default function ChoiceOption({
             {
               fontFamily: "Exo_600SemiBold",
               fontSize: 16,
+              textAlign: "center",
             },
             isSent && { color: "white" },
           ]}
