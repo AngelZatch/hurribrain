@@ -6,7 +6,13 @@ import ThemedButton from "@/components/ui/ThemedButton";
 import ThemedText from "@/components/ui/ThemedText";
 import { useAuth, User } from "@/contexts/auth.context";
 import { useQueryClient } from "@tanstack/react-query";
-import { Link, router, useLocalSearchParams, useRouter } from "expo-router";
+import {
+  Link,
+  Redirect,
+  router,
+  useLocalSearchParams,
+  useRouter,
+} from "expo-router";
 import { useEffect } from "react";
 import { Text, View } from "react-native";
 
@@ -40,9 +46,11 @@ export default function InviteScreen() {
 
   const router = useRouter();
 
-  const navigateToHome = () => {
-    router.replace("/games");
-    router.replace("/");
+  const authToJoin = (gameCode: string) => {
+    router.push({
+      pathname: "/login",
+      params: { Redirect: `invite/${gameCode}` },
+    });
   };
 
   return (
@@ -84,10 +92,9 @@ export default function InviteScreen() {
               >
                 Vous ne pouvez pas rejoindre ce jeu.
               </ThemedText>
-              <ThemedButton
-                title="Retourner à l'accueil"
-                onPress={navigateToHome}
-              />
+              <Link replace href="/" asChild>
+                <ThemedButton title="Retourner à l'accueil" />
+              </Link>
             </>
           )}
           {prejoinGameSuccess && !user && (
@@ -100,7 +107,10 @@ export default function InviteScreen() {
               >
                 Veuillez vous authentifier pour accéder au jeu.
               </ThemedText>
-              <ThemedButton title="Me connecter" onPress={navigateToHome} />
+              <ThemedButton
+                title="Me connecter"
+                onPress={() => authToJoin(gameCode)}
+              />
             </>
           )}
           {joinGameLoading && (

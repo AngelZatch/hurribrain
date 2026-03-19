@@ -8,7 +8,7 @@ import ThemedTextInput from "@/components/ui/ThemedTextInput";
 import { InputContainer } from "@/components/ui/InputContainer";
 import { useAuth } from "@/contexts/auth.context";
 import { useAuthCheck, useAuthRecover, useLogin } from "@/api/auth.api";
-import { router } from "expo-router";
+import { RelativePathString, router, useLocalSearchParams } from "expo-router";
 import RecoverAccountModal from "@/components/RecoverAccountModal";
 import { useState } from "react";
 import { Modal } from "react-native";
@@ -25,6 +25,9 @@ export default function LoginScreen() {
   const { mutateAsync: recoverAuth, error: authRecoveryError } =
     useAuthRecover();
   const { login } = useAuth();
+  const { Redirect } = useLocalSearchParams<{
+    Redirect: string;
+  }>();
 
   const {
     control,
@@ -48,7 +51,7 @@ export default function LoginScreen() {
       if (result === 0) {
         const tokens = await signIn(data);
         login(tokens.accessToken);
-        router.replace("/");
+        router.replace((Redirect as RelativePathString) ?? "/");
       }
     } catch (e) {
       console.error(e);
