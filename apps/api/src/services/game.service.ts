@@ -441,10 +441,10 @@ export default class GameService {
           )
           targetTurn.speedRanking.push(participation.uuid)
 
-          if (correctAnswersByParticipationId[participation.uuid].rank === 3) {
+          if (correctAnswersByParticipationId[participation.uuid].rank === 2) {
             medals.push("speed:fast")
           } else if (
-            correctAnswersByParticipationId[participation.uuid].rank === 2
+            correctAnswersByParticipationId[participation.uuid].rank === 1
           ) {
             medals.push("speed:faster")
           } else {
