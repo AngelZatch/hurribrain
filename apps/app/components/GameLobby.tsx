@@ -9,6 +9,7 @@ import { useGetMe } from "@/api/auth.api";
 import PlayerCount from "./PlayerCount";
 import { useStartGame } from "@/api/play.api";
 import * as Clipboard from "expo-clipboard";
+import { useEffect, useState } from "react";
 
 type GameLobbyProps = {
   game: Game;
@@ -26,11 +27,20 @@ export default function GameLobby({ game }: GameLobbyProps) {
 
   const isCreator = user && game.creator?.uuid === data?.uuid;
 
+  const [hasTextCopied, setHasTextCopied] = useState<boolean>(false);
+
   const copyToClipboard = async () => {
     await Clipboard.setStringAsync(
       `https://hurribrain.net/invite/${game.code}`,
     );
+    setHasTextCopied(true);
   };
+
+  useEffect(() => {
+    const feedbackTimeout = setInterval(() => setHasTextCopied(false), 5000);
+
+    return () => clearInterval(feedbackTimeout);
+  }, [hasTextCopied]);
 
   return (
     <View
@@ -80,8 +90,8 @@ export default function GameLobby({ game }: GameLobbyProps) {
             </ThemedText>
           </View>
           <ThemedButton
-            title="Inviter"
-            icon="square.on.square"
+            title={hasTextCopied ? "Copié" : "Inviter"}
+            icon={hasTextCopied ? "checkmark" : "square.on.square"}
             onPress={copyToClipboard}
           />
         </View>

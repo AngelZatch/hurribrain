@@ -29,6 +29,7 @@ const MAPPING = {
   xmark: "close",
   hourglass: "hourglass_bottom",
   "square.on.square": "content_copy",
+  checkmark: "check",
 } as Partial<Record<SFSymbol, AndroidSymbol>>;
 export type IconSymbolName = keyof typeof MAPPING;
 
