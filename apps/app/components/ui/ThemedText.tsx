@@ -17,6 +17,7 @@ type ThemedTextProps = TextProps & {
     | "helper"
     | "settingsSectionTitle"
     | "modalHead";
+  glow?: boolean;
 };
 
 export default function ThemedText({
@@ -25,6 +26,7 @@ export default function ThemedText({
   darkColor,
   type = "default",
   colorType = "text",
+  glow = false,
   ...rest
 }: ThemedTextProps) {
   const color = useThemeColor(
@@ -48,6 +50,10 @@ export default function ThemedText({
         type === "settingsSectionTitle"
           ? styles.settingsSectionTitle
           : undefined,
+        glow && {
+          textShadowColor: color,
+          textShadowRadius: 4,
+        },
         style,
       ]}
       {...rest}
