@@ -17,6 +17,18 @@ export const useRegister = () => {
   });
 };
 
+export const useLiteRegister = () => {
+  return useMutation({
+    mutationFn: async (data: { name: string }) => {
+      const response = await axios.post(
+        `${process.env.EXPO_PUBLIC_API_URL}/auth/lite`,
+        data,
+      );
+      return response.data;
+    },
+  });
+};
+
 export const useLogin = () => {
   return useMutation({
     mutationFn: async (data: { email: string; password: string }) => {

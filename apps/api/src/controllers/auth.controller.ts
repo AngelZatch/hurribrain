@@ -256,6 +256,7 @@ const AuthController = async (fastify: FastifyInstance) => {
 
       const user = new User({ email: "", name })
       user.role = UserRole.LITE
+      user.email = `${user.uuid}@hurribrain-account.com`
       user.password = ""
 
       // Lite accounts are ephemeral. They have a TTL of 2 hours
@@ -272,7 +273,7 @@ const AuthController = async (fastify: FastifyInstance) => {
       const accessToken = jwt.sign(
         {
           uuid: user.uuid,
-          email: null,
+          email: user.email,
           name: user.name,
           role: user.role,
         },

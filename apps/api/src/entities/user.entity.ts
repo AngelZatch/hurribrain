@@ -27,7 +27,15 @@ export enum UserRole {
 }
 
 @Entity()
-@Filter({ name: "notDeleted", cond: { deletedAt: null } })
+@Filter({
+  name: "notDeleted",
+  cond: {
+    $or: [
+      { deletedAt: null },
+      { deletedAt: { $ne: null }, role: UserRole.LITE },
+    ],
+  },
+})
 @Filter({ name: "notBanned", cond: { bannedAt: null } })
 export class User {
   @PrimaryKey()
