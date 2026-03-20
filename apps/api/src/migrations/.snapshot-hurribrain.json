@@ -1876,6 +1876,7 @@
           "primary": false,
           "unique": false,
           "enumItems": [
+            "lite",
             "standard",
             "admin"
           ],

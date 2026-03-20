@@ -9,7 +9,19 @@ import {
 } from "@mikro-orm/core"
 import { v4 } from "uuid"
 
+/**
+ * A LITE User is created when a user just gives a name to access a game and play in "Account-lite" mode. It has a TTL
+ * of 2 hours and can be only be converted once after the player has finished playing the game they created the account
+ * for. If they choose to leave, the LITE Account will eventually be deleted.
+ * TODO: LITE accounts cannot create a game and cannot edit their profile.
+ *
+ * A STANDARD User is a regular account. It can either be created by registering to the app from the classic authentication
+ * flow, or be a LITE account elevated after a game.
+ *
+ * An ADMIN User is a privileged account that is used for specific actions.
+ */
 export enum UserRole {
+  LITE = "lite",
   STANDARD = "standard",
   ADMIN = "admin",
 }
@@ -54,6 +66,5 @@ export class User {
   constructor(body: Pick<User, "email" | "name">) {
     this.email = body.email
     this.name = body.name
-    // this.level = 1
   }
 }
