@@ -8,21 +8,13 @@ import { PageContainer } from "@/components/ui/PageContainer";
 import ThemedButton from "@/components/ui/ThemedButton";
 import ThemedText from "@/components/ui/ThemedText";
 import ThemedTextInput from "@/components/ui/ThemedTextInput";
-import { useAuth, User } from "@/contexts/auth.context";
-import { useQueryClient } from "@tanstack/react-query";
-import {
-  Link,
-  Redirect,
-  router,
-  useLocalSearchParams,
-  useRouter,
-} from "expo-router";
+import { useAuth } from "@/contexts/auth.context";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 
 export default function InviteScreen() {
-  const queryClient = useQueryClient();
   const { user, login } = useAuth();
   const { id: gameCode } = useLocalSearchParams<{ id: string }>();
 

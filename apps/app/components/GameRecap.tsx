@@ -1,14 +1,21 @@
 import { View } from "react-native";
 import ThemedText from "./ui/ThemedText";
-import { useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import ThemedButton from "./ui/ThemedButton";
+import { MyAccountInfo } from "@/api/auth.api";
 
-export default function GameRecap() {
+export default function GameRecap({ me }: { me: MyAccountInfo }) {
   const router = useRouter();
 
   const navigateToHome = () => {
     router.replace("/games");
     router.replace("/");
+  };
+
+  const authToConvert = () => {
+    router.push({
+      pathname: "/convert",
+    });
   };
 
   return (
@@ -29,8 +36,55 @@ export default function GameRecap() {
       >
         La partie est terminée !
       </ThemedText>
-      <View></View>
-      <ThemedButton title="Retourner à l'accueil" onPress={navigateToHome} />
+      <View
+        style={{
+          gap: 8,
+          flexDirection: "row",
+          alignItems: "flex-end",
+        }}
+      >
+        {me.role === "lite" && (
+          <View
+            style={{
+              gap: 4,
+              flexDirection: "column",
+              flexGrow: 1,
+              flexShrink: 1,
+              flexBasis: "100%",
+            }}
+          >
+            <ThemedText
+              style={{
+                textAlign: "center",
+                fontFamily: "Exo_800ExtraBold",
+              }}
+              glow
+            >
+              Crée un compte et garde ta progression !
+            </ThemedText>
+            <Link push href="/convert" asChild>
+              <ThemedButton
+                title="Créer un compte"
+                onPress={() => {}}
+                type="secondary"
+              />
+            </Link>
+          </View>
+        )}
+        <View
+          style={{
+            flexGrow: 1,
+            flexShrink: 1,
+            flexBasis: "100%",
+          }}
+        >
+          <ThemedButton
+            title={me.role === "lite" ? "Quitter" : "Retourner à l'accueil"}
+            onPress={navigateToHome}
+            fullWidth
+          />
+        </View>
+      </View>
     </View>
   );
 }

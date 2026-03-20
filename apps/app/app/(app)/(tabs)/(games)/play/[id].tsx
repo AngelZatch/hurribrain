@@ -25,8 +25,8 @@ export default function PlayScreen() {
   const router = useRouter();
 
   // Getting "long-term" data for the game (game info and logged user)
-  const { data: game, isLoading, error } = useGetGame(user!, gameId);
   const { data: me } = useGetMe(user!);
+  const { data: game, isLoading, error } = useGetGame(user!, gameId);
 
   // Working states for the game (current turn and participation)
   const [currentTurn, setCurrentTurn] = useState<
@@ -196,7 +196,7 @@ export default function PlayScreen() {
               participation={participation}
             />
           )}
-          {game.finishedAt && <GameRecap />}
+          {game.finishedAt && <GameRecap me={me} />}
         </View>
       </ImageBackground>
     </PageContainer>
