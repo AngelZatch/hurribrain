@@ -6,6 +6,8 @@ import {
   AuthCheckResponseSchema,
   AuthErrorResponsesSchema,
   AuthResponseSchema,
+  LiteAccountConversionRequestBody,
+  LiteAccountConversionRequestSchema,
   LiteRegistrationRequestBody,
   LiteRegistrationRequestSchema,
   LoginRequestBody,
@@ -280,6 +282,79 @@ const AuthController = async (fastify: FastifyInstance) => {
         process.env.JWTSALT ?? "changeSecretIntoEnvVariable",
         {
           expiresIn: "2h",
+        }
+      )
+
+      return {
+        accessToken,
+        refreshToken: "",
+      }
+    }
+  )
+
+  fastify.put<{
+    Body: LiteAccountConversionRequestBody
+  }>(
+    "/convert",
+    {
+      schema: {
+        tags: ["Authentication"],
+        summary: `Converts a lite account to a regular account by setting up a real email address, a password and
+        upgrading the account to Standard. The deletion flag is also removed so the user can keep their account.`,
+        body: LiteAccountConversionRequestSchema,
+        response: {
+          200: AuthResponseSchema,
+          ...AuthErrorResponsesSchema,
+        },
+      },
+      preHandler: [fastify.auth([verifyJWT])],
+    },
+    async (request, reply) => {
+      const em = request.em
+      const { uuid, email, password } = request.body
+
+      if (uuid !== request.user) {
+        reply.statusCode = 401
+        return new Error("Invalid Credentials")
+      }
+
+      const user = await em.findOneOrFail(
+        User,
+        { uuid },
+        {
+          filters: { notDeleted: true },
+          failHandler: () => {
+            reply.statusCode = 401
+            return new Error("Invalid Credentials")
+          },
+        }
+      )
+
+      if (user.role !== UserRole.LITE) {
+        reply.statusCode = 401
+        return new Error("Invalid Credentials")
+      }
+
+      user.email = email
+      user.password = await bcrypt.hash(password, 10)
+      user.role = UserRole.STANDARD
+      user.deletedAt = undefined
+
+      await em.persist(user).flush()
+
+      reply.statusCode = 200
+
+      // Gives a proper JWT
+      const accessToken = jwt.sign(
+        {
+          uuid: user.uuid,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+        },
+        process.env.JWTSALT ?? "changeSecretIntoEnvVariable",
+        {
+          expiresIn: "7d",
         }
       )
 
