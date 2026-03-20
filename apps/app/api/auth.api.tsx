@@ -1,3 +1,4 @@
+import { useAuth } from "@/contexts/auth.context";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -66,6 +67,8 @@ export const useAuthRecover = () => {
 };
 
 export const useGetMe = (token: string) => {
+  const { logout } = useAuth();
+
   return useQuery({
     queryKey: ["me"],
     queryFn: async (): Promise<{
@@ -83,6 +86,11 @@ export const useGetMe = (token: string) => {
           },
         },
       );
+
+      if (response.status !== 200) {
+        logout();
+      }
+
       return response.data;
     },
   });
