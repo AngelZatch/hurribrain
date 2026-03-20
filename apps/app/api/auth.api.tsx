@@ -1,14 +1,49 @@
 import { useAuth } from "@/contexts/auth.context";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { router } from "expo-router";
+
+export type MyAccountInfo = {
+  uuid: string;
+  email: string;
+  name: string;
+  role: "standard" | "lite" | "admin";
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type MyAccountInfoWithStats = MyAccountInfo & {
+  stats: {
+    level: number;
+    experiencePoints: number;
+    gamesPlayed: number;
+    gamesWon: number;
+    firstGamePlayed: string;
+    firstGameWon: string;
+  };
+};
+
+export type BaseAuthenticationSchema = {
+  email: string;
+  password: string;
+};
+
+export type LiteAccountRegistrationSchema = {
+  name: string;
+};
+
+export type LoginSchema = BaseAuthenticationSchema;
+
+export type StandardAccountRegistrationSchema = BaseAuthenticationSchema &
+  LiteAccountRegistrationSchema;
+
+export type LiteAccountConversionSchema = BaseAuthenticationSchema & {
+  uuid: string;
+};
 
 export const useRegister = () => {
   return useMutation({
-    mutationFn: async (data: {
-      email: string;
-      name: string;
-      password: string;
-    }) => {
+    mutationFn: async (data: StandardAccountRegistrationSchema) => {
       const response = await axios.post(
         `${process.env.EXPO_PUBLIC_API_URL}/auth/register`,
         data,
@@ -20,7 +55,7 @@ export const useRegister = () => {
 
 export const useLiteRegister = () => {
   return useMutation({
-    mutationFn: async (data: { name: string }) => {
+    mutationFn: async (data: LiteAccountRegistrationSchema) => {
       const response = await axios.post(
         `${process.env.EXPO_PUBLIC_API_URL}/auth/lite`,
         data,
@@ -30,9 +65,22 @@ export const useLiteRegister = () => {
   });
 };
 
+export const useLiteAccountConversion = () => {
+  return useMutation({
+    mutationFn: async (data: LiteAccountConversionSchema) => {
+      const response = await axios.post(
+        `${process.env.EXPO_PUBLIC_API_URL}/auth/convert`,
+        data,
+      );
+
+      return response.data;
+    },
+  });
+};
+
 export const useLogin = () => {
   return useMutation({
-    mutationFn: async (data: { email: string; password: string }) => {
+    mutationFn: async (data: LoginSchema) => {
       const response = await axios.post(
         `${process.env.EXPO_PUBLIC_API_URL}/auth/login`,
         data,
@@ -44,7 +92,7 @@ export const useLogin = () => {
 
 export const useAuthCheck = () => {
   return useMutation({
-    mutationFn: async (data: { email: string; password: string }) => {
+    mutationFn: async (data: LoginSchema) => {
       const response = await axios.post(
         `${process.env.EXPO_PUBLIC_API_URL}/auth/check`,
         data,
@@ -56,7 +104,7 @@ export const useAuthCheck = () => {
 
 export const useAuthRecover = () => {
   return useMutation({
-    mutationFn: async (data: { email: string; password: string }) => {
+    mutationFn: async (data: LoginSchema) => {
       const response = await axios.post(
         `${process.env.EXPO_PUBLIC_API_URL}/auth/recover`,
         data,
@@ -71,27 +119,20 @@ export const useGetMe = (token: string) => {
 
   return useQuery({
     queryKey: ["me"],
-    queryFn: async (): Promise<{
-      uuid: string;
-      email: string;
-      name: string;
-      createdAt: string;
-      updatedAt: string;
-    }> => {
-      const response = await axios.get(
-        `${process.env.EXPO_PUBLIC_API_URL}/auth/me`,
-        {
+    queryFn: async (): Promise<MyAccountInfo | void> => {
+      await axios
+        .get(`${process.env.EXPO_PUBLIC_API_URL}/auth/me`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
-      );
-
-      if (response.status !== 200) {
-        logout();
-      }
-
-      return response.data;
+        })
+        .then((response) => {
+          return response.data;
+        })
+        .catch((error) => {
+          logout();
+          router.replace("/welcome");
+        });
     },
   });
 };
@@ -99,21 +140,7 @@ export const useGetMe = (token: string) => {
 export const useGetMeWithStats = (token: string) => {
   return useQuery({
     queryKey: ["meWithStats"],
-    queryFn: async (): Promise<{
-      uuid: string;
-      email: string;
-      name: string;
-      createdAt: string;
-      updatedAt: string;
-      stats: {
-        level: number;
-        experiencePoints: number;
-        gamesPlayed: number;
-        gamesWon: number;
-        firstGamePlayed: string;
-        firstGameWon: string;
-      };
-    }> => {
+    queryFn: async (): Promise<MyAccountInfoWithStats> => {
       const response = await axios.get(
         `${process.env.EXPO_PUBLIC_API_URL}/auth/me`,
         {
