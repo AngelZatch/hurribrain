@@ -21,15 +21,32 @@ export const LoginRequestSchema = Type.Object({
   email: Type.String({ format: "email" }),
   password: Type.String(),
 })
+export type LoginRequestBody = Static<typeof LoginRequestSchema>
 
+// Registration
 export const RegistrationRequestSchema = Type.Object({
   email: Type.String({ format: "email" }),
   password: Type.String(),
   name: Type.String(),
 })
-
-export type LoginRequestBody = Static<typeof LoginRequestSchema>
 export type RegistrationRequestBody = Static<typeof RegistrationRequestSchema>
+
+// Lite accounts
+export const LiteRegistrationRequestSchema = Type.Object({
+  name: Type.String(),
+})
+export type LiteRegistrationRequestBody = Static<
+  typeof LiteRegistrationRequestSchema
+>
+
+export const LiteAccountConversionRequestSchema = Type.Object({
+  uuid: Type.String({ format: "uuid" }),
+  email: Type.String({ format: "email" }),
+  password: Type.String(),
+})
+export type LiteAccountConversionRequestBody = Static<
+  typeof LiteAccountConversionRequestSchema
+>
 
 export const InvalidCredentialsErrorResponseSchema = {
   401: Type.Ref(ErrorResponseTemplateSchema, {

@@ -1,4 +1,4 @@
-import { User } from "./../entities/user.entity.js"
+import { User, UserRole } from "./../entities/user.entity.js"
 import { FastifyInstance } from "fastify"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
@@ -6,6 +6,8 @@ import {
   AuthCheckResponseSchema,
   AuthErrorResponsesSchema,
   AuthResponseSchema,
+  LiteRegistrationRequestBody,
+  LiteRegistrationRequestSchema,
   LoginRequestBody,
   LoginRequestSchema,
   RegistrationRequestBody,
@@ -222,6 +224,61 @@ const AuthController = async (fastify: FastifyInstance) => {
         process.env.JWTSALT ?? "changeSecretIntoEnvVariable",
         {
           expiresIn: "7d",
+        }
+      )
+
+      return {
+        accessToken,
+        refreshToken: "",
+      }
+    }
+  )
+
+  fastify.post<{
+    Body: LiteRegistrationRequestBody
+  }>(
+    "/lite",
+    {
+      schema: {
+        tags: ["Authentication", "Games"],
+        summary: `Creates a lite account only for one game. This account cannot be authenticated into and this endpoint
+        delivers a 2-hour JWT that cannot be refreshed.`,
+        body: LiteRegistrationRequestSchema,
+        response: {
+          201: AuthResponseSchema,
+          ...AuthErrorResponsesSchema,
+        },
+      },
+    },
+    async (request, reply) => {
+      const em = request.em
+      const { name } = request.body
+
+      const user = new User({ email: "", name })
+      user.role = UserRole.LITE
+      user.password = ""
+
+      // Lite accounts are ephemeral. They have a TTL of 2 hours
+      user.deletedAt = new Date(new Date().getTime() + 2 * HOUR)
+
+      em.persist(user)
+
+      em.persist(new UserStats(user))
+
+      await em.flush()
+
+      reply.statusCode = 201
+
+      const accessToken = jwt.sign(
+        {
+          uuid: user.uuid,
+          email: null,
+          name: user.name,
+          role: user.role,
+        },
+        process.env.JWTSALT ?? "changeSecretIntoEnvVariable",
+        {
+          expiresIn: "2h",
         }
       )
 
