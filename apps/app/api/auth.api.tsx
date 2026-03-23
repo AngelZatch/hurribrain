@@ -65,12 +65,17 @@ export const useLiteRegister = () => {
   });
 };
 
-export const useLiteAccountConversion = () => {
+export const useLiteAccountConversion = (token: string) => {
   return useMutation({
     mutationFn: async (data: LiteAccountConversionSchema) => {
       const response = await axios.put(
         `${process.env.EXPO_PUBLIC_API_URL}/auth/convert`,
         data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
       );
 
       return response.data;
@@ -132,8 +137,10 @@ export const useGetMe = (token: string) => {
         .catch((error) => {
           logout();
           router.replace("/welcome");
+          return error;
         });
     },
+    enabled: !!token,
   });
 };
 
@@ -151,6 +158,7 @@ export const useGetMeWithStats = (token: string) => {
       );
       return response.data;
     },
+    enabled: !!token,
   });
 };
 

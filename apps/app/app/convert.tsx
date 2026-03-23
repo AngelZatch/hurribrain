@@ -5,7 +5,7 @@ import {
 } from "@/api/auth.api";
 import { useAuth } from "@/contexts/auth.context";
 import { Controller, useForm } from "react-hook-form";
-import { Redirect, router } from "expo-router";
+import { router } from "expo-router";
 import { PageContainer } from "@/components/ui/PageContainer";
 import TopNavigation from "@/components/TopNavigation";
 import { BodyContainer } from "@/components/ui/BodyContainer";
@@ -15,10 +15,8 @@ import ThemedTextInput from "@/components/ui/ThemedTextInput";
 import ThemedButton from "@/components/ui/ThemedButton";
 
 export default function AccountConversionScreen() {
-  const { mutateAsync: register } = useLiteAccountConversion();
   const { user, login } = useAuth();
-
-  const { data: me } = useGetMe(user!);
+  const { data: me, isLoading } = useGetMe(user!);
 
   const {
     control,
@@ -28,15 +26,23 @@ export default function AccountConversionScreen() {
     defaultValues: {
       email: "",
       password: "",
-      uuid: me?.uuid,
     },
   });
 
   const onSubmit = async (data: LiteAccountConversionSchema) => {
-    const tokens = await register(data);
+    const tokens = await register({
+      ...data,
+      uuid: me!.uuid,
+    });
     login(tokens.accessToken);
     router.replace("/");
   };
+
+  if (!user || isLoading) {
+    return <ThemedText>Loading...</ThemedText>;
+  }
+
+  const { mutateAsync: register } = useLiteAccountConversion(user!);
 
   return (
     <PageContainer
