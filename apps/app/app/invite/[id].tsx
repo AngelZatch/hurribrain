@@ -120,7 +120,7 @@ export default function InviteScreen() {
                   <ThemedText type="label">Entrez un nom :</ThemedText>
                   <Controller
                     control={control}
-                    rules={{ required: true }}
+                    rules={{ required: true, minLength: 3, maxLength: 30 }}
                     render={({ field: { onChange, onBlur, value } }) => (
                       <ThemedTextInput
                         placeholder="Entrez ici..."

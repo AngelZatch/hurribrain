@@ -54,6 +54,8 @@ export default function RegisterScreen() {
             control={control}
             rules={{
               required: true,
+              minLength: 3,
+              maxLength: 30,
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <ThemedTextInput

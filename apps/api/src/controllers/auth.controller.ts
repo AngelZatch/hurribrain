@@ -256,6 +256,11 @@ const AuthController = async (fastify: FastifyInstance) => {
       const em = request.em
       const { name } = request.body
 
+      if (name.length === 0) {
+        reply.statusCode = 400
+        return new Error("Name cannot be empty")
+      }
+
       const user = new User({ email: "", name })
       user.role = UserRole.LITE
       user.email = `${user.uuid}@hurribrain-account.com`
