@@ -1,5 +1,5 @@
 import { useAuth } from "@/contexts/auth.context";
-import { Link, Redirect, useLocalSearchParams, useRouter } from "expo-router";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ImageBackground, View } from "react-native";
 import { PageContainer } from "@/components/ui/PageContainer";
