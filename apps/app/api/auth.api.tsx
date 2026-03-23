@@ -120,7 +120,7 @@ export const useGetMe = (token: string) => {
   return useQuery({
     queryKey: ["me"],
     queryFn: async (): Promise<MyAccountInfo | void> => {
-      await axios
+      return axios
         .get(`${process.env.EXPO_PUBLIC_API_URL}/auth/me`, {
           headers: {
             Authorization: `Bearer ${token}`,
