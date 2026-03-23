@@ -1,6 +1,7 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Game } from "./games.api";
+import { SECOND } from "./../utils/helperVariables";
 
 export type Participation = {
   uuid: string;
@@ -181,6 +182,7 @@ export const hasACurrentParticipation = (token: string) => {
       );
       return response.data;
     },
+    staleTime: 15 * SECOND,
   });
 };
 
