@@ -18,7 +18,11 @@ import {
 import { Tag } from "./../entities/tag.entity.js"
 import { Participation } from "./../entities/participation.entity.js"
 import { User } from "./../entities/user.entity.js"
-import { verifyJWT, verifyJWTIfExists } from "./../utils/authChecker.js"
+import {
+  excludeLiteUsers,
+  verifyJWT,
+  verifyJWTIfExists,
+} from "./../utils/authChecker.js"
 import PlayerController from "./player.controller.js"
 import TurnController from "./turn.controller.js"
 import GameService from "./../services/game.service.js"
@@ -131,7 +135,7 @@ const GameController = async (fastify: FastifyInstance) => {
           ...ErrorResponsesSchema,
         },
       },
-      preHandler: [fastify.auth([verifyJWT])],
+      preHandler: [fastify.auth([verifyJWT, excludeLiteUsers])],
     },
     async (request, reply) => {
       const em = request.em
@@ -311,7 +315,7 @@ const GameController = async (fastify: FastifyInstance) => {
           ...CannotStartGameErrorResponseSchema,
         },
       },
-      preHandler: [fastify.auth([verifyJWT])],
+      preHandler: [fastify.auth([verifyJWT, excludeLiteUsers])],
     },
     async (request, reply) => {
       const { gameId } = request.params

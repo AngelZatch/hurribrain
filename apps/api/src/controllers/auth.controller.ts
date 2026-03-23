@@ -15,7 +15,7 @@ import {
   RegistrationRequestBody,
   RegistrationRequestSchema,
 } from "./../schemas/auth.schema.js"
-import { verifyJWT } from "../utils/authChecker.js"
+import { excludeLiteUsers, verifyJWT } from "../utils/authChecker.js"
 import { UserStats } from "../entities/userStats.entity.js"
 import { Participation } from "../entities/participation.entity.js"
 import { GetParticipationReplySchema } from "../schemas/player.schema.js"
@@ -129,6 +129,7 @@ const AuthController = async (fastify: FastifyInstance) => {
           User,
           {
             email,
+            role: { $ne: UserRole.LITE },
           },
           {
             fields: ["uuid", "email", "name", "role", "password", "deletedAt"],
@@ -469,10 +470,11 @@ const AuthController = async (fastify: FastifyInstance) => {
   }>(
     "/delete",
     {
-      preHandler: [fastify.auth([verifyJWT])],
+      preHandler: [fastify.auth([verifyJWT, excludeLiteUsers])],
       schema: {
         tags: ["User", "Authentication"],
-        summary: "Allows a user to flag their account for deletion",
+        summary:
+          "Allows a user to flag their account for deletion. LITE Users cannot use this endpoint.",
         body: LoginRequestSchema,
         response: {
           200: true,
