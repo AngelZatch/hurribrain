@@ -68,7 +68,7 @@ export const useLiteRegister = () => {
 export const useLiteAccountConversion = () => {
   return useMutation({
     mutationFn: async (data: LiteAccountConversionSchema) => {
-      const response = await axios.post(
+      const response = await axios.put(
         `${process.env.EXPO_PUBLIC_API_URL}/auth/convert`,
         data,
       );

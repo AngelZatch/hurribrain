@@ -17,9 +17,6 @@ import ThemedButton from "@/components/ui/ThemedButton";
 export default function AccountConversionScreen() {
   const { mutateAsync: register } = useLiteAccountConversion();
   const { user, login } = useAuth();
-  if (!user) {
-    return <Redirect href="/welcome" />;
-  }
 
   const { data: me } = useGetMe(user!);
 
