@@ -1,4 +1,4 @@
-import { User } from "./../entities/user.entity.js"
+import { User, UserRole } from "./../entities/user.entity.js"
 import { FastifyInstance } from "fastify"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
@@ -6,12 +6,16 @@ import {
   AuthCheckResponseSchema,
   AuthErrorResponsesSchema,
   AuthResponseSchema,
+  LiteAccountConversionRequestBody,
+  LiteAccountConversionRequestSchema,
+  LiteRegistrationRequestBody,
+  LiteRegistrationRequestSchema,
   LoginRequestBody,
   LoginRequestSchema,
   RegistrationRequestBody,
   RegistrationRequestSchema,
 } from "./../schemas/auth.schema.js"
-import { verifyJWT } from "../utils/authChecker.js"
+import { excludeLiteUsers, verifyJWT } from "../utils/authChecker.js"
 import { UserStats } from "../entities/userStats.entity.js"
 import { Participation } from "../entities/participation.entity.js"
 import { GetParticipationReplySchema } from "../schemas/player.schema.js"
@@ -125,6 +129,7 @@ const AuthController = async (fastify: FastifyInstance) => {
           User,
           {
             email,
+            role: { $ne: UserRole.LITE },
           },
           {
             fields: ["uuid", "email", "name", "role", "password", "deletedAt"],
@@ -212,6 +217,140 @@ const AuthController = async (fastify: FastifyInstance) => {
 
       reply.statusCode = 201
 
+      const accessToken = jwt.sign(
+        {
+          uuid: user.uuid,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+        },
+        process.env.JWTSALT ?? "changeSecretIntoEnvVariable",
+        {
+          expiresIn: "7d",
+        }
+      )
+
+      return {
+        accessToken,
+        refreshToken: "",
+      }
+    }
+  )
+
+  fastify.post<{
+    Body: LiteRegistrationRequestBody
+  }>(
+    "/lite",
+    {
+      schema: {
+        tags: ["Authentication", "Games"],
+        summary: `Creates a lite account only for one game. This account cannot be authenticated into and this endpoint
+        delivers a 2-hour JWT that cannot be refreshed.`,
+        body: LiteRegistrationRequestSchema,
+        response: {
+          201: AuthResponseSchema,
+          ...AuthErrorResponsesSchema,
+        },
+      },
+    },
+    async (request, reply) => {
+      const em = request.em
+      const { name } = request.body
+
+      if (name.length === 0) {
+        reply.statusCode = 400
+        return new Error("Name cannot be empty")
+      }
+
+      const user = new User({ email: "", name })
+      user.role = UserRole.LITE
+      user.email = `${user.uuid}@hurribrain-account.com`
+      user.password = ""
+
+      // Lite accounts are ephemeral. They have a TTL of 2 hours
+      user.deletedAt = new Date(new Date().getTime() + 2 * HOUR)
+
+      em.persist(user)
+
+      em.persist(new UserStats(user))
+
+      await em.flush()
+
+      reply.statusCode = 201
+
+      const accessToken = jwt.sign(
+        {
+          uuid: user.uuid,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+        },
+        process.env.JWTSALT ?? "changeSecretIntoEnvVariable",
+        {
+          expiresIn: "2h",
+        }
+      )
+
+      return {
+        accessToken,
+        refreshToken: "",
+      }
+    }
+  )
+
+  fastify.put<{
+    Body: LiteAccountConversionRequestBody
+  }>(
+    "/convert",
+    {
+      schema: {
+        tags: ["Authentication"],
+        summary: `Converts a lite account to a regular account by setting up a real email address, a password and
+        upgrading the account to Standard. The deletion flag is also removed so the user can keep their account.`,
+        body: LiteAccountConversionRequestSchema,
+        response: {
+          200: AuthResponseSchema,
+          ...AuthErrorResponsesSchema,
+        },
+      },
+      preHandler: [fastify.auth([verifyJWT])],
+    },
+    async (request, reply) => {
+      const em = request.em
+      const { uuid, email, password } = request.body
+
+      if (uuid !== request.user) {
+        reply.statusCode = 401
+        return new Error("Invalid Credentials")
+      }
+
+      const user = await em.findOneOrFail(
+        User,
+        { uuid },
+        {
+          filters: { notDeleted: true },
+          failHandler: () => {
+            reply.statusCode = 401
+            return new Error("Invalid Credentials")
+          },
+        }
+      )
+
+      if (user.role !== UserRole.LITE) {
+        reply.statusCode = 401
+        return new Error("Invalid Credentials")
+      }
+
+      user.email = email
+      user.password = await bcrypt.hash(password, 10)
+      user.role = UserRole.STANDARD
+      user.deletedAt = undefined
+
+      await em.persist(user).flush()
+
+      reply.statusCode = 200
+
+      // Gives a proper JWT
       const accessToken = jwt.sign(
         {
           uuid: user.uuid,
@@ -331,10 +470,11 @@ const AuthController = async (fastify: FastifyInstance) => {
   }>(
     "/delete",
     {
-      preHandler: [fastify.auth([verifyJWT])],
+      preHandler: [fastify.auth([verifyJWT, excludeLiteUsers])],
       schema: {
         tags: ["User", "Authentication"],
-        summary: "Allows a user to flag their account for deletion",
+        summary:
+          "Allows a user to flag their account for deletion. LITE Users cannot use this endpoint.",
         body: LoginRequestSchema,
         response: {
           200: true,

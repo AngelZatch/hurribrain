@@ -43,7 +43,9 @@ export default function TopNavigation({
           title=""
           type="secondary"
           onPress={() => {
-            onPress ?? router.back();
+            (onPress ?? router.canGoBack())
+              ? router.back()
+              : router.replace("/");
           }}
         />
       )}

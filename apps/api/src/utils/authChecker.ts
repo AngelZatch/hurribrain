@@ -1,3 +1,4 @@
+import { User, UserRole } from "./../entities/user.entity.js"
 import { FastifyRequest, FastifyReply } from "fastify"
 import jwt from "jsonwebtoken"
 
@@ -36,4 +37,32 @@ export const verifyJWTIfExists = async (
   }
 
   request.user = ""
+}
+
+/**
+ * LITE Users are "temporary" accounts created by giving a name only, for the purpose of quickly
+ * joining a game (and lowering the access barrier to the app). They have very restricted capabilities:
+ * - They cannot create a game
+ * - They cannot edit their profile
+ */
+export const excludeLiteUsers = async (
+  request: FastifyRequest,
+  reply: FastifyReply
+) => {
+  const em = request.em
+
+  console.log("BEING CHECKED")
+
+  await em.findOneOrFail(
+    User,
+    { role: { $ne: UserRole.LITE }, uuid: request.user },
+    {
+      failHandler: () => {
+        reply.statusCode = 403
+        throw new Error("Forbidden")
+      },
+    }
+  )
+
+  return true
 }

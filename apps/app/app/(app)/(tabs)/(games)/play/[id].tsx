@@ -1,5 +1,5 @@
 import { useAuth } from "@/contexts/auth.context";
-import { Link, useLocalSearchParams } from "expo-router";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ImageBackground, View } from "react-native";
 import { PageContainer } from "@/components/ui/PageContainer";
@@ -22,10 +22,11 @@ export default function PlayScreen() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const { id: gameId } = useLocalSearchParams<{ id: string }>();
+  const router = useRouter();
 
   // Getting "long-term" data for the game (game info and logged user)
-  const { data: game, isLoading, error } = useGetGame(user!, gameId);
   const { data: me } = useGetMe(user!);
+  const { data: game, isLoading, error } = useGetGame(user!, gameId);
 
   // Working states for the game (current turn and participation)
   const [currentTurn, setCurrentTurn] = useState<
@@ -195,7 +196,7 @@ export default function PlayScreen() {
               participation={participation}
             />
           )}
-          {game.finishedAt && <GameRecap />}
+          {game.finishedAt && <GameRecap me={me} />}
         </View>
       </ImageBackground>
     </PageContainer>

@@ -56,6 +56,7 @@ export const useGetGame = (token: string, gameId: string) => {
       );
       return response.data;
     },
+    enabled: !!gameId,
   });
 };
 

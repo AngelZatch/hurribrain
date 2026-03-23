@@ -87,7 +87,7 @@ export const initializeServer = async () => {
   })
 
   // Authentication
-  await server.register(fastifyAuth)
+  await server.register(fastifyAuth, { defaultRelation: "and" })
 
   // Routes
   await server.register(async (instance) => {

@@ -110,6 +110,7 @@ export default function ThemedButton({
               color: textColorMap[`${type}:${variant}`],
               fontFamily: "Exo_600SemiBold",
               fontSize: size === "small" ? 12 : size === "medium" ? 14 : 16,
+              textAlign: "center",
             }}
           >
             {rest.title}

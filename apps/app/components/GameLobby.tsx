@@ -22,7 +22,7 @@ export default function GameLobby({ game }: GameLobbyProps) {
     return null;
   }
 
-  const { data, isLoading, isError } = useGetMe(user);
+  const { data, isLoading } = useGetMe(user);
   const { mutateAsync: startGame } = useStartGame(user);
 
   const isCreator = user && game.creator?.uuid === data?.uuid;
