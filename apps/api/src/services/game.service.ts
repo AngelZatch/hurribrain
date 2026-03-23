@@ -625,7 +625,7 @@ export default class GameService {
       .to(`game:${gameId}`)
       .emit("turn:finish", wrap(finishedTurn).toObject() satisfies PlayedTurn)
 
-    // Job for the next turn in 15s
+    // Job for the next turn in 10s
     gameQueue.add(
       {
         gameId,
@@ -633,7 +633,7 @@ export default class GameService {
         order: "next",
       },
       {
-        delay: 15 * SECOND,
+        delay: 10 * SECOND,
         attempts: 3,
         removeOnComplete: true,
       }
