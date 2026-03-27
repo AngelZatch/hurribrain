@@ -58,6 +58,8 @@ export default class GameService {
           "question.choices.uuid",
           "question.choices.value",
           "question.choices.isCorrect",
+          "question.asset.uri",
+          "question.asset.type",
           "game",
         ],
         cache: 1000, // Cached for 1s
@@ -88,6 +90,8 @@ export default class GameService {
             "question.choices.uuid",
             "question.choices.value",
             "question.choices.isCorrect",
+            "question.asset.uri",
+            "question.asset.type",
             "game",
           ],
         }
@@ -614,6 +618,8 @@ export default class GameService {
           "question.choices.uuid",
           "question.choices.value",
           "question.choices.isCorrect",
+          "question.asset.uri",
+          "question.asset.type",
           "game",
           "speedRanking",
         ],

@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { Image, View } from "react-native";
 import ThemedText from "./ui/ThemedText";
 import PlayerScoreDisplay from "./PlayerScoreDisplay";
 import CurrentQuestionDisplay from "./CurrentQuestionDisplay";
@@ -92,11 +92,11 @@ export default function ActiveGame({
             difficulty={currentTurn.question.difficulty!}
           />
         )}
-        <PlayerStatusList participation={participation} />
       </View>
       <View
         style={{
           alignContent: "center",
+          gap: 12,
         }}
       >
         <ThemedText
@@ -108,6 +108,22 @@ export default function ActiveGame({
         >
           {currentTurn.question.title}
         </ThemedText>
+        <View
+          style={{
+            flexGrow: 1,
+            flexShrink: 1,
+            flexBasis: "auto",
+            aspectRatio: 2,
+            borderRadius: 2,
+          }}
+        >
+          {currentTurn.question.asset && (
+            <Image
+              source={{ uri: currentTurn.question.asset.uri }}
+              style={{ width: "100%", height: "100%" }}
+            />
+          )}
+        </View>
       </View>
       {!currentTurn.finishedAt ? (
         <ActivePlayableTurn
@@ -134,6 +150,7 @@ export default function ActiveGame({
         }}
       >
         <ItemButton participation={participation} />
+        <PlayerStatusList participation={participation} />
       </View>
     </View>
   );
