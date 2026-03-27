@@ -1,3 +1,4 @@
+import { Asset } from "@src/entities/asset.entity.js"
 import { Choice } from "@src/entities/choice.entity.js"
 import { Game } from "@src/entities/game.entity.js"
 import { Question } from "@src/entities/question.entity.js"
@@ -17,6 +18,7 @@ export type PlayableTurn = {
     successRate: Question["successRate"]
     difficulty: Question["difficulty"]
     choices: Array<Pick<Choice, "uuid" | "value">>
+    asset: Asset | null
   }
 }
 
@@ -35,6 +37,7 @@ export type PlayedTurn = {
     successRate: Question["successRate"]
     difficulty: Question["difficulty"]
     choices: Array<Pick<Choice, "uuid" | "value" | "isCorrect">>
+    asset: Asset | null
   }
 }
 
@@ -52,5 +55,6 @@ export type PrePlayableTurn = {
     successRate: Question["successRate"]
     difficulty: Question["difficulty"]
     choices: Array<Pick<Choice, "uuid" | "value" | "isCorrect">>
+    asset: Asset | null
   }
 }

@@ -302,6 +302,26 @@
           "unique": false,
           "enumItems": [],
           "mappedType": "datetime"
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "nullable": false,
+          "default": null,
+          "unsigned": false,
+          "autoincrement": false,
+          "comment": null,
+          "primary": false,
+          "unique": false,
+          "enumItems": [
+            "image",
+            "video",
+            "sound"
+          ],
+          "mappedType": "enum"
         }
       },
       "name": "asset",
