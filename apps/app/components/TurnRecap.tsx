@@ -143,6 +143,9 @@ export default function TurnRecap({
             width: "100%",
             alignItems: "flex-start",
             overflow: "scroll",
+            flexGrow: 1,
+            flexShrink: 1,
+            flexBasis: "100%",
           }}
         >
           {myAnswer?.medals?.map((medal) => (
