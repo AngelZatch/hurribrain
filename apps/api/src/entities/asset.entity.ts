@@ -1,4 +1,11 @@
-import { Entity, Property, PrimaryKey, Filter, Enum } from "@mikro-orm/core"
+import {
+  Entity,
+  Property,
+  PrimaryKey,
+  Filter,
+  Enum,
+  Formula,
+} from "@mikro-orm/core"
 import { v4 } from "uuid"
 
 export enum AssetType {
@@ -21,6 +28,16 @@ export class Asset {
 
   @Enum({ items: () => AssetType })
   type!: AssetType
+
+  @Formula(
+    (alias) => `(
+    SELECT COUNT(*)
+    FROM question
+    WHERE question.asset_uuid = ${alias}.uuid
+    )`,
+    { type: "number", persist: false, lazy: true }
+  )
+  questionCount: number = 0
 
   @Property()
   createdAt: Date = new Date()
