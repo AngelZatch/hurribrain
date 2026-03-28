@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { Image, View } from "react-native";
 import ThemedText from "./ui/ThemedText";
 import PlayerScoreDisplay from "./PlayerScoreDisplay";
 import CurrentQuestionDisplay from "./CurrentQuestionDisplay";
@@ -58,8 +58,8 @@ export default function ActiveGame({
       style={{
         flex: 1,
         justifyContent: "space-between",
-        padding: 12,
-        paddingTop: 0,
+        paddingHorizontal: 12,
+        overflow: "hidden",
       }}
     >
       <View>
@@ -92,11 +92,15 @@ export default function ActiveGame({
             difficulty={currentTurn.question.difficulty!}
           />
         )}
-        <PlayerStatusList participation={participation} />
       </View>
       <View
         style={{
           alignContent: "center",
+          gap: 12,
+          width: "100%",
+          flexBasis: "auto",
+          aspectRatio: 1.3,
+          justifyContent: "center",
         }}
       >
         <ThemedText
@@ -108,32 +112,73 @@ export default function ActiveGame({
         >
           {currentTurn.question.title}
         </ThemedText>
+        {currentTurn.question.asset && (
+          <View
+            style={{
+              flexGrow: 1,
+              flexShrink: 1,
+              flexBasis: "auto",
+              aspectRatio: 1.4,
+              borderRadius: 8,
+              overflow: "hidden",
+              backgroundImage: `url(${currentTurn.question.asset.uri})`,
+              backgroundPosition: "center",
+              backgroundSize: "300%",
+              backgroundRepeat: "no-repeat",
+              borderWidth: 3,
+              borderColor: "gray",
+              borderStyle: "solid",
+            }}
+          >
+            <View
+              style={{
+                backdropFilter: "blur(5px)",
+                width: "100%",
+                height: "100%",
+              }}
+            >
+              <Image
+                source={{ uri: currentTurn.question.asset.uri }}
+                style={{ width: "100%", height: "100%" }}
+              />
+            </View>
+          </View>
+        )}
       </View>
-      {!currentTurn.finishedAt ? (
-        <ActivePlayableTurn
-          currentTurn={currentTurn as PlayableTurn}
-          participation={participation}
-          timeLeft={timeLeft}
-        />
-      ) : (
-        <TurnRecap
-          currentTurn={currentTurn as PlayedTurn}
-          participation={participation}
-        />
-      )}
+      <View
+        style={{
+          flexGrow: 1,
+          flexShrink: 1,
+          flexBasis: "auto",
+        }}
+      >
+        {!currentTurn.finishedAt ? (
+          <ActivePlayableTurn
+            currentTurn={currentTurn as PlayableTurn}
+            participation={participation}
+            timeLeft={timeLeft}
+          />
+        ) : (
+          <TurnRecap
+            currentTurn={currentTurn as PlayedTurn}
+            participation={participation}
+          />
+        )}
+      </View>
       <View
         style={{
           display: "flex",
           gap: 24,
-          maxHeight: 120,
-          height: 120,
+          maxHeight: 140,
+          height: 140,
           flexDirection: "row",
           justifyContent: "flex-start",
           alignSelf: "stretch",
-          alignItems: "center",
+          alignItems: "flex-end",
         }}
       >
         <ItemButton participation={participation} />
+        <PlayerStatusList participation={participation} />
       </View>
     </View>
   );

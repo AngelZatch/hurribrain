@@ -59,6 +59,7 @@ export type PlayableTurn = {
         value: Choice["value"];
       },
     ];
+    asset: ActiveAsset | null;
   };
   isGold: Turn["isGold"];
   game: Turn["game"];
@@ -80,6 +81,7 @@ export type PlayedTurn = {
         isCorrect: boolean;
       },
     ];
+    asset: ActiveAsset | null;
   };
   speedRanking: Array<Game["uuid"]>;
   game: Turn["game"];
@@ -106,6 +108,11 @@ export type Choice = {
   uuid: string;
   value: string;
   isCorrect?: boolean;
+};
+
+export type ActiveAsset = {
+  uri: string;
+  type: "image" | "sound" | "video";
 };
 
 export type Item = {

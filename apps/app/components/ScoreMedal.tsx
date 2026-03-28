@@ -195,9 +195,8 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
         flexDirection: "row",
         width: "100%",
         gap: 8,
-        flexGrow: 1,
-        flexShrink: 1,
-        flexBasis: "100%",
+        height: 50,
+        maxHeight: 50,
         justifyContent: "space-around",
         alignContent: "center",
         alignItems: "center",
@@ -250,7 +249,7 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
 
 const styles = StyleSheet.create({
   typeLabel: {
-    fontSize: 12,
+    fontSize: 10,
     lineHeight: 16,
     fontStyle: "italic",
     fontFamily: "Exo_400Regular",
@@ -259,7 +258,7 @@ const styles = StyleSheet.create({
     color: "#ffffff",
   },
   bonusLabel: {
-    fontSize: 18,
+    fontSize: 14,
     lineHeight: 21,
     fontFamily: "Exo_700Bold",
     textShadowOffset: { width: 0, height: 0 },
