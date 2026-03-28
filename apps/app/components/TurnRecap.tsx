@@ -61,6 +61,10 @@ export default function TurnRecap({
   return (
     <View
       style={{
+        flexShrink: 1,
+        flexGrow: 1,
+        flexBasis: "auto",
+        width: "100%",
         gap: 12,
       }}
     >
@@ -90,8 +94,10 @@ export default function TurnRecap({
             alignItems: "center",
             justifyContent: "space-between",
             flexGrow: 1,
+            flexShrink: 1,
             flexBasis: "auto",
             backgroundColor: "#0000000C",
+            overflow: "hidden",
           },
           answerStatus === "correct" && {
             borderColor: "#3DC96C",
@@ -134,9 +140,6 @@ export default function TurnRecap({
         <View
           style={{
             flexDirection: "column",
-            gap: 10,
-            flex: 1,
-            maxHeight: 280,
             width: "100%",
             alignItems: "flex-start",
             overflow: "scroll",
@@ -151,7 +154,7 @@ export default function TurnRecap({
           style={{
             textAlign: "center",
             fontSize: 32,
-            lineHeight: 48,
+            padding: 8,
             fontFamily: "Exo_700Bold",
             textShadowColor: answerStatus === "correct" ? "#3DC96C" : "#D36F6F",
             textShadowOffset: { width: 0, height: 0 },

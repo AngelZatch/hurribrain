@@ -59,6 +59,7 @@ export default function ActiveGame({
         flex: 1,
         justifyContent: "space-between",
         paddingHorizontal: 12,
+        overflow: "hidden",
       }}
     >
       <View>
@@ -144,7 +145,13 @@ export default function ActiveGame({
           </View>
         )}
       </View>
-      <View>
+      <View
+        style={{
+          flexGrow: 1,
+          flexShrink: 1,
+          flexBasis: "auto",
+        }}
+      >
         {!currentTurn.finishedAt ? (
           <ActivePlayableTurn
             currentTurn={currentTurn as PlayableTurn}
