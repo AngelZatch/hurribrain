@@ -18,7 +18,10 @@ export type PlayableTurn = {
     successRate: Question["successRate"]
     difficulty: Question["difficulty"]
     choices: Array<Pick<Choice, "uuid" | "value">>
-    asset: Asset | null
+    asset: {
+      uri: Asset["uri"]
+      type: Asset["type"]
+    } | null
   }
 }
 
@@ -37,7 +40,10 @@ export type PlayedTurn = {
     successRate: Question["successRate"]
     difficulty: Question["difficulty"]
     choices: Array<Pick<Choice, "uuid" | "value" | "isCorrect">>
-    asset: Asset | null
+    asset: {
+      uri: Asset["uri"]
+      type: Asset["type"]
+    } | null
   }
 }
 
@@ -55,6 +61,9 @@ export type PrePlayableTurn = {
     successRate: Question["successRate"]
     difficulty: Question["difficulty"]
     choices: Array<Pick<Choice, "uuid" | "value" | "isCorrect">>
-    asset: Asset | null
+    asset: {
+      uri: Asset["uri"]
+      type: Asset["type"]
+    } | null
   }
 }
