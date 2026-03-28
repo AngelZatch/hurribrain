@@ -81,7 +81,7 @@ export default function TurnRecap({
       <View
         style={[
           {
-            maxHeight: 400,
+            maxHeight: 380,
             borderStyle: "solid",
             borderWidth: 3,
             borderRadius: 10,
@@ -108,7 +108,7 @@ export default function TurnRecap({
           style={[
             {
               textAlign: "center",
-              fontSize: 24,
+              fontSize: 18,
               fontFamily: "Exo_700Bold",
               color: "transparent",
               backgroundClip: "text",
@@ -136,7 +136,7 @@ export default function TurnRecap({
             flexDirection: "column",
             gap: 10,
             flex: 1,
-            maxHeight: 300,
+            maxHeight: 280,
             width: "100%",
             alignItems: "flex-start",
             overflow: "scroll",

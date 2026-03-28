@@ -9,7 +9,6 @@ import {
   useGetMyAnswer,
   Participation,
 } from "@/api/play.api";
-import ItemButton from "./ItemButton";
 
 type ActivePlayableTurnProps = {
   currentTurn: PlayableTurn;
@@ -19,7 +18,6 @@ type ActivePlayableTurnProps = {
 
 export default function ActivePlayableTurn({
   currentTurn,
-  participation,
   timeLeft,
 }: ActivePlayableTurnProps) {
   const [sentChoice, setSentChoice] = useState<Choice | null>(null);
@@ -60,7 +58,7 @@ export default function ActivePlayableTurn({
     <>
       <View
         style={{
-          gap: 12,
+          gap: 8,
         }}
       >
         {currentTurn.question.choices.map((choice) => (
