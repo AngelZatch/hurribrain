@@ -7,6 +7,9 @@ services:
       POSTGRES_PASSWORD: synapse
     networks:
       - axon
+    # Decomment over SSH when wanting to directly access the database
+    # ports:
+    #   - 127.0.0.1:5432:5432
     container_name: hurribrain-postgres
     volumes:
       - pg_data:/var/lib/postgresql/data
