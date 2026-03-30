@@ -59,6 +59,8 @@ export default function ActivePlayableTurn({
       <View
         style={{
           gap: 8,
+          flexWrap: "wrap",
+          flexDirection: "row",
         }}
       >
         {currentTurn.question.choices.map((choice) => (

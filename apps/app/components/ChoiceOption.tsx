@@ -14,39 +14,39 @@ export default function ChoiceOption({
   onPress,
 }: ChoiceOptionProps) {
   return (
-    <Pressable key={choice.uuid} onPress={onPress}>
-      <View
+    <Pressable
+      key={choice.uuid}
+      onPress={onPress}
+      style={[
+        {
+          paddingHorizontal: 4,
+          paddingVertical: 4,
+          alignItems: "center",
+          justifyContent: "center",
+          width: "48%",
+          borderRadius: 16,
+          borderWidth: 2,
+          borderStyle: "solid",
+          borderColor: "#94CED080",
+          backgroundColor: "#00000033",
+          minHeight: 80,
+          maxHeight: 80,
+        },
+        isSent && { backgroundColor: "#0A99FF" },
+      ]}
+    >
+      <ThemedText
         style={[
           {
-            paddingHorizontal: 0,
-            paddingVertical: 12,
-            alignItems: "center",
-            justifyContent: "center",
-            width: "100%",
-            borderRadius: 16,
-            borderWidth: 1,
-            borderStyle: "solid",
-            borderColor: "#94CED080",
-            backgroundColor: "#00000033",
-            minHeight: 50,
-            maxHeight: 50,
+            fontFamily: "Exo_600SemiBold",
+            fontSize: choice.value.length > 30 ? 14 : 16,
+            textAlign: "center",
           },
-          isSent && { backgroundColor: "#0A99FF" },
+          isSent && { color: "white" },
         ]}
       >
-        <ThemedText
-          style={[
-            {
-              fontFamily: "Exo_600SemiBold",
-              fontSize: 16,
-              textAlign: "center",
-            },
-            isSent && { color: "white" },
-          ]}
-        >
-          {choice.value}
-        </ThemedText>
-      </View>
+        {choice.value}
+      </ThemedText>
     </Pressable>
   );
 }
