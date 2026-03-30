@@ -38,7 +38,7 @@ export default function ItemButton({ participation }: ItemButtonProps) {
         return {
           name: "Super Gribouille",
           description: "Dessine sur l'écran de tout le monde",
-          path: require("@/assets/images/items/item-Darkness.png"),
+          path: require("@/assets/images/items/item-SuperDarkness.png"),
         };
       case "Half":
         return {
@@ -87,7 +87,7 @@ export default function ItemButton({ participation }: ItemButtonProps) {
           name: "Super Mélange",
           description:
             "Rend la question plus difficile à lire pour tout le monde",
-          path: require("@/assets/images/items/item-Scramble.png"),
+          path: require("@/assets/images/items/item-SuperScramble.png"),
         };
       case "Shield":
         return {
@@ -208,7 +208,7 @@ export default function ItemButton({ participation }: ItemButtonProps) {
                 justifyContent: "center",
                 alignItems: "center",
                 backgroundImage: heldItem
-                  ? "linear-gradient(to bottom, #0061ff,#4a8af4)"
+                  ? "radial-gradient(circle at 50%, #212223,#CaCaC4)"
                   : "linear-gradient(to bottom, #7b7b7b,#c6c6c6)",
                 boxShadow: "0px 2px 1px 1px #00000033",
               },
@@ -219,8 +219,8 @@ export default function ItemButton({ participation }: ItemButtonProps) {
                 <Image
                   source={getCorrectImage(heldItem).path}
                   style={{
-                    width: 32,
-                    height: 32,
+                    width: 50,
+                    height: 50,
                   }}
                 />
               )}
