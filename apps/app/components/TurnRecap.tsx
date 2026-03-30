@@ -61,6 +61,10 @@ export default function TurnRecap({
     }
   }, [myAnswer, correctChoice]);
 
+  if (!correctChoice) {
+    return null;
+  }
+
   return (
     <View
       style={{
@@ -73,13 +77,19 @@ export default function TurnRecap({
     >
       <View style={{ alignItems: "center" }}>
         <OutlinedText
-          fontSize={40}
+          fontSize={correctChoice.value.length > 20 ? 24 : 40}
           fontFamily="Exo_800ExtraBold"
           fontWeight="800"
-          fillColor="linear-gradient(to bottom, #3C73FF, #3AF2F8)"
+          fillColor={
+            answerStatus === "correct"
+              ? "linear-gradient(180deg, #2AD89A, #27EC47, #17BB81)"
+              : answerStatus === "wrong"
+                ? "linear-gradient(180deg, #F1425F, #E30026)"
+                : "linear-gradient(0deg, #919191, #3C3C3C)"
+          }
           strokeColor="#FFFFFF"
-          strokeWidth={3}
-          text={correctChoice?.value ?? ""}
+          strokeWidth={4}
+          text={correctChoice.value}
           width={availableWidth}
           shadowColor="#3c74ff"
           shadowOffsetX={-3}
@@ -96,7 +106,8 @@ export default function TurnRecap({
             borderStyle: "solid",
             borderWidth: 3,
             borderRadius: 10,
-            padding: 12,
+            paddingHorizontal: 8,
+            paddingVertical: 12,
             gap: 8,
             alignItems: "center",
             justifyContent: "space-between",
@@ -105,6 +116,7 @@ export default function TurnRecap({
             flexBasis: "auto",
             backgroundColor: "#0000000C",
             overflow: "hidden",
+            flexDirection: "row",
           },
           answerStatus === "correct" && {
             borderColor: "#3DC96C",
@@ -117,36 +129,10 @@ export default function TurnRecap({
           },
         ]}
       >
-        <ThemedText
-          style={[
-            {
-              textAlign: "center",
-              fontSize: 18,
-              fontFamily: "Exo_700Bold",
-              color: "transparent",
-              backgroundClip: "text",
-            },
-            answerStatus === "correct" && {
-              backgroundImage:
-                "linear-gradient(180deg, #2AD89A 100%, #27EC47 100%, #17BB81 100%)",
-            },
-            answerStatus === "wrong" && {
-              backgroundImage:
-                "linear-gradient(180deg, #F1425F 0%, #F1425F 0.01%, #E30026 100%)",
-            },
-            answerStatus === "none" && {
-              backgroundImage:
-                "linear-gradient(0deg, #919191 0%, #3C3C3C 100%)",
-            },
-          ]}
-        >
-          {answerStatus === "correct" && "Bien joué !"}
-          {answerStatus === "wrong" && "Oh non..."}
-          {answerStatus === "none" && "Pas de réponse."}
-        </ThemedText>
         <View
           style={{
-            flexDirection: "column",
+            flexDirection: "row",
+            flexWrap: "wrap",
             width: "100%",
             alignItems: "flex-start",
             overflow: "scroll",
@@ -159,20 +145,41 @@ export default function TurnRecap({
             <ScoreMedal medal={medal} key={medal} />
           ))}
         </View>
-        <Divider orientation="horizontal" size="100%" />
-        <ThemedText
+        <Divider orientation="vertical" size="100%" />
+        <View
           style={{
-            textAlign: "center",
-            fontSize: 32,
-            padding: 8,
-            fontFamily: "Exo_700Bold",
-            textShadowColor: answerStatus === "correct" ? "#3DC96C" : "#D36F6F",
-            textShadowOffset: { width: 0, height: 0 },
-            textShadowRadius: 10,
+            flexDirection: "row",
+            gap: 4,
           }}
         >
-          {pointsGained} pt
-        </ThemedText>
+          <ThemedText
+            style={{
+              textAlign: "center",
+              fontSize: 18,
+              fontFamily: "Exo_700Bold",
+              textShadowColor:
+                answerStatus === "correct" ? "#3DC96C" : "#D36F6F",
+              textShadowOffset: { width: 0, height: 0 },
+              textShadowRadius: 12,
+            }}
+          >
+            {pointsGained > 0 ? "+" : pointsGained === 0 ? "" : "-"}{" "}
+            {pointsGained}
+          </ThemedText>
+          <ThemedText
+            style={{
+              textAlign: "center",
+              fontSize: 12,
+              fontFamily: "Exo_400Regular",
+              textShadowColor:
+                answerStatus === "correct" ? "#3DC96C" : "#D36F6F",
+              textShadowOffset: { width: 0, height: 0 },
+              textShadowRadius: 12,
+            }}
+          >
+            {pointsGained > 1 ? "pts" : "pt"}
+          </ThemedText>
+        </View>
       </View>
     </View>
   );

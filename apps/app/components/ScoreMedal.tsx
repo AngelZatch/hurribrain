@@ -192,11 +192,9 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
   return (
     <View
       style={{
-        flexDirection: "row",
-        width: "100%",
-        gap: 8,
-        height: 50,
-        maxHeight: 50,
+        flexDirection: "column",
+        height: 70,
+        maxHeight: 70,
         justifyContent: "space-around",
         alignContent: "center",
         alignItems: "center",
@@ -206,7 +204,7 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
         source={currentMedalProfile.imagePath}
         style={{ height: 50, width: 50 }}
       />
-      <ThemedText
+      {/* <ThemedText
         style={{
           textShadowColor: textShadowStyle[currentMedalProfile.type],
           ...styles.bonusLabel,
@@ -214,7 +212,7 @@ export default function ScoreMedal({ medal }: ScoreMedalProps) {
         }}
       >
         {currentMedalProfile.label}
-      </ThemedText>
+      </ThemedText> */}
       {currentMedalProfile.bonusPoints && (
         <View
           style={{

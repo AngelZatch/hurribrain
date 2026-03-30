@@ -71,6 +71,7 @@ export default function ActiveGame({
         justifyContent: "space-between",
         paddingHorizontal: 12,
         overflow: "hidden",
+        gap: 6,
       }}
     >
       <View>
