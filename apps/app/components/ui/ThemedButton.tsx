@@ -93,6 +93,7 @@ export default function ThemedButton({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,
         shadowRadius: 1,
+        userSelect: "none",
       }}
       onPress={rest.onPress}
     >
