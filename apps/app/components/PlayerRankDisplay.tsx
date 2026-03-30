@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { OutlinedText as CustomOutlinedText } from "./ui/OutlinedText";
+import { OutlinedText } from "./ui/OutlinedText";
 import { useEffect, useState } from "react";
 
 type PlayerRankDisplayProps = {
@@ -27,10 +27,15 @@ export default function PlayerRankDisplay({ rank }: PlayerRankDisplayProps) {
   }, [rank]);
 
   return (
-    <View>
-      <CustomOutlinedText
+    <View
+      style={{
+        height: 50,
+        justifyContent: "center",
+      }}
+    >
+      <OutlinedText
         width={70}
-        height={40}
+        // height={40}
         fontSize={32}
         fontFamily="Exo_700Bold"
         fillColor={correctGradient}
@@ -41,9 +46,8 @@ export default function PlayerRankDisplay({ rank }: PlayerRankDisplayProps) {
         shadowOffsetY={3}
         shadowOpacity={0.84}
         shadowBlur={6}
-      >
-        {rank}
-      </CustomOutlinedText>
+        text={rank.toString()}
+      />
     </View>
   );
 }

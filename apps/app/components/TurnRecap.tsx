@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import ThemedText from "./ui/ThemedText";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   PlayedTurn,
   Choice,
@@ -10,15 +10,18 @@ import {
 import { useAuth } from "@/contexts/auth.context";
 import ScoreMedal from "./ScoreMedal";
 import { Divider } from "./ui/Divider";
+import { OutlinedText } from "./ui/OutlinedText";
 
 type ActivePlayedTurnProps = {
   currentTurn: PlayedTurn;
   participation: Participation;
+  availableWidth: number;
 };
 
 export default function TurnRecap({
   currentTurn,
   participation,
+  availableWidth,
 }: ActivePlayedTurnProps) {
   const [correctChoice, setCorrectChoice] = useState<Choice | null>(null);
   const { user } = useAuth();
@@ -68,20 +71,24 @@ export default function TurnRecap({
         gap: 12,
       }}
     >
-      <ThemedText
-        style={{
-          textAlign: "center",
-          fontSize: 40,
-          lineHeight: 53,
-          fontFamily: "Exo_800ExtraBold",
-          letterSpacing: 2,
-          backgroundImage: "linear-gradient(180deg, #3C73FF 0%, #3AF2F8 100%)",
-          color: "transparent",
-          backgroundClip: "text",
-        }}
-      >
-        {correctChoice?.value}
-      </ThemedText>
+      <View style={{ alignItems: "center" }}>
+        <OutlinedText
+          fontSize={40}
+          fontFamily="Exo_800ExtraBold"
+          fontWeight="800"
+          fillColor="linear-gradient(to bottom, #3C73FF, #3AF2F8)"
+          strokeColor="#FFFFFF"
+          strokeWidth={3}
+          text={correctChoice?.value ?? ""}
+          width={availableWidth}
+          shadowColor="#3c74ff"
+          shadowOffsetX={-3}
+          shadowOffsetY={-3}
+          shadowOpacity={0.4}
+          shadowBlur={1}
+          letterSpacing={2}
+        />
+      </View>
       <View
         style={[
           {

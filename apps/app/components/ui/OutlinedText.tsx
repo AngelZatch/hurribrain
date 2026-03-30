@@ -52,6 +52,7 @@ export type OutlinedTextProps = {
   shadowBlur?: number;
   // Contents
   children?: React.ReactNode | undefined;
+  text: string;
 };
 
 const buildFillGradient = (fillColor: string, gradientId: string) => {
@@ -80,6 +81,46 @@ const buildFillGradient = (fillColor: string, gradientId: string) => {
       })}
     </LinearGradient>
   );
+};
+
+const estimateTextWidth = (text: string, fontSize: number): number => {
+  const baseWidth = text.length * fontSize * 0.6;
+
+  const wordCount = text.split(" ").length - 1;
+  const wordSpacing = wordCount * fontSize * 0.1;
+
+  return baseWidth + wordSpacing;
+};
+
+// Wraps the text if it goes over the given width
+const wrapText = (text: string, width: number, fontSize: number): string[] => {
+  const words = text.split(" ");
+  const lines: Array<string> = [];
+
+  let currentLine = "";
+  for (const currentWord of words) {
+    const testLine = currentLine
+      ? `${currentLine} ${currentWord}`
+      : currentWord;
+    const testWidth = estimateTextWidth(testLine, fontSize);
+
+    if (testWidth <= width) {
+      currentLine = testLine;
+    } else {
+      if (currentLine) {
+        lines.push(currentLine);
+        currentLine = currentWord;
+      } else {
+        lines.push(currentWord);
+      }
+    }
+  }
+
+  if (currentLine) {
+    lines.push(currentLine);
+  }
+
+  return lines;
 };
 
 // Helper function to generate blur layers (from @donkasun)
@@ -137,6 +178,7 @@ export function OutlinedText({
   shadowOpacity = 0,
   // Contents
   children,
+  text,
 }: OutlinedTextProps) {
   // Random uuid so that multiple instances of this component can be used at once
   const gradientId = crypto.randomUUID();
@@ -159,41 +201,63 @@ export function OutlinedText({
 
   const blurLayers = generateBlurLayers(shadowBlur);
 
+  const lines = wrapText(text, width, fontSize);
+  const totalLineHeight = fontSize * 1.2;
+  const totalHeight = lines.length * totalLineHeight;
+
+  const centerY = y ?? (height ? height / 2 : totalHeight / 2);
+
+  const startY =
+    centerY - totalHeight / 2 + totalLineHeight / 2 + fontSize * 0.2;
+
   return (
     <View style={{ backgroundColor: "transparent" }}>
-      <Svg width={width} height={height ?? 100}>
+      <Svg width={width} height={Math.max(height ?? 0, totalHeight)}>
         <Defs>
           {/* Linear Gradient for the text color. If only one color is given, then there's only one line. */}
           {buildFillGradient(fillColor, gradientId)}
         </Defs>
-        {/* Blur shadow layers */}
-        {blurLayers.map((layer, layerIndex) => (
-          <Text
-            key={`blur-${layerIndex}`}
-            {...baseTextProps}
-            fill={shadowColor}
-            opacity={shadowOpacity * layer.opacity}
-            x={computedX + shadowOffsetX + layer.offsetX}
-            y={computedY + shadowOffsetY + layer.offsetY}
-          >
-            {children}
-          </Text>
-        ))}
-        {/* Stroke Text */}
-        {strokeColor && strokeWidth && (
-          <Text
-            fill="none"
-            {...baseTextProps}
-            stroke={strokeColor}
-            strokeWidth={strokeWidth}
-          >
-            {children}
-          </Text>
-        )}
-        {/* Fill Text */}
-        <Text fill={`url(#grad-${gradientId})`} {...baseTextProps}>
-          {children}
-        </Text>
+        {lines.map((line, lineIndex) => {
+          const linePositionY = startY + lineIndex * fontSize * 1.2;
+
+          return (
+            <>
+              {/* Blur shadow layers */}
+              {blurLayers.map((layer, layerIndex) => (
+                <Text
+                  key={`blur-${layerIndex}`}
+                  {...baseTextProps}
+                  fill={shadowColor}
+                  opacity={shadowOpacity * layer.opacity}
+                  x={computedX + shadowOffsetX + layer.offsetX}
+                  y={linePositionY + shadowOffsetY + layer.offsetY}
+                >
+                  {line}
+                </Text>
+              ))}
+              {/* Stroke Text */}
+              {strokeColor && strokeWidth && (
+                <Text
+                  fill="none"
+                  {...baseTextProps}
+                  y={linePositionY}
+                  stroke={strokeColor}
+                  strokeWidth={strokeWidth}
+                >
+                  {line}
+                </Text>
+              )}
+              {/* Text */}
+              <Text
+                fill={`url(#grad-${gradientId})`}
+                {...baseTextProps}
+                y={linePositionY}
+              >
+                {line}
+              </Text>
+            </>
+          );
+        })}
       </Svg>
     </View>
   );

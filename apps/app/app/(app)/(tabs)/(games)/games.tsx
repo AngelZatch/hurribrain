@@ -19,8 +19,6 @@ export default function GamesScreen() {
     return <Text>Loading...</Text>;
   }
 
-  console.log(data);
-
   return (
     <PageContainer>
       <ProfileBanner />
