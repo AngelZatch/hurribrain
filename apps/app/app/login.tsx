@@ -59,7 +59,6 @@ export default function LoginScreen() {
   };
 
   const onRecover = async (data: FormData) => {
-    console.log("ON RECOVER", data);
     try {
       const tokens = await recoverAuth(data);
       login(tokens.accessToken);

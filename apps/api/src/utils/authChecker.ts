@@ -51,8 +51,6 @@ export const excludeLiteUsers = async (
 ) => {
   const em = request.em
 
-  console.log("BEING CHECKED")
-
   await em.findOneOrFail(
     User,
     { role: { $ne: UserRole.LITE }, uuid: request.user },

@@ -3,7 +3,7 @@ import ThemedText from "./ui/ThemedText";
 import PlayerScoreDisplay from "./PlayerScoreDisplay";
 import CurrentQuestionDisplay from "./CurrentQuestionDisplay";
 import TurnTimer from "./TurnTimer";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import ActivePlayableTurn from "./ActivePlayableTurn";
 import TurnRecap from "./TurnRecap";
 import { Participation, PlayableTurn, PlayedTurn } from "@/api/play.api";
@@ -12,6 +12,7 @@ import { hasStatus } from "@/utils/gameUtils";
 import { Game } from "@/api/games.api";
 import PlayerRankDisplay from "./PlayerRankDisplay";
 import ItemButton from "./ItemButton";
+import { OutlinedText } from "./ui/OutlinedText";
 
 type ActiveTurnProps = {
   game: Game;
@@ -52,6 +53,16 @@ export default function ActiveGame({
       return () => clearInterval(timerId);
     }
   }, [timeLeft]);
+
+  // Display width for title, as the component needs a set width
+  const ref = useRef(null);
+  const [availableWidth, setAvailableWidth] = useState(0);
+
+  useLayoutEffect(() => {
+    ref.current?.measure((x, y, width, height, pageX, pageY) => {
+      setAvailableWidth(width + 30);
+    });
+  }, []);
 
   return (
     <View
@@ -103,15 +114,18 @@ export default function ActiveGame({
           justifyContent: "center",
         }}
       >
-        <ThemedText
-          style={{
-            fontFamily: "Exo_600SemiBold",
-            fontSize: 20,
-            textAlign: "center",
-          }}
-        >
-          {currentTurn.question.title}
-        </ThemedText>
+        <View style={{ alignItems: "center" }} ref={ref}>
+          <OutlinedText
+            fontSize={20}
+            width={availableWidth}
+            fontFamily="Exo_600SemiBold"
+            fontWeight="600"
+            strokeColor="#000000"
+            strokeWidth={4}
+            fillColor="linear-gradient(to bottom,#ffa900,#d0d0d0)"
+            text={currentTurn.question.title}
+          />
+        </View>
         {currentTurn.question.asset && (
           <View
             style={{
@@ -147,7 +161,7 @@ export default function ActiveGame({
       </View>
       <View
         style={{
-          flexGrow: 1,
+          flexGrow: 0,
           flexShrink: 1,
           flexBasis: "auto",
         }}
@@ -162,6 +176,7 @@ export default function ActiveGame({
           <TurnRecap
             currentTurn={currentTurn as PlayedTurn}
             participation={participation}
+            availableWidth={availableWidth}
           />
         )}
       </View>

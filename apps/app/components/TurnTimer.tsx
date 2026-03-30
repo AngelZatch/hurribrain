@@ -64,6 +64,8 @@ export default function TurnTimer({
         style={{
           gap: 0,
           flexDirection: "row",
+          height: 20,
+          justifyContent: "center",
         }}
       >
         {/* <HourGlass colors={difficultyColorMap[difficulty!]} /> */}
@@ -74,7 +76,6 @@ export default function TurnTimer({
           fillColor={difficultyColorMap[difficulty].fillColor}
           strokeColor={difficultyColorMap[difficulty].stroke}
           strokeWidth={2}
-          height={40}
           width={80}
           shadowColor="#000000"
           shadowOffsetX={2}
@@ -82,9 +83,8 @@ export default function TurnTimer({
           shadowOpacity={0.5}
           shadowBlur={2}
           textAnchor="middle"
-        >
-          {formatSeconds(timeLeft)}
-        </OutlinedText>
+          text={formatSeconds(timeLeft)}
+        />
       </View>
       <SideLines colors={difficultyColorMap[difficulty]} />
     </View>

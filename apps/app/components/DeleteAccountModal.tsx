@@ -37,7 +37,6 @@ export default function DeleteAccountModal({
   const { mutateAsync: deleteAccount, error } = useDeleteAccount(user!);
 
   const onSubmit = async (data: FormData) => {
-    console.log(data);
     try {
       await deleteAccount(data);
       logout();
