@@ -1,10 +1,9 @@
 import { Image, View } from "react-native";
-import ThemedText from "./ui/ThemedText";
 import PlayerScoreDisplay from "./PlayerScoreDisplay";
 import CurrentQuestionDisplay from "./CurrentQuestionDisplay";
 import TurnTimer from "./TurnTimer";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import ActivePlayableTurn from "./ActivePlayableTurn";
+import ChoiceList from "./ChoiceList";
 import TurnRecap from "./TurnRecap";
 import { Participation, PlayableTurn, PlayedTurn } from "@/api/play.api";
 import PlayerStatusList from "./PlayerStatusList";
@@ -168,7 +167,7 @@ export default function ActiveGame({
         }}
       >
         {!currentTurn.finishedAt ? (
-          <ActivePlayableTurn
+          <ChoiceList
             currentTurn={currentTurn as PlayableTurn}
             participation={participation}
             timeLeft={timeLeft}

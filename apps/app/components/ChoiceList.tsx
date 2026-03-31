@@ -16,7 +16,7 @@ type ActivePlayableTurnProps = {
   timeLeft: number;
 };
 
-export default function ActivePlayableTurn({
+export default function ChoiceList({
   currentTurn,
   timeLeft,
 }: ActivePlayableTurnProps) {

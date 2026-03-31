@@ -1,6 +1,5 @@
 import { hasACurrentParticipation } from "@/api/play.api";
 import ProfileBanner from "@/components/ProfileBanner";
-import { OutlinedText } from "@/components/ui/OutlinedText";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { useAuth } from "@/contexts/auth.context";
 import { Link } from "expo-router";

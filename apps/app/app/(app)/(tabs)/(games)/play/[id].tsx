@@ -1,6 +1,6 @@
 import { useAuth } from "@/contexts/auth.context";
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ImageBackground, View } from "react-native";
 import { PageContainer } from "@/components/ui/PageContainer";
 import TopNavigation from "@/components/TopNavigation";
@@ -196,7 +196,9 @@ export default function PlayScreen() {
               participation={participation}
             />
           )}
-          {game.finishedAt && <GameRecap me={me} />}
+          {game.finishedAt && (
+            <GameRecap game={game!} participation={participation} />
+          )}
         </View>
       </ImageBackground>
     </PageContainer>

@@ -4,9 +4,13 @@ import { useEffect, useState } from "react";
 
 type PlayerRankDisplayProps = {
   rank: number;
+  fontSize?: number;
 };
 
-export default function PlayerRankDisplay({ rank }: PlayerRankDisplayProps) {
+export default function PlayerRankDisplay({
+  rank,
+  fontSize = 32,
+}: PlayerRankDisplayProps) {
   const chooseGradient = (rank: number): string => {
     if (rank === 1) {
       return "linear-gradient(to bottom, #c5e2a2,#5edaf0,#ffd255)";
@@ -36,7 +40,7 @@ export default function PlayerRankDisplay({ rank }: PlayerRankDisplayProps) {
       <OutlinedText
         width={70}
         // height={40}
-        fontSize={32}
+        fontSize={fontSize}
         fontFamily="Exo_700Bold"
         fillColor={correctGradient}
         strokeColor="#FFF"
