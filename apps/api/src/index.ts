@@ -1,3 +1,5 @@
+import { deleteAccountsCronJob } from "./crons/deleteAccounts.cron.js"
+import { deleteFinishedGamesCronJob } from "./crons/deleteFinishedGames.cron.js"
 import { initializeDatabase } from "./database.js"
 import { getOrmConfig } from "./mikro-orm.config.js"
 import { server, initializeServer } from "./server.js"
@@ -17,6 +19,10 @@ const HOST = process.env.HOST ?? "0.0.0.0"
 
     await server.listen({ host: HOST, port: Number(PORT) })
     console.log(`Server is running at http://${HOST}:${PORT}`)
+
+    // Start cron jobs
+    deleteFinishedGamesCronJob.start()
+    deleteAccountsCronJob.start()
   } catch (err) {
     console.error(err)
     server.log.error(err)

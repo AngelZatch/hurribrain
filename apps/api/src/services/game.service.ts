@@ -726,19 +726,23 @@ export default class GameService {
    */
   deleteFinishedGames = async () => {
     const em = getEntityManager()
-    const gameTtl = new Date(new Date().getTime() + 15 * MINUTE)
+    const gameTtl = new Date(new Date().getTime() - 15 * MINUTE)
 
     const gamesToDelete = (
       await em.find(
         Game,
         {
-          finishedAt: { $gte: gameTtl },
+          finishedAt: { $lte: gameTtl },
         },
         {
           fields: ["uuid"],
         }
       )
     ).map((game) => game.uuid)
+
+    if (gamesToDelete.length === 0) {
+      return
+    }
 
     const turnsToDelete = (
       await em.find(Turn, {
