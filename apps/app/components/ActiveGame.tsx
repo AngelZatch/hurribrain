@@ -29,8 +29,11 @@ export default function ActiveGame({
 
   function getInitialTimeLeft(): number {
     if (!currentTurn.startedAt) return 15;
-    const elapsed = Math.floor(
-      (Date.now() - new Date(currentTurn.startedAt).getTime()) / 1000,
+    const elapsed = Math.max(
+      0,
+      Math.floor(
+        (Date.now() - new Date(currentTurn.startedAt).getTime()) / 1000,
+      ),
     );
     return Math.max(15 - elapsed, 0);
   }
