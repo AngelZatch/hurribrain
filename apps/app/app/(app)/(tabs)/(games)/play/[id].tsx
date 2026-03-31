@@ -196,7 +196,9 @@ export default function PlayScreen() {
               participation={participation}
             />
           )}
-          {game.finishedAt && <GameRecap me={me} />}
+          {game.finishedAt && (
+            <GameRecap me={me} game={game!} participation={participation} />
+          )}
         </View>
       </ImageBackground>
     </PageContainer>
