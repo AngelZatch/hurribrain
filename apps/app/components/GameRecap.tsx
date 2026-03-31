@@ -2,8 +2,7 @@ import { Image, View } from "react-native";
 import ThemedText from "./ui/ThemedText";
 import { Link, useRouter } from "expo-router";
 import ThemedButton from "./ui/ThemedButton";
-import { MyAccountInfo } from "@/api/auth.api";
-import Leaderboard from "@/app/(app)/(tabs)/(games)/play/leaderboard";
+import { useGetMeWithStats } from "@/api/auth.api";
 import { Participation, useGetLeaderboard } from "@/api/play.api";
 import { useAuth } from "@/contexts/auth.context";
 import { Game } from "@/api/games.api";
@@ -11,13 +10,12 @@ import { ContainerView } from "./ui/ContainerView";
 import LeaderboardItem from "./LeaderboardItem";
 import PlayerRankDisplay from "./PlayerRankDisplay";
 import PlayerScoreDisplay from "./PlayerScoreDisplay";
+import ExperienceBar from "./ExperienceBar";
 
 export default function GameRecap({
-  me,
   game,
   participation,
 }: {
-  me: MyAccountInfo;
   game: Game;
   participation: Participation;
 }) {
@@ -29,13 +27,12 @@ export default function GameRecap({
     router.replace("/");
   };
 
-  const authToConvert = () => {
-    router.push({
-      pathname: "/convert",
-    });
-  };
-
   const { data: leaderboard, isLoading } = useGetLeaderboard(user!, game.uuid);
+  const { data: me, isLoading: isLoadingStats } = useGetMeWithStats(user!);
+
+  if (isLoading || isLoadingStats || !me || !leaderboard) {
+    return <ThemedText>Chargement...</ThemedText>;
+  }
 
   return (
     <View
@@ -43,7 +40,7 @@ export default function GameRecap({
         flexDirection: "column",
         flex: 1,
         justifyContent: "space-between",
-        gap: 6,
+        gap: 12,
         overflow: "hidden",
       }}
     >
@@ -59,39 +56,49 @@ export default function GameRecap({
       </ThemedText>
       <View
         style={{
-          flexDirection: "row",
-          width: "100%",
-          aspectRatio: 1.3,
-          alignItems: "center",
+          flexDirection: "column",
         }}
       >
         <View
           style={{
+            flexDirection: "row",
+            width: "100%",
+            aspectRatio: 1.3,
             alignItems: "center",
           }}
         >
-          <PlayerRankDisplay rank={participation.rank} fontSize={64} />
-          <PlayerScoreDisplay score={participation.score} />
-        </View>
-        <View
-          style={{
-            width: "100%",
-            aspectRatio: 1.3,
-            flexGrow: 1,
-            flexShrink: 1,
-            flexBasis: "100%",
-          }}
-        >
-          <Image
-            source={{
-              uri: "https://static.wikia.nocookie.net/finalfantasy/images/5/58/Theatrhythm_CC_Y%E2%80%99shtola.png",
+          <View
+            style={{
+              alignItems: "center",
             }}
+          >
+            <PlayerRankDisplay rank={participation.rank} fontSize={64} />
+            <PlayerScoreDisplay score={participation.score} />
+          </View>
+          <View
             style={{
               width: "100%",
-              height: "100%",
+              aspectRatio: 1.3,
+              flexGrow: 1,
+              flexShrink: 1,
+              flexBasis: "100%",
             }}
-          />
+          >
+            <Image
+              source={{
+                uri: "https://static.wikia.nocookie.net/finalfantasy/images/5/58/Theatrhythm_CC_Y%E2%80%99shtola.png",
+              }}
+              style={{
+                width: "100%",
+                height: "100%",
+              }}
+            />
+          </View>
         </View>
+        <ExperienceBar
+          current={me.stats.experiencePoints}
+          level={me.stats.level}
+        />
       </View>
       <ContainerView
         style={{
