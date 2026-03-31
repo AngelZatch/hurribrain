@@ -4255,7 +4255,7 @@ __metadata:
     "@types/jest": "npm:^29.5.12"
     "@types/react": "npm:~19.2.10"
     "@types/react-test-renderer": "npm:^18.3.0"
-    axios: "npm:^1.7.9"
+    axios: "npm:1.13.6"
     expo: "npm:^55.0.0"
     expo-blur: "npm:~55.0.8"
     expo-clipboard: "npm:~55.0.9"
@@ -4406,7 +4406,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.7.9":
+"axios@npm:1.13.6":
   version: 1.13.6
   resolution: "axios@npm:1.13.6"
   dependencies:
