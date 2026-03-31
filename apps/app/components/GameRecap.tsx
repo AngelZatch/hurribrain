@@ -11,6 +11,7 @@ import LeaderboardItem from "./LeaderboardItem";
 import PlayerRankDisplay from "./PlayerRankDisplay";
 import PlayerScoreDisplay from "./PlayerScoreDisplay";
 import ExperienceBar from "./ExperienceBar";
+import { QueryClient, useQueryClient } from "@tanstack/react-query";
 
 export default function GameRecap({
   game,
@@ -21,6 +22,7 @@ export default function GameRecap({
 }) {
   const router = useRouter();
   const { user } = useAuth();
+  const queryClient = useQueryClient();
 
   const navigateToHome = () => {
     router.replace("/games");
@@ -29,6 +31,7 @@ export default function GameRecap({
 
   const { data: leaderboard, isLoading } = useGetLeaderboard(user!, game.uuid);
   const { data: me, isLoading: isLoadingStats } = useGetMeWithStats(user!);
+  queryClient.invalidateQueries({ queryKey: ["my-participation"] });
 
   if (isLoading || isLoadingStats || !me || !leaderboard) {
     return <ThemedText>Chargement...</ThemedText>;

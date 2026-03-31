@@ -122,6 +122,28 @@ export default function PlayScreen() {
     };
   }, [game?.uuid, me]);
 
+  if (error) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          padding: 12,
+        }}
+      >
+        <ThemedText>Ce jeu n'a pas été trouvé.</ThemedText>
+        <ThemedButton
+          title="Retourner à l'accueil"
+          onPress={() => {
+            router.replace("/");
+          }}
+          fullWidth
+        />
+      </View>
+    );
+  }
+
   if (!game || !me || !participation) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
