@@ -50,7 +50,7 @@ export default function TurnRecap({
   );
 
   useEffect(() => {
-    if (!myAnswer || !myAnswer.choice) {
+    if (!myAnswer || !myAnswer.choice?.uuid) {
       setAnswerStatus("none");
     } else {
       if (myAnswer.choice.uuid === correctChoice?.uuid) {
