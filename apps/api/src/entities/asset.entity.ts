@@ -29,6 +29,9 @@ export class Asset {
   @Enum({ items: () => AssetType })
   type!: AssetType
 
+  @Property()
+  description?: string = ""
+
   @Formula(
     (alias) => `(
     SELECT COUNT(*)
@@ -48,9 +51,10 @@ export class Asset {
   @Property({ nullable: true })
   deletedAt?: Date
 
-  constructor(name: string, uri: string, type: AssetType) {
-    this.name = name
-    this.uri = uri
-    this.type = type
+  constructor(body: Pick<Asset, "name" | "uri" | "type" | "description">) {
+    this.name = body.name
+    this.uri = body.uri
+    this.type = body.type
+    this.description = body.description ?? ""
   }
 }
