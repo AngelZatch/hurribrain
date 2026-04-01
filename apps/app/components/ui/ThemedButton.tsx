@@ -95,6 +95,7 @@ export default function ThemedButton({
         shadowRadius: 1,
         userSelect: "none",
       }}
+      disabled={rest.disabled}
       onPress={rest.onPress}
     >
       <>
