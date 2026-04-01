@@ -328,6 +328,35 @@ const GameController = async (fastify: FastifyInstance) => {
     }
   )
 
+  fastify.put<{
+    Params: GameByIdParams
+  }>(
+    "/:gameId/end",
+    {
+      schema: {
+        tags: ["Games"],
+        summary:
+          "Ends a game. Can only be used by the creator of the game to end it prematurely and free all participants.",
+        params: GameByIdParamsSchema,
+        response: {
+          200: {
+            type: "boolean",
+          },
+          ...ErrorResponsesSchema,
+        },
+      },
+      preHandler: [fastify.auth([verifyJWT])],
+    },
+    async (request, reply) => {
+      const { gameId } = request.params
+      const gameService = new GameService()
+
+      await gameService.manuallyEndGame(gameId, request.user)
+
+      return reply.code(200).send(true)
+    }
+  )
+
   fastify.register(TurnController, { prefix: "/:gameId/turns" })
   fastify.register(PlayerController, { prefix: "/:gameId/leaderboard" })
 }

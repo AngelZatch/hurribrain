@@ -235,6 +235,31 @@ export const useStartGame = (token: string) => {
   });
 };
 
+// Prematurely end a game, as a player cannot play in more than one game at a time
+export const useEndGame = (token: string) => {
+  return useMutation({
+    mutationFn: async (gameId: string) => {
+      try {
+        const response = await axios.put(
+          `${process.env.EXPO_PUBLIC_API_URL}/games/${gameId}/end`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          throw error.response?.data;
+        }
+        throw error;
+      }
+    },
+  });
+};
+
 // export const useGetMyParticipation = (token: string, gameId: string) => {
 //   return useQuery({
 //     queryKey: ["my-participation"],

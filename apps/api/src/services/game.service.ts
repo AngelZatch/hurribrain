@@ -718,6 +718,49 @@ export default class GameService {
   }
 
   /**
+   * Manually ends a game.
+   *
+   * @param gameId The identifier of the game
+   * @param userId The identifier of the user who ends the game (for security reasons, only the creator can end the game)
+   */
+  manuallyEndGame = async (gameId: string, userId: string) => {
+    const em = getEntityManager()
+
+    const game = await em.findOneOrFail(
+      Game,
+      {
+        uuid: gameId,
+        creator: { uuid: userId },
+        startedAt: { $ne: null },
+        finishedAt: null,
+      },
+      {
+        populate: ["tags"],
+      }
+    )
+
+    game.finishedAt ||= new Date()
+
+    em.persist(game)
+
+    const turns = await em.find(Turn, {
+      game: { uuid: gameId },
+      finishedAt: null,
+    })
+
+    for (const turn of turns) {
+      turn.finishedAt ||= new Date()
+      em.persist(turn)
+    }
+
+    await em.flush()
+
+    server.io.to(`game:${gameId}`).emit("game:updated", game)
+
+    return game
+  }
+
+  /**
    * Finds all games with a finishedAt value and deletes them.
    * To keep everything clean, will also delete every turns, answers and participations to the game
    *
