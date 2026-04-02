@@ -9,7 +9,8 @@ export function PageContainer({ style, ...otherProps }: ViewProps) {
           justifyContent: "flex-start",
           alignItems: "center",
           gap: 6,
-          padding: 20,
+          paddingVertical: "2%",
+          paddingHorizontal: "3%",
         },
         style,
       ]}
