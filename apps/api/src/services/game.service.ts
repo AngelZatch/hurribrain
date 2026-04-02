@@ -662,14 +662,36 @@ export default class GameService {
     }
 
     game.finishedAt ||= new Date()
-
     em.persist(game)
 
-    // Give EXP to all participants based on their rank
     const participations = await em.find(Participation, {
       game: { uuid: gameId } as Game,
     })
 
+    // Recompute final ranks
+    let currentRank = 0
+    let minScore = Infinity
+
+    participations
+      .sort((a, b) => b.score - a.score)
+      .forEach((participation) => {
+        if (participation.score < minScore) {
+          minScore = participation.score
+          currentRank += 1
+        }
+
+        // Update ranks
+        participation.previousRank = participation.rank
+        participation.rank = currentRank
+
+        em.persist(participation)
+
+        server.io
+          .to(`game:${gameId}`)
+          .emit("participation:updated", participation)
+      })
+
+    // Give EXP to all participants based on their rank
     const userIds = participations.map((participation) => participation.user)
 
     const userStats = await em.find(UserStats, {
