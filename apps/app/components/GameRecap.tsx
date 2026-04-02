@@ -21,7 +21,7 @@ export default function GameRecap({
   participation: Participation;
 }) {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const queryClient = useQueryClient();
 
   const navigateToHome = () => {
@@ -51,7 +51,7 @@ export default function GameRecap({
         style={{
           fontSize: 32,
           fontFamily: "Exo_600SemiBold",
-          paddingVertical: 25,
+          paddingVertical: "2%",
           textAlign: "center",
         }}
       >
@@ -66,7 +66,7 @@ export default function GameRecap({
           style={{
             flexDirection: "row",
             width: "100%",
-            aspectRatio: 1.3,
+            aspectRatio: 1.7,
             alignItems: "center",
           }}
         >
@@ -145,14 +145,10 @@ export default function GameRecap({
               }}
               glow
             >
-              Crée un compte et garde ta progression !
+              Garde ta progression !
             </ThemedText>
             <Link push href="/convert" asChild>
-              <ThemedButton
-                title="Créer un compte"
-                onPress={() => {}}
-                type="secondary"
-              />
+              <ThemedButton title="Créer un compte" type="secondary" />
             </Link>
           </View>
         )}
@@ -165,7 +161,7 @@ export default function GameRecap({
         >
           <ThemedButton
             title={me.role === "lite" ? "Quitter" : "Retourner à l'accueil"}
-            onPress={navigateToHome}
+            onPress={me.role === "lite" ? logout : navigateToHome}
             fullWidth
           />
         </View>
