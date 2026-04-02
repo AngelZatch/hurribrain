@@ -105,7 +105,7 @@ export default function ItemButton({ participation }: ItemButtonProps) {
       default:
         return {
           name: "Pièce",
-          description: "Gagnez 1 point immédiatement",
+          description: "Gagnez 1 point",
           path: require("@/assets/images/items/item-Coin.png"),
         };
     }
@@ -139,7 +139,8 @@ export default function ItemButton({ participation }: ItemButtonProps) {
         alignItems: "center",
         gap: 8,
         justifyContent: "flex-end",
-        height: 120,
+        height: 70,
+        flexDirection: "row-reverse",
       }}
     >
       <View
@@ -147,7 +148,7 @@ export default function ItemButton({ participation }: ItemButtonProps) {
           borderRadius: 8,
           backgroundColor: participation.activeItem ? "#0061ff" : "#e3e3e3",
           padding: 4,
-          width: 120,
+          width: 80,
         }}
       >
         {participation.activeItem ? (

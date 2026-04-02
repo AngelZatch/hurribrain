@@ -187,8 +187,8 @@ export default function ActiveGame({
         style={{
           display: "flex",
           gap: 24,
-          maxHeight: 140,
-          height: 140,
+          maxHeight: 70,
+          height: 70,
           flexDirection: "row",
           justifyContent: "flex-start",
           alignSelf: "stretch",
