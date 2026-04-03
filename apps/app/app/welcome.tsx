@@ -11,10 +11,10 @@ export default function WelcomeScreen() {
       }}
     >
       <ThemedText type="title">Hurribrain</ThemedText>
-      <ThemedText type="subtitle">Come test your knowledge!</ThemedText>
+      <ThemedText type="subtitle">Venez tester vos connaissances !</ThemedText>
       <Link push href="/register" asChild style={{ width: "100%" }}>
         <ThemedButton
-          title={"Create my account"}
+          title={"Créer mon compte"}
           type="secondary"
           fullWidth
           disabled={false}
@@ -22,7 +22,7 @@ export default function WelcomeScreen() {
       </Link>
       <Link push href="/login" asChild style={{ width: "100%" }}>
         <ThemedButton
-          title={"Login"}
+          title={"Me connecter"}
           type="primary"
           size="large"
           fullWidth

@@ -324,6 +324,16 @@ const AuthController = async (fastify: FastifyInstance) => {
         return new Error("Invalid Credentials")
       }
 
+      // Check for unicity of email and name
+      const existingUser = await em.findOne(User, {
+        email,
+      })
+
+      if (existingUser) {
+        reply.statusCode = 409
+        return new Error("User already exists")
+      }
+
       const user = await em.findOneOrFail(
         User,
         { uuid },

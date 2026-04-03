@@ -12,6 +12,7 @@ import { RelativePathString, router, useLocalSearchParams } from "expo-router";
 import RecoverAccountModal from "@/components/RecoverAccountModal";
 import { useState } from "react";
 import { Modal } from "react-native";
+import AlertContainer from "@/components/ui/AlertContainer";
 
 type FormData = {
   email: string;
@@ -20,8 +21,8 @@ type FormData = {
 
 export default function LoginScreen() {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { mutateAsync: checkAuth } = useAuthCheck();
-  const { mutateAsync: signIn, error: signInError } = useLogin();
+  const { mutateAsync: checkAuth, error: checkError } = useAuthCheck();
+  const { mutateAsync: signIn, error: loginError } = useLogin();
   const { mutateAsync: recoverAuth, error: authRecoveryError } =
     useAuthRecover();
   const { login } = useAuth();
@@ -86,7 +87,7 @@ export default function LoginScreen() {
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <ThemedTextInput
-                placeholder="Type here..."
+                placeholder="Ecrire ici..."
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
@@ -97,7 +98,7 @@ export default function LoginScreen() {
             name="email"
           />
         </InputContainer>
-        {errors.email && <ThemedText>This field is required</ThemedText>}
+        {errors.email && <ThemedText>Ce champ est requis.</ThemedText>}
         <InputContainer>
           <ThemedText type="label">Mot de Passe</ThemedText>
           <Controller
@@ -107,7 +108,7 @@ export default function LoginScreen() {
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <ThemedTextInput
-                placeholder="Type here..."
+                placeholder="Ecrire ici..."
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
@@ -119,14 +120,16 @@ export default function LoginScreen() {
             name="password"
           />
         </InputContainer>
-        {errors.password && <ThemedText>This field is required</ThemedText>}
+        {errors.password && <ThemedText>Ce champ est requis.</ThemedText>}
+        {(checkError || loginError) && (
+          <AlertContainer type="error" text="Identifiants invalides" />
+        )}
         <ThemedButton
           title="Login"
           fullWidth
           onPress={handleSubmit(onSubmit)}
           disabled={!isValid}
         />
-        {signInError && <ThemedText>{signInError.message}</ThemedText>}
       </BodyContainer>
       <Modal
         presentationStyle="pageSheet"

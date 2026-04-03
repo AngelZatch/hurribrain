@@ -13,6 +13,7 @@ import ThemedText from "@/components/ui/ThemedText";
 import { InputContainer } from "@/components/ui/InputContainer";
 import ThemedTextInput from "@/components/ui/ThemedTextInput";
 import ThemedButton from "@/components/ui/ThemedButton";
+import AlertContainer from "@/components/ui/AlertContainer";
 
 export default function AccountConversionScreen() {
   const { user, login } = useAuth();
@@ -42,7 +43,8 @@ export default function AccountConversionScreen() {
     return <ThemedText>Loading...</ThemedText>;
   }
 
-  const { mutateAsync: register } = useLiteAccountConversion(user!);
+  const { mutateAsync: register, error: registerError } =
+    useLiteAccountConversion(user!);
 
   return (
     <PageContainer
@@ -92,6 +94,12 @@ export default function AccountConversionScreen() {
           />
         </InputContainer>
         {errors.password && <ThemedText>Ce champ est requis.</ThemedText>}
+        {registerError && (
+          <AlertContainer
+            type="error"
+            text="Cette adresse mail est déjà prise."
+          />
+        )}
         <ThemedButton
           title="Créer mon compte"
           onPress={handleSubmit(onSubmit)}

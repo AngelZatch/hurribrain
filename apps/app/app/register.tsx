@@ -10,6 +10,7 @@ import { useContext } from "react";
 import { AuthContext } from "@/contexts/auth.context";
 import { useRegister } from "@/api/auth.api";
 import { router } from "expo-router";
+import AlertContainer from "@/components/ui/AlertContainer";
 
 type FormData = {
   email: string;
@@ -18,7 +19,7 @@ type FormData = {
 };
 
 export default function RegisterScreen() {
-  const { mutateAsync: register } = useRegister();
+  const { mutateAsync: register, error: registerError } = useRegister();
   const { login } = useContext(AuthContext);
 
   const {
@@ -47,9 +48,9 @@ export default function RegisterScreen() {
     >
       <TopNavigation />
       <BodyContainer>
-        <ThemedText type="smallTitle">Welcome!</ThemedText>
+        <ThemedText type="smallTitle">Bienvenue !</ThemedText>
         <InputContainer>
-          <ThemedText type="label">Name</ThemedText>
+          <ThemedText type="label">Nom d'utilisateur</ThemedText>
           <Controller
             control={control}
             rules={{
@@ -59,7 +60,7 @@ export default function RegisterScreen() {
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <ThemedTextInput
-                placeholder="Type here..."
+                placeholder="Ecrire ici..."
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
@@ -70,9 +71,9 @@ export default function RegisterScreen() {
             name="name"
           />
         </InputContainer>
-        {errors.name && <ThemedText>This field is required</ThemedText>}
+        {errors.name && <ThemedText>Ce champ est requis.</ThemedText>}
         <InputContainer>
-          <ThemedText type="label">Email address</ThemedText>
+          <ThemedText type="label">Adresse mail</ThemedText>
           <Controller
             control={control}
             rules={{
@@ -80,7 +81,7 @@ export default function RegisterScreen() {
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <ThemedTextInput
-                placeholder="Type here..."
+                placeholder="Ecrire ici..."
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
@@ -91,9 +92,9 @@ export default function RegisterScreen() {
             name="email"
           />
         </InputContainer>
-        {errors.email && <ThemedText>This field is required</ThemedText>}
+        {errors.email && <ThemedText>Ce champ est requis.</ThemedText>}
         <InputContainer>
-          <ThemedText type="label">Password</ThemedText>
+          <ThemedText type="label">Mot de passe</ThemedText>
           <Controller
             control={control}
             rules={{
@@ -101,7 +102,7 @@ export default function RegisterScreen() {
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <ThemedTextInput
-                placeholder="Type here..."
+                placeholder="Ecrire ici..."
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
@@ -113,9 +114,15 @@ export default function RegisterScreen() {
             name="password"
           />
         </InputContainer>
-        {errors.password && <ThemedText>This field is required</ThemedText>}
+        {errors.password && <ThemedText>Ce champ est requis.</ThemedText>}
+        {registerError && (
+          <AlertContainer
+            type="error"
+            text="Cet utilisateur et/ou adresse mail est déjà prise."
+          />
+        )}
         <ThemedButton
-          title="Create"
+          title="Créer mon compte"
           onPress={handleSubmit(onSubmit)}
           fullWidth
           disabled={!isValid}
