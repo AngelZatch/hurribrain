@@ -22,6 +22,123 @@
           "enumItems": [],
           "mappedType": "string"
         },
+        "email": {
+          "name": "email",
+          "type": "varchar(255)",
+          "length": 255,
+          "precision": null,
+          "scale": null,
+          "nullable": false,
+          "default": null,
+          "unsigned": false,
+          "autoincrement": false,
+          "comment": null,
+          "primary": false,
+          "unique": true,
+          "enumItems": [],
+          "mappedType": "string"
+        },
+        "verification_key": {
+          "name": "verification_key",
+          "type": "varchar(255)",
+          "length": 255,
+          "precision": null,
+          "scale": null,
+          "nullable": false,
+          "default": null,
+          "unsigned": false,
+          "autoincrement": false,
+          "comment": null,
+          "primary": false,
+          "unique": true,
+          "enumItems": [],
+          "mappedType": "string"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz(6)",
+          "length": 6,
+          "precision": null,
+          "scale": null,
+          "nullable": false,
+          "default": null,
+          "unsigned": false,
+          "autoincrement": false,
+          "comment": null,
+          "primary": false,
+          "unique": false,
+          "enumItems": [],
+          "mappedType": "datetime"
+        }
+      },
+      "name": "account_verifier",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "email"
+          ],
+          "composite": false,
+          "constraint": true,
+          "keyName": "account_verifier_email_unique",
+          "unique": true,
+          "primary": false
+        },
+        {
+          "columnNames": [
+            "email",
+            "verification_key"
+          ],
+          "composite": true,
+          "constraint": false,
+          "keyName": "account_verifier_email_verification_key_index",
+          "unique": false,
+          "primary": false
+        },
+        {
+          "columnNames": [
+            "uuid"
+          ],
+          "composite": false,
+          "constraint": false,
+          "keyName": "account_verifier_pkey",
+          "unique": true,
+          "primary": true
+        },
+        {
+          "columnNames": [
+            "verification_key"
+          ],
+          "composite": false,
+          "constraint": true,
+          "keyName": "account_verifier_verification_key_unique",
+          "unique": true,
+          "primary": false
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {},
+      "comment": null
+    },
+    {
+      "columns": {
+        "uuid": {
+          "name": "uuid",
+          "type": "varchar(255)",
+          "length": 255,
+          "precision": null,
+          "scale": null,
+          "nullable": false,
+          "default": null,
+          "unsigned": false,
+          "autoincrement": false,
+          "comment": null,
+          "primary": true,
+          "unique": false,
+          "enumItems": [],
+          "mappedType": "string"
+        },
         "participation_uuid": {
           "name": "participation_uuid",
           "type": "varchar(255)",
@@ -322,22 +439,6 @@
             "sound"
           ],
           "mappedType": "enum"
-        },
-        "description": {
-          "name": "description",
-          "type": "varchar(255)",
-          "length": 255,
-          "precision": null,
-          "scale": null,
-          "nullable": true,
-          "default": null,
-          "unsigned": false,
-          "autoincrement": false,
-          "comment": null,
-          "primary": false,
-          "unique": false,
-          "enumItems": [],
-          "mappedType": "string"
         }
       },
       "name": "asset",
