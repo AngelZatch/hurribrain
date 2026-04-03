@@ -37,6 +37,7 @@ export enum UserRole {
   },
 })
 @Filter({ name: "notBanned", cond: { bannedAt: null } })
+@Filter({ name: "isVerified", cond: { isVerified: true } })
 export class User {
   @PrimaryKey()
   uuid: string = v4()
@@ -60,6 +61,9 @@ export class User {
 
   @Enum({ items: () => UserRole, default: UserRole.STANDARD })
   role!: UserRole
+
+  @Property({ type: "boolean", default: false })
+  isVerified!: boolean
 
   // Timestamps
   @Property()

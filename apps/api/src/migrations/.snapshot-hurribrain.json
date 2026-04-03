@@ -322,6 +322,22 @@
             "sound"
           ],
           "mappedType": "enum"
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar(255)",
+          "length": 255,
+          "precision": null,
+          "scale": null,
+          "nullable": true,
+          "default": null,
+          "unsigned": false,
+          "autoincrement": false,
+          "comment": null,
+          "primary": false,
+          "unique": false,
+          "enumItems": [],
+          "mappedType": "string"
         }
       },
       "name": "asset",
@@ -1949,6 +1965,22 @@
           "unique": false,
           "enumItems": [],
           "mappedType": "datetime"
+        },
+        "is_verified": {
+          "name": "is_verified",
+          "type": "bool",
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "nullable": false,
+          "default": "false",
+          "unsigned": false,
+          "autoincrement": false,
+          "comment": null,
+          "primary": false,
+          "unique": false,
+          "enumItems": [],
+          "mappedType": "boolean"
         }
       },
       "name": "user",
