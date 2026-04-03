@@ -21,6 +21,7 @@ import { Participation } from "../entities/participation.entity.js"
 import { GetParticipationReplySchema } from "../schemas/player.schema.js"
 import AuthService from "./../services/auth.service.js"
 import { HOUR } from "./../utils/helperVariables.js"
+import { AccountVerifier } from "./../entities/accountVerifier.entity.js"
 
 const authService = new AuthService()
 
@@ -206,12 +207,17 @@ const AuthController = async (fastify: FastifyInstance) => {
         return new Error("User already exists")
       }
 
+      // Create user and account verifier
       const user = new User({ email, name })
       user.password = await bcrypt.hash(password, 10)
 
       em.persist(user)
 
       em.persist(new UserStats(user))
+
+      new AccountVerifier({ email })
+
+      // TODO: Send email with the hash to allow the user to verify their account
 
       await em.flush()
 
